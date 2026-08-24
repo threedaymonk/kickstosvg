@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import org.colston.kicks.document.Accidental;
+import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.Note;
 import org.colston.kicks.document.importer.Importer;
 import org.colston.kicks.document.importer.ImporterFactory;
+import org.colston.kicks.document.persistence.DocumentStore;
 import org.colston.kicks.render.RendererResources;
 
 
@@ -19,14 +21,19 @@ public class Renderer implements Callable<Boolean> {
         this.outputDir = outputDir;
     }
 
-    public Boolean call() throws Exception {
-        var file = new File(inputPath);
-        var importer = ImporterFactory.getImporter(file);
-        if (!importer.isPresent()) return false;
+    private KicksDocument loadDocument(File file) throws Exception {
+        if (!file.exists() || !file.canRead())
+            throw new Exception("Cannot read file: " + file.getAbsolutePath());
 
-        // TODO: handle XML imports, maybe?
-        
-        var document = importer.get().importFile(file);
+        var importer = ImporterFactory.getImporter(file);
+
+        if (importer.isPresent()) return importer.get().importFile(file);
+
+        return DocumentStore.create().load(file);
+    }
+
+    public Boolean call() throws Exception {
+        var document = loadDocument(new File(inputPath));
 
         for (var song : document.getSongs()) {
             System.out.println(song.getTitle());
