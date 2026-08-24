@@ -29,7 +29,6 @@ public class App implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        System.out.println("Hello world");
         for (var inputPath : inputPaths) {
             new Renderer(inputPath, outputDir).call();
         }
