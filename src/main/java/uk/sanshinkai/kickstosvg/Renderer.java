@@ -144,12 +144,12 @@ public class Renderer implements Callable<Boolean> {
         var x = metrics.columnLeft(metrics.columnNumber(song.getIndex()));
         container.element("text")
             .attr("x", x + metrics.cellWidth() / 2)
-            .attr("y", "0")
+            .attr("y", 0)
             .attr("style", "font-size: %dpt", metrics.fontSizeTitle())
             .text(song.getTitle());
         container.element("text")
             .attr("x", x + metrics.columnWidth() - metrics.fontSizeTitle())
-            .attr("y", "0")
+            .attr("y", 0)
             .attr("style", "font-size: %dpt; font-family: '%s'",
                     metrics.fontSizeTitle(), metrics.fontFaceLatin())
             .text(song.getTitleRomaji());
@@ -159,7 +159,7 @@ public class Renderer implements Callable<Boolean> {
         var left = metrics.columnLeft(colNo);
         container.element("rect")
             .attr("x", metrics.columnLeft(colNo))
-            .attr("y", "0")
+            .attr("y", 0)
             .attr("width", metrics.columnWidth())
             .attr("height", metrics.canvasHeight());
         container.element("path")
