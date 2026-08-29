@@ -38,9 +38,10 @@ public class Renderer implements Callable<Boolean> {
     private static final int X_OFFSET_CHORD = COLUMN_WIDTH / 2 - 4;
     private static final int X_OFFSET_SLUR = 4;
     private static final int FONT_SIZE_LARGE = 14;
-    private static final int FONT_SIZE_SMALL = 12;
+    private static final int FONT_SIZE_SMALL = 10;
     private static final int FONT_SIZE_LYRICS = 8;
-    private static final int FONT_SIZE_TITLE = 20;
+    private static final int FONT_SIZE_TITLE = 16;
+    private static final int FONT_SIZE_TITLE_FURIGANA = 10;
     private static final int MARGIN_X = (PAPER_WIDTH - CANVAS_WIDTH) / 2;
     private static final int MARGIN_Y = (PAPER_HEIGHT - CANVAS_HEIGHT) / 2;
     private static final int MARGIN_LYRICS = 3;
@@ -157,7 +158,7 @@ public class Renderer implements Callable<Boolean> {
             .addAttribute("style", String.format("font-size: %dpt", FONT_SIZE_TITLE))
             .addText(song.getTitle());
         container.addElement("text")
-            .addAttribute("x", String.valueOf(x + (3 * COLUMN_WIDTH) / 4))
+            .addAttribute("x", String.valueOf(x + COLUMN_WIDTH - FONT_SIZE_TITLE))
             .addAttribute("y", String.valueOf(MARGIN_Y))
             .addAttribute("style", String.format("font-size: %dpt; font-family: '%s'", FONT_SIZE_TITLE, LATIN_FONT))
             .addText(song.getTitleRomaji());
