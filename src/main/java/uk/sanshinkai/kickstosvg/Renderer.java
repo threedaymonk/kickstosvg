@@ -80,7 +80,8 @@ public class Renderer implements Callable<Boolean> {
 
         var g = svg.element("g")
             .attr("id", "columns1")
-            .attr("style", "fill: none; stroke: #969696; stroke-width: 0.5");
+            .attr("style", "fill: none; stroke: %s; stroke-width: %f",
+                    metrics.gridColor(), metrics.gridStrokeWidth());
         for (var i : colsWithNotes) drawColumn(g, i);
     }
 

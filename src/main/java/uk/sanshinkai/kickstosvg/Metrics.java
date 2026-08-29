@@ -2,7 +2,7 @@ package uk.sanshinkai.kickstosvg;
 
 // TODO: Think of a better name for this. It handles dimensions (which I'd like
 // to be read from a configuration file) and fonts and computations about
-// positioning.
+// positioning and a few other presentational concerns.
 public class Metrics {
     public int cellHeight() { return 36; }
     public int cellsPerCol() { return 12; }
@@ -16,6 +16,8 @@ public class Metrics {
     public int fontSizeSmall() { return 10; }
     public int fontSizeTitle() { return 16; }
     public int fontSizeTitleFurigana() { return 10; }
+    public String gridColor() { return "#969696"; }
+    public double gridStrokeWidth() { return 0.5; }
     public int marginLyrics() { return 3; }
     public int paperHeight() { return 595; }
     public int paperWidth() { return 842; }
