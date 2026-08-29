@@ -69,7 +69,7 @@ public class Renderer implements Callable<Boolean> {
         var document = loadDocument(new File(inputPath));
         var svgDoc = DocumentHelper.createDocument();
         var svg = svgDoc.addElement("svg")
-            .addAttribute("viewBox", String.format("%d %d %d %d", 0, 0, PAPER_WIDTH, PAPER_HEIGHT))
+            .addAttribute("viewBox", String.format("%d %d %d %d", -MARGIN_X, -MARGIN_Y, PAPER_WIDTH, PAPER_HEIGHT))
             .addAttribute("width", String.format("%dpt", PAPER_WIDTH))
             .addAttribute("height", String.format("%dpt", PAPER_HEIGHT))
             .addAttribute("version", "1.1")
@@ -148,12 +148,12 @@ public class Renderer implements Callable<Boolean> {
         var x = columnLeft(columnNumber(song.getIndex()));
         container.addElement("text")
             .addAttribute("x", String.valueOf(x + COLUMN_WIDTH / 4))
-            .addAttribute("y", String.valueOf(MARGIN_Y))
+            .addAttribute("y", "0")
             .addAttribute("style", String.format("font-size: %dpt", FONT_SIZE_TITLE))
             .addText(song.getTitle());
         container.addElement("text")
             .addAttribute("x", String.valueOf(x + COLUMN_WIDTH - FONT_SIZE_TITLE))
-            .addAttribute("y", String.valueOf(MARGIN_Y))
+            .addAttribute("y", "0")
             .addAttribute("style", String.format("font-size: %dpt; font-family: '%s'", FONT_SIZE_TITLE, LATIN_FONT))
             .addText(song.getTitleRomaji());
     }
@@ -162,13 +162,13 @@ public class Renderer implements Callable<Boolean> {
         var left = columnLeft(colNo);
         container.addElement("rect")
             .addAttribute("x", String.valueOf(columnLeft(colNo)))
-            .addAttribute("y", String.valueOf(MARGIN_Y))
+            .addAttribute("y", "0")
             .addAttribute("width", String.valueOf(COLUMN_WIDTH))
             .addAttribute("height", String.valueOf(CANVAS_HEIGHT));
         container.addElement("path")
             .addAttribute("d", String.format("M %s,%s %s,%s",
-                left + COLUMN_WIDTH / 2, MARGIN_Y,
-                left + COLUMN_WIDTH / 2, MARGIN_Y + CANVAS_HEIGHT));
+                left + COLUMN_WIDTH / 2, 0,
+                left + COLUMN_WIDTH / 2, CANVAS_HEIGHT));
         for(var i = 1; i < CELLS_PER_COL; i++) {
             container.addElement("path")
                 .addAttribute("d", String.format("M %d,%d %d,%d",
@@ -185,11 +185,11 @@ public class Renderer implements Callable<Boolean> {
     }
 
     private int columnLeft(int colNo) {
-        return MARGIN_X + CANVAS_WIDTH - COLUMN_WIDTH * (colNo + 1) - COLUMN_SPACE * colNo;
+        return CANVAS_WIDTH - COLUMN_WIDTH * (colNo + 1) - COLUMN_SPACE * colNo;
     }
 
     private int cellTop(int cellNo) {
-        return MARGIN_Y + cellNo * CELL_HEIGHT;
+        return cellNo * CELL_HEIGHT;
     }
 
     private int cellOffset(int offset) {
