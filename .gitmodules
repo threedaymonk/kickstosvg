@@ -1,0 +1,3 @@
+[submodule "vendor/kicks"]
+	path = vendor/kicks
+	url = https://github.com/simoncolston/kicks.git

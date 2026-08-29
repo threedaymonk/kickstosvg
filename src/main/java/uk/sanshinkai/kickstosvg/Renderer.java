@@ -14,9 +14,7 @@ import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Song;
-import org.colston.kicks.document.importer.Importer;
-import org.colston.kicks.document.importer.ImporterFactory;
-import org.colston.kicks.document.persistence.DocumentStore;
+import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 
 public class Renderer implements Callable<Boolean> {
@@ -59,11 +57,12 @@ public class Renderer implements Callable<Boolean> {
         if (!file.exists() || !file.canRead())
             throw new Exception("Cannot read file: " + file.getAbsolutePath());
 
-        var importer = ImporterFactory.getImporter(file);
+        var store = DocumentStoreFactory.create(file);
 
-        if (importer.isPresent()) return importer.get().importFile(file);
+        if (!store.isPresent())
+            throw new Exception("Unknown file: " + file.getAbsolutePath());
 
-        return DocumentStore.create().load(file);
+        return store.get().load(file);
     }
 
     public Boolean call() throws Exception {
