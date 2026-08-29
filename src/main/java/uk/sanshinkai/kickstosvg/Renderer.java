@@ -17,40 +17,16 @@ import org.colston.kicks.document.Song;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 
-public class Renderer implements Callable<Boolean> {
-    private static final int TITLE_MARGIN = 9;
-    private static final int COLUMN_WIDTH = 56;
-    private static final int COLUMN_SPACE = 9;
-    private static final int CELL_HEIGHT = 36;
-    private static final int CELL_WIDTH = COLUMN_WIDTH / 2;
-    private static final int BORDER_WIDTH = 20;
-    private static final int COLUMNS_PER_PAGE = 11;
-    private static final int CELLS_PER_COL = 12;
-    private static final int CELLS_PER_PAGE = COLUMNS_PER_PAGE * CELLS_PER_COL;
-    private static final int CANVAS_WIDTH = COLUMN_WIDTH * COLUMNS_PER_PAGE + COLUMN_SPACE * COLUMNS_PER_PAGE;
-    private static final int CANVAS_HEIGHT = CELL_HEIGHT * CELLS_PER_COL;
-    private static final int PAPER_WIDTH = 842;
-    private static final int PAPER_HEIGHT = 595;
-    private static final int REPEAT_HEAD_WIDTH = 6;
-    private static final int REPEAT_HEAD_HEIGHT = 8;
-    private static final int X_OFFSET_CHORD = COLUMN_WIDTH / 2 - 4;
-    private static final int X_OFFSET_SLUR = 4;
-    private static final int FONT_SIZE_LARGE = 14;
-    private static final int FONT_SIZE_SMALL = 10;
-    private static final int FONT_SIZE_LYRICS = 8;
-    private static final int FONT_SIZE_TITLE = 16;
-    private static final int FONT_SIZE_TITLE_FURIGANA = 10;
-    private static final int MARGIN_X = (PAPER_WIDTH - CANVAS_WIDTH) / 2;
-    private static final int MARGIN_Y = (PAPER_HEIGHT - CANVAS_HEIGHT) / 2;
-    private static final int MARGIN_LYRICS = 3;
-    private static final String JAPANESE_FONT = "EPSON 教科書体Ｍ";
-    private static final String LATIN_FONT = "FreeSans";
+import uk.sanshinkai.kickstosvg.Metrics;
 
+public class Renderer implements Callable<Boolean> {
     String inputPath, outputDir;
+    Metrics metrics;
 
     public Renderer(String inputPath, String outputDir) {
         this.inputPath = inputPath;
         this.outputDir = outputDir;
+        this.metrics = new Metrics();
     }
 
     private KicksDocument loadDocument(File file) throws Exception {
@@ -69,11 +45,11 @@ public class Renderer implements Callable<Boolean> {
         var document = loadDocument(new File(inputPath));
         var svgDoc = DocumentHelper.createDocument();
         var svg = svgDoc.addElement("svg")
-            .addAttribute("viewBox", String.format("%d %d %d %d", -MARGIN_X, -MARGIN_Y, PAPER_WIDTH, PAPER_HEIGHT))
-            .addAttribute("width", String.format("%dpt", PAPER_WIDTH))
-            .addAttribute("height", String.format("%dpt", PAPER_HEIGHT))
+            .addAttribute("viewBox", String.format("%d %d %d %d", -metrics.marginX(), -metrics.marginY(), metrics.paperWidth(), metrics.paperHeight()))
+            .addAttribute("width", String.format("%dpt", metrics.paperWidth()))
+            .addAttribute("height", String.format("%dpt", metrics.paperHeight()))
             .addAttribute("version", "1.1")
-            .addAttribute("style", String.format("stroke-linecap: square; stroke-linejoin: miter; font-family: '%s'", JAPANESE_FONT));
+            .addAttribute("style", String.format("stroke-linecap: square; stroke-linejoin: miter; font-family: '%s'", metrics.fontFaceJapanese()));
 
         var g = svg.addElement("g")
             .addAttribute("id", "title1")
@@ -92,30 +68,33 @@ public class Renderer implements Callable<Boolean> {
 
         g = svg.addElement("g")
             .addAttribute("id", "lyrics1")
-            .addAttribute("style", String.format("font-size: %dpt; writing-mode: tb-rl; letter-spacing: -4", FONT_SIZE_LYRICS));
+            .addAttribute("style", String.format("font-size: %dpt; writing-mode: tb-rl; letter-spacing: -4", metrics.fontSizeLyrics()));
         for (var lyric : document.getLyrics()) drawLyric(g, lyric);
 
-        // draw the repeats
-        // for (Repeat r : doc.getRepeats(pageRange)) {
-        //     cursorStartHighlight(g2, r, true, null);
-        //     drawRepeat(g2, r.isBack(), r.getIndex(), r.getOffset());
-        //     cursorEndHighlight(g2, null);
-        // }
+        // TODO: repeats
+        
+        // TODO: tuning
 
+        // TODO: write to the output file, instead of stdout!
         System.out.println(svgDoc.asXML());
         return true;
     }
 
     private int[] enumerateColumns(List<Note> notes) {
         var columnNos = new TreeSet<Integer>();
-        for(var n : notes) columnNos.add(columnNumber(n.getIndex()));
+        for(var n : notes) columnNos.add(metrics.columnNumber(n.getIndex()));
         return columnNos.stream().mapToInt(Integer::intValue).toArray();
     }
 
     private void drawLyric(Element container, Lyric l) {
         // Reference point is top centre of character
-        var x = columnLeft(columnNumber(l.getIndex())) + COLUMN_WIDTH / 2 + FONT_SIZE_LYRICS / 2 + MARGIN_LYRICS;
-        var y = cellTop(cellNumber(l.getIndex())) + cellOffset(l.getOffset()) - FONT_SIZE_LYRICS / 2;
+        var x = metrics.columnLeft(metrics.columnNumber(l.getIndex()))
+            + metrics.cellWidth()
+            + metrics.fontSizeLyrics() / 2
+            + metrics.marginLyrics();
+        var y = metrics.cellTop(metrics.cellNumber(l.getIndex()))
+            + metrics.cellOffset(l.getOffset())
+            - metrics.fontSizeLyrics() / 2;
 
         container.addElement("text")
             .addAttribute("x", String.valueOf(x))
@@ -124,10 +103,13 @@ public class Renderer implements Callable<Boolean> {
     }
 
     private void drawNote(Element container, Note n) {
-        var fontSize = n.isSmall() ? FONT_SIZE_SMALL : FONT_SIZE_LARGE;
+        var fontSize = n.isSmall() ? metrics.fontSizeSmall() : metrics.fontSizeLarge();
         // Reference point is centre of baseline
-        var x = columnLeft(columnNumber(n.getIndex())) + COLUMN_WIDTH / 4;
-        var y = cellTop(cellNumber(n.getIndex())) + cellOffset(n.getOffset()) + fontSize / 2;
+        var x = metrics.columnLeft(metrics.columnNumber(n.getIndex()))
+            + metrics.cellWidth() / 2;
+        var y = metrics.cellTop(metrics.cellNumber(n.getIndex()))
+            + metrics.cellOffset(n.getOffset())
+            + fontSize / 2;
 
         container.addElement("text")
             .addAttribute("x", String.valueOf(x))
@@ -135,64 +117,39 @@ public class Renderer implements Callable<Boolean> {
             .addAttribute("style", String.format("font-size: %dpt", fontSize))
             .addText(RendererResources.getNoteText(n.getString(), n.getPlacement()));
 
-        // var articulation = "";
-
-        // switch (n.getUtou()) {
-        //     case KAKI -> articulation = "⏋";
-        //     case UCHI -> articulation = "`";
-        //     case NONE -> articulation = "";
-        // }
+        // TODO: articulations
     }
 
     private void drawTitle(Element container, Song song) {
-        var x = columnLeft(columnNumber(song.getIndex()));
+        var x = metrics.columnLeft(metrics.columnNumber(song.getIndex()));
         container.addElement("text")
-            .addAttribute("x", String.valueOf(x + COLUMN_WIDTH / 4))
+            .addAttribute("x", String.valueOf(x + metrics.cellWidth() / 2))
             .addAttribute("y", "0")
-            .addAttribute("style", String.format("font-size: %dpt", FONT_SIZE_TITLE))
+            .addAttribute("style", String.format("font-size: %dpt", metrics.fontSizeTitle()))
             .addText(song.getTitle());
         container.addElement("text")
-            .addAttribute("x", String.valueOf(x + COLUMN_WIDTH - FONT_SIZE_TITLE))
+            .addAttribute("x", String.valueOf(x + metrics.columnWidth() - metrics.fontSizeTitle()))
             .addAttribute("y", "0")
-            .addAttribute("style", String.format("font-size: %dpt; font-family: '%s'", FONT_SIZE_TITLE, LATIN_FONT))
+            .addAttribute("style", String.format("font-size: %dpt; font-family: '%s'", metrics.fontSizeTitle(), metrics.fontFaceLatin()))
             .addText(song.getTitleRomaji());
     }
 
     private void drawColumn(Element container, int colNo) {
-        var left = columnLeft(colNo);
+        var left = metrics.columnLeft(colNo);
         container.addElement("rect")
-            .addAttribute("x", String.valueOf(columnLeft(colNo)))
+            .addAttribute("x", String.valueOf(metrics.columnLeft(colNo)))
             .addAttribute("y", "0")
-            .addAttribute("width", String.valueOf(COLUMN_WIDTH))
-            .addAttribute("height", String.valueOf(CANVAS_HEIGHT));
+            .addAttribute("width", String.valueOf(metrics.columnWidth()))
+            .addAttribute("height", String.valueOf(metrics.canvasHeight()));
         container.addElement("path")
             .addAttribute("d", String.format("M %s,%s %s,%s",
-                left + COLUMN_WIDTH / 2, 0,
-                left + COLUMN_WIDTH / 2, CANVAS_HEIGHT));
-        for(var i = 1; i < CELLS_PER_COL; i++) {
+                left + metrics.cellWidth(), 0,
+                left + metrics.cellWidth(), metrics.canvasHeight()));
+        for(var i = 1; i < metrics.cellsPerCol(); i++) {
             container.addElement("path")
                 .addAttribute("d", String.format("M %d,%d %d,%d",
-                    left, cellTop(i), left + COLUMN_WIDTH / 2, cellTop(i)));
+                    left, metrics.cellTop(i),
+                    left + metrics.cellWidth(), metrics.cellTop(i)));
         }
-    }
-
-    private int columnNumber(int index) {
-        return (index / CELLS_PER_COL) % COLUMNS_PER_PAGE;
-    }
-
-    private int cellNumber(int index) {
-        return index % CELLS_PER_COL;
-    }
-
-    private int columnLeft(int colNo) {
-        return CANVAS_WIDTH - COLUMN_WIDTH * (colNo + 1) - COLUMN_SPACE * colNo;
-    }
-
-    private int cellTop(int cellNo) {
-        return cellNo * CELL_HEIGHT;
-    }
-
-    private int cellOffset(int offset) {
-        return (offset * CELL_HEIGHT) / 12;
     }
 }
