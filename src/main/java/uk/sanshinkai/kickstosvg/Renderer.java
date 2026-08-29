@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 import java.util.TreeSet;
 
 import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 
 import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.KicksDocument;
@@ -18,6 +17,7 @@ import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 
 import uk.sanshinkai.kickstosvg.Metrics;
+import uk.sanshinkai.kickstosvg.Builder;
 
 public class Renderer implements Callable<Boolean> {
     String inputPath, outputDir;
@@ -42,51 +42,70 @@ public class Renderer implements Callable<Boolean> {
     }
 
     public Boolean call() throws Exception {
-        var document = loadDocument(new File(inputPath));
-        var svgDoc = DocumentHelper.createDocument();
-        var svg = svgDoc.addElement("svg")
-            .addAttribute("viewBox", String.format("%d %d %d %d", -metrics.marginX(), -metrics.marginY(), metrics.paperWidth(), metrics.paperHeight()))
-            .addAttribute("width", String.format("%dpt", metrics.paperWidth()))
-            .addAttribute("height", String.format("%dpt", metrics.paperHeight()))
-            .addAttribute("version", "1.1")
-            .addAttribute("style", String.format("stroke-linecap: square; stroke-linejoin: miter; font-family: '%s'", metrics.fontFaceJapanese()));
+        var music = loadDocument(new File(inputPath));
+        var target = DocumentHelper.createDocument();
+        var svg = buildSvg(target);
 
-        var g = svg.addElement("g")
-            .addAttribute("id", "title1")
-            .addAttribute("style", String.format("writing-mode: tb-rl"));
-        for (var song : document.getSongs()) drawTitle(g, song);
-        
-        g = svg.addElement("g")
-            .addAttribute("id", "columns1")
-            .addAttribute("style", "fill: none; stroke: #969696; stroke-width: 0.5");
-        for (var i : enumerateColumns(document.getNotes())) drawColumn(g, i);
-
-        g = svg.addElement("g")
-            .addAttribute("id", "notes1")
-            .addAttribute("style", "text-align: center; text-anchor: middle");
-        for (var note : document.getNotes()) drawNote(g, note);
-
-        g = svg.addElement("g")
-            .addAttribute("id", "lyrics1")
-            .addAttribute("style", String.format("font-size: %dpt; writing-mode: tb-rl; letter-spacing: -4", metrics.fontSizeLyrics()));
-        for (var lyric : document.getLyrics()) drawLyric(g, lyric);
-
-        // TODO: repeats
-        
-        // TODO: tuning
+        drawColumns(svg, music);
+        drawNotes(svg, music);
+        drawLyrics(svg, music);
+        // TODO: drawRepeats(svg, music);
+        // TODO: drawTuning(svg, music);
+        drawSongTitles(svg, music);
 
         // TODO: write to the output file, instead of stdout!
-        System.out.println(svgDoc.asXML());
+        System.out.println(target.asXML());
         return true;
     }
 
-    private int[] enumerateColumns(List<Note> notes) {
-        var columnNos = new TreeSet<Integer>();
-        for(var n : notes) columnNos.add(metrics.columnNumber(n.getIndex()));
-        return columnNos.stream().mapToInt(Integer::intValue).toArray();
+    private Builder buildSvg(org.dom4j.Document xmlDoc) {
+        return new Builder(xmlDoc.addElement("svg"))
+            .attr("viewBox", "%d %d %d %d",
+                    -metrics.marginX(), -metrics.marginY(),
+                    metrics.paperWidth(), metrics.paperHeight())
+            .attr("width", "%dpt", metrics.paperWidth())
+            .attr("height", "%dpt", metrics.paperHeight())
+            .attr("version", "1.1")
+            .attr("style", "stroke-linecap: square; stroke-linejoin: miter; font-family: '%s'",
+                    metrics.fontFaceJapanese());
     }
 
-    private void drawLyric(Element container, Lyric l) {
+    private void drawColumns(Builder svg, KicksDocument music) {
+        var set = new TreeSet<Integer>();
+        for(var n : music.getNotes())
+            set.add(metrics.columnNumber(n.getIndex()));
+
+        var colsWithNotes = set.stream()
+            .mapToInt(Integer::intValue).toArray();
+
+        var g = svg.element("g")
+            .attr("id", "columns1")
+            .attr("style", "fill: none; stroke: #969696; stroke-width: 0.5");
+        for (var i : colsWithNotes) drawColumn(g, i);
+    }
+
+    private void drawNotes(Builder svg, KicksDocument music) {
+        var g = svg.element("g")
+            .attr("id", "notes1")
+            .attr("style", "text-align: center; text-anchor: middle");
+        for (var note : music.getNotes()) drawNote(g, note);
+    }
+
+    private void drawLyrics(Builder svg, KicksDocument music) {
+        var g = svg.element("g")
+            .attr("id", "lyrics1")
+            .attr("style", "font-size: %dpt; writing-mode: tb-rl; letter-spacing: -4", metrics.fontSizeLyrics());
+        for (var lyric : music.getLyrics()) drawLyric(g, lyric);
+    }
+
+    private void drawSongTitles(Builder svg, KicksDocument music) {
+        var g = svg.element("g")
+            .attr("id", "title1")
+            .attr("style", "writing-mode: tb-rl");
+        for (var song : music.getSongs()) drawTitle(g, song);
+    }
+
+    private void drawLyric(Builder container, Lyric l) {
         // Reference point is top centre of character
         var x = metrics.columnLeft(metrics.columnNumber(l.getIndex()))
             + metrics.cellWidth()
@@ -96,13 +115,13 @@ public class Renderer implements Callable<Boolean> {
             + metrics.cellOffset(l.getOffset())
             - metrics.fontSizeLyrics() / 2;
 
-        container.addElement("text")
-            .addAttribute("x", String.valueOf(x))
-            .addAttribute("y", String.valueOf(y))
-            .addText(l.getValue());
+        container.element("text")
+            .attr("x", x)
+            .attr("y", y)
+            .text(l.getValue());
     }
 
-    private void drawNote(Element container, Note n) {
+    private void drawNote(Builder container, Note n) {
         var fontSize = n.isSmall() ? metrics.fontSizeSmall() : metrics.fontSizeLarge();
         // Reference point is centre of baseline
         var x = metrics.columnLeft(metrics.columnNumber(n.getIndex()))
@@ -111,45 +130,46 @@ public class Renderer implements Callable<Boolean> {
             + metrics.cellOffset(n.getOffset())
             + fontSize / 2;
 
-        container.addElement("text")
-            .addAttribute("x", String.valueOf(x))
-            .addAttribute("y", String.valueOf(y))
-            .addAttribute("style", String.format("font-size: %dpt", fontSize))
-            .addText(RendererResources.getNoteText(n.getString(), n.getPlacement()));
+        container.element("text")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("style", "font-size: %dpt", fontSize)
+            .text(RendererResources.getNoteText(n.getString(), n.getPlacement()));
 
         // TODO: articulations
     }
 
-    private void drawTitle(Element container, Song song) {
+    private void drawTitle(Builder container, Song song) {
         var x = metrics.columnLeft(metrics.columnNumber(song.getIndex()));
-        container.addElement("text")
-            .addAttribute("x", String.valueOf(x + metrics.cellWidth() / 2))
-            .addAttribute("y", "0")
-            .addAttribute("style", String.format("font-size: %dpt", metrics.fontSizeTitle()))
-            .addText(song.getTitle());
-        container.addElement("text")
-            .addAttribute("x", String.valueOf(x + metrics.columnWidth() - metrics.fontSizeTitle()))
-            .addAttribute("y", "0")
-            .addAttribute("style", String.format("font-size: %dpt; font-family: '%s'", metrics.fontSizeTitle(), metrics.fontFaceLatin()))
-            .addText(song.getTitleRomaji());
+        container.element("text")
+            .attr("x", x + metrics.cellWidth() / 2)
+            .attr("y", "0")
+            .attr("style", "font-size: %dpt", metrics.fontSizeTitle())
+            .text(song.getTitle());
+        container.element("text")
+            .attr("x", x + metrics.columnWidth() - metrics.fontSizeTitle())
+            .attr("y", "0")
+            .attr("style", "font-size: %dpt; font-family: '%s'",
+                    metrics.fontSizeTitle(), metrics.fontFaceLatin())
+            .text(song.getTitleRomaji());
     }
 
-    private void drawColumn(Element container, int colNo) {
+    private void drawColumn(Builder container, int colNo) {
         var left = metrics.columnLeft(colNo);
-        container.addElement("rect")
-            .addAttribute("x", String.valueOf(metrics.columnLeft(colNo)))
-            .addAttribute("y", "0")
-            .addAttribute("width", String.valueOf(metrics.columnWidth()))
-            .addAttribute("height", String.valueOf(metrics.canvasHeight()));
-        container.addElement("path")
-            .addAttribute("d", String.format("M %s,%s %s,%s",
+        container.element("rect")
+            .attr("x", metrics.columnLeft(colNo))
+            .attr("y", "0")
+            .attr("width", metrics.columnWidth())
+            .attr("height", metrics.canvasHeight());
+        container.element("path")
+            .attr("d", "M %s,%s %s,%s",
                 left + metrics.cellWidth(), 0,
-                left + metrics.cellWidth(), metrics.canvasHeight()));
+                left + metrics.cellWidth(), metrics.canvasHeight());
         for(var i = 1; i < metrics.cellsPerCol(); i++) {
-            container.addElement("path")
-                .addAttribute("d", String.format("M %d,%d %d,%d",
+            container.element("path")
+                .attr("d", "M %d,%d %d,%d",
                     left, metrics.cellTop(i),
-                    left + metrics.cellWidth(), metrics.cellTop(i)));
+                    left + metrics.cellWidth(), metrics.cellTop(i));
         }
     }
 }
