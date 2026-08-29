@@ -83,7 +83,7 @@ public class Renderer implements Callable<Boolean> {
         
         g = svg.addElement("g")
             .addAttribute("id", "columns1")
-            .addAttribute("style", "fill: none; stroke: #000000; stroke-width: 0.25");
+            .addAttribute("style", "fill: none; stroke: #969696; stroke-width: 0.5");
         for (var i : enumerateColumns(document.getNotes())) drawColumn(g, i);
 
         g = svg.addElement("g")
@@ -130,11 +130,6 @@ public class Renderer implements Callable<Boolean> {
         var x = columnLeft(columnNumber(n.getIndex())) + COLUMN_WIDTH / 4;
         var y = cellTop(cellNumber(n.getIndex())) + cellOffset(n.getOffset()) + fontSize / 2;
 
-        container.addElement("text")
-            .addAttribute("x", String.valueOf(x))
-            .addAttribute("y", String.valueOf(y))
-            .addAttribute("style", String.format("font-size: %dpt; stroke-width: 4; stroke: #ffffff", fontSize))
-            .addText(RendererResources.getNoteText(n.getString(), n.getPlacement()));
         container.addElement("text")
             .addAttribute("x", String.valueOf(x))
             .addAttribute("y", String.valueOf(y))
