@@ -16,8 +16,8 @@ import org.colston.kicks.document.Song;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 
-import uk.sanshinkai.kickstosvg.Metrics;
 import uk.sanshinkai.kickstosvg.Builder;
+import uk.sanshinkai.kickstosvg.Metrics;
 
 public class Renderer implements Callable<Boolean> {
     String inputPath, outputDir;
@@ -98,7 +98,7 @@ public class Renderer implements Callable<Boolean> {
     private void drawLyrics(Builder svg, KicksDocument music) {
         var g = svg.element("g")
             .attr("id", "lyrics1")
-            .style("font-size", "%dpt", metrics.fontSizeLyrics())
+            .style("font-size", metrics.fontSizeLyrics())
             .style("writing-mode", "tb-rl")
             .style("letter-spacing", metrics.lyricSpaceAdjustment());
 
@@ -113,34 +113,28 @@ public class Renderer implements Callable<Boolean> {
     }
 
     private void drawLyric(Builder container, Lyric l) {
-        // Reference point is top centre of character
-        var x = metrics.columnLeft(metrics.columnNumber(l.getIndex()))
-            + metrics.cellWidth()
-            + metrics.fontSizeLyrics() / 2
-            + metrics.marginLyrics();
-        var y = metrics.cellTop(metrics.cellNumber(l.getIndex()))
-            + metrics.cellOffset(l.getOffset())
-            - metrics.fontSizeLyrics() / 2;
+        var center = metrics.lyricCoords(l);
 
+        // Reference point is top centre of first character
+        // so shift y up by half the font size
         container.element("text")
-            .attr("x", x)
-            .attr("y", y)
+            .attr("x", center.x())
+            .attr("y", center.y() - metrics.fontSizeLyrics() / 2)
             .text(l.getValue());
     }
 
     private void drawNote(Builder container, Note n) {
-        var fontSize = n.isSmall() ? metrics.fontSizeSmall() : metrics.fontSizeLarge();
-        // Reference point is centre of baseline
-        var x = metrics.columnLeft(metrics.columnNumber(n.getIndex()))
-            + metrics.cellWidth() / 2;
-        var y = metrics.cellTop(metrics.cellNumber(n.getIndex()))
-            + metrics.cellOffset(n.getOffset())
-            + fontSize / 2;
+        var fontSize = n.isSmall()
+            ? metrics.fontSizeSmall()
+            : metrics.fontSizeLarge();
+        var center = metrics.noteCoords(n);
 
+        // Reference point is centre of baseline
+        // so shift y down by half the font size
         container.element("text")
-            .attr("x", x)
-            .attr("y", y)
-            .style("font-size", "%dpt", fontSize)
+            .attr("x", center.x())
+            .attr("y", center.y() + fontSize / 2)
+            .style("font-size", fontSize)
             .text(RendererResources.getNoteText(n.getString(), n.getPlacement()));
 
         // TODO: articulations
@@ -151,12 +145,12 @@ public class Renderer implements Callable<Boolean> {
         container.element("text")
             .attr("x", x + metrics.cellWidth() / 2)
             .attr("y", 0)
-            .style("font-size", "%dpt", metrics.fontSizeTitle())
+            .style("font-size", metrics.fontSizeTitle())
             .text(song.getTitle());
         container.element("text")
             .attr("x", x + metrics.columnWidth() - metrics.fontSizeTitle())
             .attr("y", 0)
-            .style("font-size", "%dpt", metrics.fontSizeTitle())
+            .style("font-size", metrics.fontSizeTitle())
             .style("font-family", "'%s'", metrics.fontFaceLatin())
             .text(song.getTitleRomaji());
     }

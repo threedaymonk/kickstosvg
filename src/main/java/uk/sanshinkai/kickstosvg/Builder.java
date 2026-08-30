@@ -33,6 +33,10 @@ public class Builder {
         return rawStyle(name, String.format("%f", value));
     }
 
+    public Builder style(String name, int value) {
+        return rawStyle(name, String.format("%d", value));
+    }
+
     private Builder wrap(Element el) {
         return new Builder(el);
     }
