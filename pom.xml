@@ -24,27 +24,6 @@
 
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>3.6.1</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>vendor/kicks/kicks-core/src/main/java/org/colston/kicks</source>
-                <source>vendor/kicks/kicks-core/src/main/java/org/colston/utils</source>
-                <source>vendor/kicks/kicks-core/src/main/java/org/colston/lib</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
@@ -117,6 +96,12 @@
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>2.1.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.colston.kicks</groupId>
+      <artifactId>kicks-core</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>

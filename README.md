@@ -4,12 +4,17 @@ Render a [Kicks] kunkunshi document to Inkscape-compatible SVG.
 
 [Kicks]: https://github.com/simoncolston/kicks
 
-## Preparation
+## Prerequisites
 
-    git clone --recurse-submodules [this repo URL]
+### kicks-core
+
+    git clone https://github.com/simoncolston/kicks.git
+    cd kicks
+    mvn clean install
 
 ## Build
 
+    git clone [this repo URL]
     mvn package
 
 ## Run
