@@ -16,6 +16,7 @@ public class Metrics {
     public int fontSizeSmall() { return 10; }
     public int fontSizeTitle() { return 16; }
     public int fontSizeTitleFurigana() { return 10; }
+    public int lyricSpaceAdjustment() { return -4; }
     public String gridColor() { return "#969696"; }
     public double gridStrokeWidth() { return 0.5; }
     public int marginLyrics() { return 3; }

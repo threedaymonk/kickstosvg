@@ -25,7 +25,26 @@ public class Builder {
         return attr(name, String.valueOf(value));
     }
 
+    public Builder style(String name, String fmt, Object... args) {
+        return rawStyle(name, String.format(fmt, args));
+    }
+
+    public Builder style(String name, double value) {
+        return rawStyle(name, String.format("%f", value));
+    }
+
     private Builder wrap(Element el) {
         return new Builder(el);
     }
+
+    private Builder rawStyle(String name, String formattedValue) {
+        var addition = name + ": " + formattedValue;
+        var existing = obj.attribute("style");
+
+        if (existing == null)
+            return attr("style", addition);
+        else
+            return attr("style", existing.getValue() + "; " + addition);
+    }
+
 }

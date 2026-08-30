@@ -66,8 +66,9 @@ public class Renderer implements Callable<Boolean> {
             .attr("width", "%dpt", metrics.paperWidth())
             .attr("height", "%dpt", metrics.paperHeight())
             .attr("version", "1.1")
-            .attr("style", "stroke-linecap: square; stroke-linejoin: miter; font-family: '%s'",
-                    metrics.fontFaceJapanese());
+            .style("stroke-linecap", "square")
+            .style("stroke-linejoin", "miter")
+            .style("font-family", "'%s'", metrics.fontFaceJapanese());
     }
 
     private void drawColumns(Builder svg, KicksDocument music) {
@@ -80,29 +81,34 @@ public class Renderer implements Callable<Boolean> {
 
         var g = svg.element("g")
             .attr("id", "columns1")
-            .attr("style", "fill: none; stroke: %s; stroke-width: %f",
-                    metrics.gridColor(), metrics.gridStrokeWidth());
+            .style("fill", "none")
+            .style("stroke", metrics.gridColor())
+            .style("stroke-width", metrics.gridStrokeWidth());
         for (var i : colsWithNotes) drawColumn(g, i);
     }
 
     private void drawNotes(Builder svg, KicksDocument music) {
         var g = svg.element("g")
             .attr("id", "notes1")
-            .attr("style", "text-align: center; text-anchor: middle");
+            .style("text-align", "center")
+            .style("text-anchor", "middle");
         for (var note : music.getNotes()) drawNote(g, note);
     }
 
     private void drawLyrics(Builder svg, KicksDocument music) {
         var g = svg.element("g")
             .attr("id", "lyrics1")
-            .attr("style", "font-size: %dpt; writing-mode: tb-rl; letter-spacing: -4", metrics.fontSizeLyrics());
+            .style("font-size", "%dpt", metrics.fontSizeLyrics())
+            .style("writing-mode", "tb-rl")
+            .style("letter-spacing", metrics.lyricSpaceAdjustment());
+
         for (var lyric : music.getLyrics()) drawLyric(g, lyric);
     }
 
     private void drawSongTitles(Builder svg, KicksDocument music) {
         var g = svg.element("g")
             .attr("id", "title1")
-            .attr("style", "writing-mode: tb-rl");
+            .style("writing-mode", "tb-rl");
         for (var song : music.getSongs()) drawTitle(g, song);
     }
 
@@ -134,7 +140,7 @@ public class Renderer implements Callable<Boolean> {
         container.element("text")
             .attr("x", x)
             .attr("y", y)
-            .attr("style", "font-size: %dpt", fontSize)
+            .style("font-size", "%dpt", fontSize)
             .text(RendererResources.getNoteText(n.getString(), n.getPlacement()));
 
         // TODO: articulations
@@ -145,13 +151,13 @@ public class Renderer implements Callable<Boolean> {
         container.element("text")
             .attr("x", x + metrics.cellWidth() / 2)
             .attr("y", 0)
-            .attr("style", "font-size: %dpt", metrics.fontSizeTitle())
+            .style("font-size", "%dpt", metrics.fontSizeTitle())
             .text(song.getTitle());
         container.element("text")
             .attr("x", x + metrics.columnWidth() - metrics.fontSizeTitle())
             .attr("y", 0)
-            .attr("style", "font-size: %dpt; font-family: '%s'",
-                    metrics.fontSizeTitle(), metrics.fontFaceLatin())
+            .style("font-size", "%dpt", metrics.fontSizeTitle())
+            .style("font-family", "'%s'", metrics.fontFaceLatin())
             .text(song.getTitleRomaji());
     }
 
