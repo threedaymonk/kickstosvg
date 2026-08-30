@@ -16,4 +16,4 @@ Render a [Kicks] kunkunshi document to Inkscape-compatible SVG.
 
     java -jar target/kickstosvg.jar SOURCE > OUTPUT.svg
 
-Source can be a .kicks or .kicksabc file.
+Source can be a `.kicks` or `.kicksabc` file.
