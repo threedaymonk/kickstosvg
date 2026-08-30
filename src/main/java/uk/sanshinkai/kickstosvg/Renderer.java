@@ -18,6 +18,7 @@ import org.colston.kicks.render.RendererResources;
 
 import uk.sanshinkai.kickstosvg.Builder;
 import uk.sanshinkai.kickstosvg.Metrics;
+import uk.sanshinkai.kickstosvg.FuriganaString;
 
 public class Renderer implements Callable<Boolean> {
     String inputPath, outputDir;
@@ -141,12 +142,14 @@ public class Renderer implements Callable<Boolean> {
     }
 
     private void drawTitle(Builder container, Song song) {
+        var jTitle = new FuriganaString(song.getTitle());
         var x = metrics.columnLeft(metrics.columnNumber(song.getIndex()));
+
         container.element("text")
             .attr("x", x + metrics.cellWidth() / 2)
             .attr("y", 0)
             .style("font-size", metrics.fontSizeTitle())
-            .text(song.getTitle());
+            .text(jTitle.surface());
         container.element("text")
             .attr("x", x + metrics.columnWidth() - metrics.fontSizeTitle())
             .attr("y", 0)
