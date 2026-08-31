@@ -19,7 +19,8 @@ public class Metrics {
     public int fontSizeLarge() { return 16; }
     public int fontSizeLyrics() { return 10; }
     public int fontSizeSmall() { return 12; }
-    public int fontSizeTitle() { return 20; }
+    public int fontSizeTitleJapanese() { return 20; }
+    public int fontSizeTitleLatin() { return 16; }
     public int fontSizeTitleFurigana() { return 10; }
     public int lyricSpaceAdjustment() { return -4; }
     public String gridColor() { return "#969696"; }

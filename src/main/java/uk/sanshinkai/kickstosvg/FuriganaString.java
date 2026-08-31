@@ -6,7 +6,7 @@ import uk.sanshinkai.kickstosvg.FuriganaComponent;
 import uk.sanshinkai.kickstosvg.FuriganaStringParser;
 
 public class FuriganaString {
-    ArrayList<FuriganaComponent> components;
+    public final ArrayList<FuriganaComponent> components;
 
     public FuriganaString(String raw) {
         components = new FuriganaStringParser().parse(raw);
