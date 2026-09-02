@@ -89,18 +89,18 @@ class Metrics {
     }
 
     // Returns the centre co-ordinates of the note
-    public XYCoordinate noteCoords(Note n) {
+    public XYCoordinate noteCoords(Note n, int colNo) {
         return new XYCoordinate(
-            columnLeft(columnNumber(n)) + cellWidth() / 2,
+            columnLeft(colNo) + cellWidth() / 2,
             cellTop(cellNumber(n)) + cellOffset(n)
         );
     }
 
     // Returns the centre co-ordinates of the first character of
     // the lyrics.
-    public XYCoordinate lyricCoords(Lyric l) {
+    public XYCoordinate lyricCoords(Lyric l, int colNo) {
         return new XYCoordinate(
-            columnLeft(columnNumber(l)) + cellWidth() + cellWidth() / 4,
+            columnLeft(colNo) + cellWidth() + cellWidth() / 4,
             cellTop(cellNumber(l)) + cellOffset(l)
         );
     }

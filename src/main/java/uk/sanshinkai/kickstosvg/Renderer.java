@@ -130,8 +130,10 @@ class Renderer implements Callable<Boolean> {
             .attr("id", "notes1")
             .style("text-align", "center")
             .style("text-anchor", "middle");
-        for (var column : columns)
-            for (var note : column.notes()) drawNote(g, note);
+        for (var i = 0; i < columns.size(); i++) {
+            var column = columns.get(i);
+            for (var note : column.notes()) drawNote(g, i, note);
+        }
     }
 
     private void drawLyrics(Builder svg, List<Column> columns) {
@@ -141,21 +143,24 @@ class Renderer implements Callable<Boolean> {
             .style("writing-mode", "tb-rl")
             .style("letter-spacing", metrics.lyricSpaceAdjustment());
 
-        for (var column : columns)
-            for (var lyric : column.lyrics()) drawLyric(g, lyric);
+        for (var i = 0; i < columns.size(); i++) {
+            var column = columns.get(i);
+            for (var lyric : column.lyrics()) drawLyric(g, i, lyric);
+        }
     }
 
     private void drawSongTitles(Builder svg, List<Column> columns) {
         var g = svg.element("g")
             .attr("id", "title1")
             .style("writing-mode", "tb-rl");
-        for (var column : columns)
-            if (column.isTitle())
-                drawTitle(g, column.song());
+        for (var i = 0; i < columns.size(); i++) {
+            var column = columns.get(i);
+            if (column.isTitle()) drawTitle(g, i, column.song());
+        }
     }
 
-    private void drawLyric(Builder container, Lyric l) {
-        var center = metrics.lyricCoords(l);
+    private void drawLyric(Builder container, int colNo, Lyric l) {
+        var center = metrics.lyricCoords(l, colNo);
 
         // Reference point is top centre of first character
         // so shift y up by half the font size
@@ -165,11 +170,11 @@ class Renderer implements Callable<Boolean> {
             .text(l.getValue());
     }
 
-    private void drawNote(Builder container, Note n) {
+    private void drawNote(Builder container, int colNo, Note n) {
         var fontSize = n.isSmall()
             ? metrics.fontSizeSmall()
             : metrics.fontSizeLarge();
-        var center = metrics.noteCoords(n);
+        var center = metrics.noteCoords(n, colNo);
 
         // Reference point is centre of baseline
         // so shift y down by half the font size
@@ -182,9 +187,9 @@ class Renderer implements Callable<Boolean> {
         // TODO: articulations
     }
 
-    private void drawTitle(Builder container, Song song) {
+    private void drawTitle(Builder container, int colNo, Song song) {
         var jTitle = new FuriganaString(song.getTitle());
-        var x0 = metrics.columnLeft(metrics.columnNumber(song));
+        var x0 = metrics.columnLeft(colNo);
 
         // Reference point is top centre of first character
 
