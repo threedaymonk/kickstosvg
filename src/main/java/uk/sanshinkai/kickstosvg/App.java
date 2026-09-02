@@ -16,7 +16,6 @@ public class App implements Callable<Integer> {
     @Option(
         paramLabel = "<path>",
         names = { "-o", "--output-dir" },
-        defaultValue = "current working directory",
         description = "Where to write output files"
     )
     private String outputDir = ".";

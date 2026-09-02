@@ -1,11 +1,14 @@
 package uk.sanshinkai.kickstosvg;
 
 import java.io.File;
+import java.io.PrintWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.TreeSet;
 
+import com.google.common.collect.Lists;
 import org.dom4j.DocumentHelper;
 
 import org.colston.kicks.document.Accidental;
@@ -45,6 +48,29 @@ class Renderer implements Callable<Boolean> {
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
         var columns = processIntoColumns(music);
+        var pages = Lists.partition(columns, metrics.columnsPerPage());
+
+        for (var i = 0; i < pages.size(); i++) {
+            var xml = renderPage(pages.get(i), i);
+            var filename = generateFilename(i);
+            System.err.printf("Writing page %d to %s\n", i + 1, filename);
+            var out = new PrintWriter(filename);
+            out.print(xml);
+            out.close();
+        }
+
+        return true;
+    }
+
+    // page is zero-indexed
+    private String generateFilename(int page) {
+        var suffix = String.format("-%02d.svg", page + 1);
+        var name = Path.of(inputPath).getFileName().toString()
+            .replaceFirst("\\.[^\\.]+$|$", suffix);
+        return Path.of(outputDir, name).toString();
+    }
+
+    private String renderPage(List<Column> columns, int page) {
         var target = DocumentHelper.createDocument();
         var svg = buildSvg(target);
 
@@ -55,9 +81,7 @@ class Renderer implements Callable<Boolean> {
         // TODO: drawTuning(svg, music);
         drawSongTitles(svg, columns);
 
-        // TODO: write to the output file, instead of stdout!
-        System.out.println(target.asXML());
-        return true;
+        return target.asXML();
     }
 
     private List<Column> processIntoColumns(KicksDocument music) {
