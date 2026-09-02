@@ -1,7 +1,9 @@
 package uk.sanshinkai.kickstosvg;
 
+import org.colston.kicks.document.Locatable;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
+import org.colston.kicks.document.Song;
 
 import uk.sanshinkai.kickstosvg.XYCoordinate;
 
@@ -49,11 +51,23 @@ public class Metrics {
     }
 
     public int columnNumber(int noteIndex) {
-        return (noteIndex / cellsPerCol()) % columnsPerPage();
+        return (noteIndex / cellsPerCol());
+    }
+
+    public int columnNumber(Locatable l) {
+      return columnNumber(l.getIndex());
+    }
+
+    public int columnNumber(Song s) {
+      return columnNumber(s.getIndex());
     }
 
     public int cellNumber(int noteIndex) {
         return noteIndex % cellsPerCol();
+    }
+
+    public int cellNumber(Locatable l) {
+        return cellNumber(l.getIndex());
     }
 
     public int columnLeft(int colNo) {
@@ -70,11 +84,15 @@ public class Metrics {
         return (offset * cellHeight()) / ticksPerCell();
     }
 
+    public int cellOffset(Locatable l) {
+        return cellOffset(l.getOffset());
+    }
+
     // Returns the centre co-ordinates of the note
     public XYCoordinate noteCoords(Note n) {
         return new XYCoordinate(
-            columnLeft(columnNumber(n.getIndex())) + cellWidth() / 2,
-            cellTop(cellNumber(n.getIndex())) + cellOffset(n.getOffset())
+            columnLeft(columnNumber(n)) + cellWidth() / 2,
+            cellTop(cellNumber(n)) + cellOffset(n)
         );
     }
 
@@ -82,9 +100,8 @@ public class Metrics {
     // the lyrics.
     public XYCoordinate lyricCoords(Lyric l) {
         return new XYCoordinate(
-            columnLeft(columnNumber(l.getIndex())) + cellWidth()
-            + cellWidth() / 4,
-            cellTop(cellNumber(l.getIndex())) + cellOffset(l.getOffset())
+            columnLeft(columnNumber(l)) + cellWidth() + cellWidth() / 4,
+            cellTop(cellNumber(l)) + cellOffset(l)
         );
     }
 

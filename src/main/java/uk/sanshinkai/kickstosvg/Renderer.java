@@ -75,7 +75,7 @@ public class Renderer implements Callable<Boolean> {
     private void drawColumns(Builder svg, KicksDocument music) {
         var set = new TreeSet<Integer>();
         for(var n : music.getNotes())
-            set.add(metrics.columnNumber(n.getIndex()));
+            set.add(metrics.columnNumber(n));
 
         var colsWithNotes = set.stream()
             .mapToInt(Integer::intValue).toArray();
@@ -143,7 +143,7 @@ public class Renderer implements Callable<Boolean> {
 
     private void drawTitle(Builder container, Song song) {
         var jTitle = new FuriganaString(song.getTitle());
-        var x0 = metrics.columnLeft(metrics.columnNumber(song.getIndex()));
+        var x0 = metrics.columnLeft(metrics.columnNumber(song));
 
         // Reference point is top centre of first character
 
