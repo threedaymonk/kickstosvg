@@ -34,7 +34,22 @@ class FuriganaStringParser {
 
         parseEnd();
 
-        return components;
+        return postProcess(components);
+    }
+
+    private List<FuriganaComponent> postProcess(List<FuriganaComponent> input) {
+        var output = new ArrayList<FuriganaComponent>();
+
+        for (var e : input) {
+            if (!output.isEmpty() && e.hasReading() && output.getLast().hasReading()) {
+                var last = output.removeLast();
+                output.add(new FuriganaComponent(last.surface() + e.surface(), last.reading() + e.reading()));
+            } else {
+                output.add(e);
+            }
+        }
+
+        return output;
     }
 
     private void reset() {
