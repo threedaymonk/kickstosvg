@@ -19,8 +19,8 @@ class FuriganaStringParserTest {
 
     assertEquals(1, parsed.size());
 
-    assertEquals("ABC", parsed.get(0).surface);
-    assertNull(parsed.get(0).reading);
+    assertEquals("ABC", parsed.get(0).surface());
+    assertNull(parsed.get(0).reading());
   }
 
   @Test
@@ -29,8 +29,8 @@ class FuriganaStringParserTest {
 
     assertEquals(1, parsed.size());
 
-    assertEquals("ABC", parsed.get(0).surface);
-    assertEquals("DEF", parsed.get(0).reading);
+    assertEquals("ABC", parsed.get(0).surface());
+    assertEquals("DEF", parsed.get(0).reading());
   }
 
   @Test
@@ -39,13 +39,13 @@ class FuriganaStringParserTest {
 
     assertEquals(3, parsed.size());
 
-    assertEquals("AA", parsed.get(0).surface);
-    assertNull(parsed.get(0).reading);
+    assertEquals("AA", parsed.get(0).surface());
+    assertNull(parsed.get(0).reading());
 
-    assertEquals("BB", parsed.get(1).surface);
-    assertEquals("CC", parsed.get(1).reading);
+    assertEquals("BB", parsed.get(1).surface());
+    assertEquals("CC", parsed.get(1).reading());
 
-    assertEquals("DD", parsed.get(2).surface);
-    assertNull(parsed.get(2).reading);
+    assertEquals("DD", parsed.get(2).surface());
+    assertNull(parsed.get(2).reading());
   }
 }

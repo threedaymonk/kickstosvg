@@ -155,20 +155,20 @@ public class Renderer implements Callable<Boolean> {
 
         var pos = 0;
         for (var c : jTitle.components) {
-            if (c.reading != null) {
+            if (c.reading() != null) {
                 var x = x0
                     + metrics.fontSizeTitleJapanese()
                     + metrics.fontSizeTitleFurigana() / 2;
                 var y = metrics.fontSizeTitleJapanese() * pos
-                    + metrics.fontSizeTitleJapanese() * c.surface.length() / 2
-                    - metrics.fontSizeTitleFurigana() * c.reading.length() / 2;
+                    + metrics.fontSizeTitleJapanese() * c.surface().length() / 2
+                    - metrics.fontSizeTitleFurigana() * c.reading().length() / 2;
                 container.element("text")
                     .attr("x", x)
                     .attr("y", y)
                     .style("font-size", metrics.fontSizeTitleFurigana())
-                    .text(c.reading);
+                    .text(c.reading());
             }
-            pos += c.surface.length();
+            pos += c.surface().length();
         }
 
         container.element("text")

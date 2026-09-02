@@ -14,7 +14,7 @@ public class FuriganaString {
 
     public String surface() {
         var list = new ArrayList<String>();
-        for (var c : components) list.add(c.surface);
+        for (var c : components) list.add(c.surface());
         return String.join("", list);
     }
 }
