@@ -229,12 +229,15 @@ class Renderer implements Callable<Boolean> {
                 var x = x0
                     + metrics.fontSizeTitleJapanese()
                     + metrics.fontSizeTitleFurigana() / 2;
+                var h = c.surface().length() * metrics.fontSizeTitleJapanese();
                 var y = metrics.fontSizeTitleJapanese() * pos
                     + metrics.fontSizeTitleJapanese() * c.surface().length() / 2
-                    - metrics.fontSizeTitleFurigana() * c.reading().length() / 2;
+                    - h / 2;
                 container.element("text")
                     .attr("x", x)
                     .attr("y", y)
+                    .attr("textLength", h)
+                    .attr("lengthAdjust", "spacing")
                     .style("font-size", metrics.fontSizeTitleFurigana())
                     .text(c.reading());
             }

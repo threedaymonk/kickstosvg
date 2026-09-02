@@ -23,7 +23,7 @@ class Metrics {
     public int fontSizeSmall() { return 12; }
     public int fontSizeTitleJapanese() { return 20; }
     public int fontSizeTitleLatin() { return 16; }
-    public int fontSizeTitleFurigana() { return 10; }
+    public int fontSizeTitleFurigana() { return 8; }
     public int lyricSpaceAdjustment() { return -4; }
     public String gridColor() { return "#969696"; }
     public double gridStrokeWidth() { return 0.5; }
