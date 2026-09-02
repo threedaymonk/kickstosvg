@@ -10,7 +10,7 @@ import uk.sanshinkai.kickstosvg.XYCoordinate;
 // TODO: Think of a better name for this. It handles dimensions (which I'd like
 // to be read from a configuration file) and fonts and computations about
 // positioning and a few other presentational concerns.
-public class Metrics {
+class Metrics {
     public int cellHeight() { return 36; }
     public int cellsPerCol() { return 12; }
     public int columnSpace() { return 9; }

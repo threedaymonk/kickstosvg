@@ -1,6 +1,7 @@
 package uk.sanshinkai.kickstosvg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import uk.sanshinkai.kickstosvg.FuriganaComponent;
 
@@ -13,17 +14,14 @@ enum ParseState {
     READING // C
 }
 
-public class FuriganaStringParser {
-    ParseState state;
-    StringBuilder accumulator;
-    String surface;
-    String reading;
-    ArrayList<FuriganaComponent> components;
+class FuriganaStringParser {
+    private ParseState state;
+    private StringBuilder accumulator;
+    private String surface;
+    private String reading;
+    private List<FuriganaComponent> components;
 
-    public FuriganaStringParser() {
-    }
-
-    public ArrayList<FuriganaComponent> parse(String raw) {
+    public List<FuriganaComponent> parse(String raw) {
         reset();
 
         for (var c : raw.toCharArray()) {

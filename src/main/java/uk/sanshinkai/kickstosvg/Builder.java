@@ -2,8 +2,8 @@ package uk.sanshinkai.kickstosvg;
 
 import org.dom4j.Element;
 
-public class Builder {
-    Element obj;
+class Builder {
+    private Element obj;
 
     public Builder(Element el) {
         this.obj = el;

@@ -20,9 +20,9 @@ import uk.sanshinkai.kickstosvg.Builder;
 import uk.sanshinkai.kickstosvg.Metrics;
 import uk.sanshinkai.kickstosvg.FuriganaString;
 
-public class Renderer implements Callable<Boolean> {
-    String inputPath, outputDir;
-    Metrics metrics;
+class Renderer implements Callable<Boolean> {
+    private String inputPath, outputDir;
+    private Metrics metrics;
 
     public Renderer(String inputPath, String outputDir) {
         this.inputPath = inputPath;
@@ -154,7 +154,7 @@ public class Renderer implements Callable<Boolean> {
             .text(jTitle.surface());
 
         var pos = 0;
-        for (var c : jTitle.components) {
+        for (var c : jTitle.components()) {
             if (c.reading() != null) {
                 var x = x0
                     + metrics.fontSizeTitleJapanese()
