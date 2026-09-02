@@ -60,7 +60,7 @@ class Renderer implements Callable<Boolean> {
         return true;
     }
 
-    List<Column> processIntoColumns(KicksDocument music) {
+    private List<Column> processIntoColumns(KicksDocument music) {
         var colCount = 0;
         for (var n : music.getNotes()) {
             var c = metrics.columnNumber(n) + 1;
