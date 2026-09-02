@@ -44,19 +44,60 @@ class Renderer implements Callable<Boolean> {
 
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
+        var columns = processIntoColumns(music);
         var target = DocumentHelper.createDocument();
         var svg = buildSvg(target);
 
-        drawColumns(svg, music);
-        drawNotes(svg, music);
-        drawLyrics(svg, music);
+        drawColumns(svg, columns);
+        drawNotes(svg, columns);
+        drawLyrics(svg, columns);
         // TODO: drawRepeats(svg, music);
         // TODO: drawTuning(svg, music);
-        drawSongTitles(svg, music);
+        drawSongTitles(svg, columns);
 
         // TODO: write to the output file, instead of stdout!
         System.out.println(target.asXML());
         return true;
+    }
+
+    List<Column> processIntoColumns(KicksDocument music) {
+        var colCount = 0;
+        for (var n : music.getNotes()) {
+            var c = metrics.columnNumber(n) + 1;
+            if (c > colCount) colCount = c;
+        }
+        for (var l : music.getLyrics()) {
+            var c = metrics.columnNumber(l) + 1;
+            if (c > colCount) colCount = c;
+        }
+
+        var noteses = new ArrayList<List<Note>>(colCount);
+        var lyricses = new ArrayList<List<Lyric>>(colCount);
+        var songs = new ArrayList<Song>(colCount);
+
+        for (var i = 0; i < colCount; i++) {
+            noteses.add(i, new ArrayList<Note>());
+            lyricses.add(i, new ArrayList<Lyric>());
+            songs.add(i, null);
+        }
+
+        for (var n : music.getNotes())
+            noteses.get(metrics.columnNumber(n)).add(n);
+        for (var l : music.getLyrics())
+            lyricses.get(metrics.columnNumber(l)).add(l);
+        for (var song : music.getSongs())
+            songs.add(metrics.columnNumber(song), song);
+
+        var columns = new ArrayList<Column>(colCount);
+        for (var i = 0; i < colCount ; i++) {
+            columns.add(new Column(
+                noteses.get(i),
+                lyricses.get(i),
+                songs.get(i)
+            ));
+        }
+
+        return columns;
     }
 
     private Builder buildSvg(org.dom4j.Document xmlDoc) {
@@ -72,45 +113,45 @@ class Renderer implements Callable<Boolean> {
             .style("font-family", "'%s'", metrics.fontFaceJapanese());
     }
 
-    private void drawColumns(Builder svg, KicksDocument music) {
-        var set = new TreeSet<Integer>();
-        for(var n : music.getNotes())
-            set.add(metrics.columnNumber(n));
-
-        var colsWithNotes = set.stream()
-            .mapToInt(Integer::intValue).toArray();
-
+    private void drawColumns(Builder svg, List<Column> columns) {
         var g = svg.element("g")
             .attr("id", "columns1")
             .style("fill", "none")
             .style("stroke", metrics.gridColor())
             .style("stroke-width", metrics.gridStrokeWidth());
-        for (var i : colsWithNotes) drawColumn(g, i);
+        for (var i = 0; i < columns.size(); i++) {
+            var column = columns.get(i);
+            if (column.isMusic()) drawColumn(g, i);
+        }
     }
 
-    private void drawNotes(Builder svg, KicksDocument music) {
+    private void drawNotes(Builder svg, List<Column> columns) {
         var g = svg.element("g")
             .attr("id", "notes1")
             .style("text-align", "center")
             .style("text-anchor", "middle");
-        for (var note : music.getNotes()) drawNote(g, note);
+        for (var column : columns)
+            for (var note : column.notes()) drawNote(g, note);
     }
 
-    private void drawLyrics(Builder svg, KicksDocument music) {
+    private void drawLyrics(Builder svg, List<Column> columns) {
         var g = svg.element("g")
             .attr("id", "lyrics1")
             .style("font-size", metrics.fontSizeLyrics())
             .style("writing-mode", "tb-rl")
             .style("letter-spacing", metrics.lyricSpaceAdjustment());
 
-        for (var lyric : music.getLyrics()) drawLyric(g, lyric);
+        for (var column : columns)
+            for (var lyric : column.lyrics()) drawLyric(g, lyric);
     }
 
-    private void drawSongTitles(Builder svg, KicksDocument music) {
+    private void drawSongTitles(Builder svg, List<Column> columns) {
         var g = svg.element("g")
             .attr("id", "title1")
             .style("writing-mode", "tb-rl");
-        for (var song : music.getSongs()) drawTitle(g, song);
+        for (var column : columns)
+            if (column.isTitle())
+                drawTitle(g, column.song());
     }
 
     private void drawLyric(Builder container, Lyric l) {
