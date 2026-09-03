@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  viewBox="-68 -81 842 595"
+  width="842pt"
+  height="595pt"
+  version="1.1"
+  style="stroke-linecap: square; stroke-linejoin: miter; font-family: 'EPSON 教科書体Ｍ'"
+  >
+  <style type="text/css">
+    <![CDATA[
+      #grid {
+        fill: none;
+        stroke: #969696;
+        stroke-width: 0.5;
+      }
+      #notes {
+        text-align: center;
+        text-anchor: middle;
+      }
+      #lyrics {
+        font-size: 10;
+        writing-mode: tb-rl;
+        letter-spacing: -4;
+      }
+      #repeats {
+        fill: none;
+        stroke: black;
+        stroke-width: 0.5;
+      }
+      #titles {
+        writing-mode: tb-rl;
+      }
+    ]]>
+  </style>
+  <defs>
+    <marker
+      id="TRIANGLE_FILLED"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      >
+      <path
+        style="fill: black; stroke: black; stroke-width: 1"
+        d="M 4,0 L -4,-4 L -4,4 z"
+        />
+    </marker>
+    <marker
+      id="TRIANGLE_OUTLINE"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      >
+      <path
+        style="fill: white; stroke: black; stroke-width: 1"
+        d="M 4,0 L -4,-4 L -4,4 z"
+        />
+    </marker>
+    <marker
+      id="CIRCLE_FILLED"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      >
+      <circle
+        cx="0" cy="0" r="4"
+        style="fill: black; stroke: black; stroke-width: 1"
+        />
+    </marker>
+    <marker
+      id="CIRCLE_OUTLINE"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      >
+      <circle
+        cx="0" cy="0" r="4"
+        style="fill: white; stroke: black; stroke-width: 1"
+        />
+    </marker>
+  </defs>
+  <g id="grid" />
+  <g id="notes" />
+  <g id="lyrics" />
+  <g id="repeats" />
+  <g id="titles" />
+</svg>

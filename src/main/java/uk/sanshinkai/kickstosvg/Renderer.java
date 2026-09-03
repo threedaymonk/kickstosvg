@@ -2,13 +2,16 @@ package uk.sanshinkai.kickstosvg;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
 
 import com.google.common.collect.Lists;
+import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 
 import org.colston.kicks.document.Accidental;
@@ -21,8 +24,8 @@ import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 
 import uk.sanshinkai.kickstosvg.Builder;
-import uk.sanshinkai.kickstosvg.Metrics;
 import uk.sanshinkai.kickstosvg.FuriganaString;
+import uk.sanshinkai.kickstosvg.Metrics;
 
 class Renderer implements Callable<Boolean> {
     private String inputPath, outputDir;
@@ -44,6 +47,13 @@ class Renderer implements Callable<Boolean> {
             throw new Exception("Unknown file: " + file.getAbsolutePath());
 
         return store.get().load(file);
+    }
+
+    private Document loadTemplate() throws Exception {
+        var xml = new String(
+            Renderer.class.getResourceAsStream("template.svg").readAllBytes()
+        );
+        return DocumentHelper.parseText(xml);
     }
 
     public Boolean call() throws Exception {
@@ -71,17 +81,16 @@ class Renderer implements Callable<Boolean> {
         return Path.of(outputDir, name).toString();
     }
 
-    private String renderPage(List<Column> columns, int page) {
-        var target = DocumentHelper.createDocument();
-        var svg = buildSvg(target);
+    private String renderPage(List<Column> columns, int page) throws Exception {
+        var target = loadTemplate();
 
-        writeDefinitions(svg);
-        drawColumns(svg, columns);
-        drawNotes(svg, columns);
-        drawLyrics(svg, columns);
-        drawRepeats(svg, columns);
-        // TODO: drawTuning(svg, music);
-        drawSongTitles(svg, columns);
+        configureSvg(target);
+        drawColumns(target, columns);
+        drawNotes(target, columns);
+        drawLyrics(target, columns);
+        drawRepeats(target, columns);
+        drawSongTitles(target, columns);
+        // TODO: drawTuning(target, columns);
 
         return target.asXML();
     }
@@ -135,72 +144,49 @@ class Renderer implements Callable<Boolean> {
         return columns;
     }
 
-    private Builder buildSvg(org.dom4j.Document xmlDoc) {
-        return new Builder(xmlDoc.addElement("svg"))
+    private void configureSvg(org.dom4j.Document doc) {
+        new Builder(doc.getRootElement())
             .attr("viewBox", "%d %d %d %d",
                     -metrics.marginX(), -metrics.marginY(),
                     metrics.paperWidth(), metrics.paperHeight())
             .attr("width", "%dpt", metrics.paperWidth())
-            .attr("height", "%dpt", metrics.paperHeight())
-            .attr("version", "1.1")
-            .style("stroke-linecap", "square")
-            .style("stroke-linejoin", "miter")
-            .style("font-family", "'%s'", metrics.fontFaceJapanese());
+            .attr("height", "%dpt", metrics.paperHeight());
     }
 
-    private void drawColumns(Builder svg, List<Column> columns) {
-        var g = svg.element("g")
-            .attr("id", "columns1")
-            .style("fill", "none")
-            .style("stroke", metrics.gridColor())
-            .style("stroke-width", metrics.gridStrokeWidth());
+    private void drawColumns(Document doc, List<Column> columns) {
+        var g = new Builder(doc.selectSingleNode("//g[@id='grid']"));
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             if (column.isMusic()) drawColumn(g, i);
         }
     }
 
-    private void drawNotes(Builder svg, List<Column> columns) {
-        var g = svg.element("g")
-            .attr("id", "notes1")
-            .style("text-align", "center")
-            .style("text-anchor", "middle");
+    private void drawNotes(Document doc, List<Column> columns) {
+        var g = new Builder(doc.selectSingleNode("//g[@id='notes']"));
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             for (var note : column.notes()) drawNote(g, i, note);
         }
     }
 
-    private void drawLyrics(Builder svg, List<Column> columns) {
-        var g = svg.element("g")
-            .attr("id", "lyrics1")
-            .style("font-size", metrics.fontSizeLyrics())
-            .style("writing-mode", "tb-rl")
-            .style("letter-spacing", metrics.lyricSpaceAdjustment());
-
+    private void drawLyrics(Document doc, List<Column> columns) {
+        var g = new Builder(doc.selectSingleNode("//g[@id='lyrics']"));
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             for (var lyric : column.lyrics()) drawLyric(g, i, lyric);
         }
     }
 
-    private void drawRepeats(Builder svg, List<Column> columns) {
-        var g = svg.element("g")
-            .attr("id", "repeats1")
-            .style("fill", "none")
-            .style("stroke", "black")
-            .style("stroke-width", metrics.graphicStrokeWidth());
-
+    private void drawRepeats(Document doc, List<Column> columns) {
+        var g = new Builder(doc.selectSingleNode("//g[@id='repeats']"));
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             for (var repeat : column.repeats()) drawRepeat(g, i, repeat);
         }
     }
 
-    private void drawSongTitles(Builder svg, List<Column> columns) {
-        var g = svg.element("g")
-            .attr("id", "title1")
-            .style("writing-mode", "tb-rl");
+    private void drawSongTitles(Document doc, List<Column> columns) {
+        var g = new Builder(doc.selectSingleNode("//g[@id='titles']"));
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             if (column.isTitle()) drawTitle(g, i, column.song());
@@ -303,21 +289,5 @@ class Renderer implements Callable<Boolean> {
                 .attr("d", "M %d,%d h %d",
                     left, metrics.cellTop(i), metrics.cellWidth());
         }
-    }
-
-    private void writeDefinitions(Builder container) {
-        var defs = container.element("defs");
-
-        defs.element("marker")
-            .attr("id", "TRIANGLE_FILLED")
-            .attr("orient", "auto")
-            .attr("refX", 0)
-            .attr("refY", 0)
-            .attr("markerUnits", "strokeWidth")
-            .element("path")
-            .style("fill", "black")
-            .style("stroke", "black")
-            .style("stroke-width", 1)
-            .attr("d", "M 4,0 L -4,-4 L -4,4 z");
     }
 }

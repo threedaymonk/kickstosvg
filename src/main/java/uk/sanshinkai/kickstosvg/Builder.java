@@ -1,11 +1,17 @@
 package uk.sanshinkai.kickstosvg;
 
 import org.dom4j.Element;
+import org.dom4j.Node;
 
 class Builder {
     private Element obj;
 
     public Builder(Element el) {
+        this.obj = el;
+    }
+
+    public Builder(Node n) {
+        Element el = (Element) n;
         this.obj = el;
     }
 
