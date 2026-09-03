@@ -222,7 +222,7 @@ class Renderer implements Callable<Boolean> {
         var height = metrics.repeatLength() * (repeat.isBack() ? -1 : 1);
 
         container.element("path")
-            .attr("d", "M %d,%d H %d V %d",
+            .attr("d", "M %d,%d h %d v %d",
                 start.x(), start.y(), metrics.repeatWidth(), height)
             .style("marker-end", "url(#%s)", repeat.getStyle().name());
     }
@@ -295,11 +295,11 @@ class Renderer implements Callable<Boolean> {
             .attr("width", metrics.columnWidth())
             .attr("height", metrics.canvasHeight());
         container.element("path")
-            .attr("d", "M %d,%d V %d",
+            .attr("d", "M %d,%d v %d",
                 left + metrics.cellWidth(), 0, metrics.canvasHeight());
         for(var i = 1; i < metrics.cellsPerCol(); i++) {
             container.element("path")
-                .attr("d", "M %d,%d H %d",
+                .attr("d", "M %d,%d h %d",
                     left, metrics.cellTop(i), metrics.cellWidth());
         }
     }
