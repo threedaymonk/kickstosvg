@@ -103,6 +103,21 @@
       id="REPEAT_BACK"
       d="M 0,0 h 14 v -36"
       />
+    <g id="COLUMN">
+      <rect x="0" y="0" width="56" height="432"/>
+      <path d="M 28,0 v 432"/>
+      <path d="M 0,36 h 28"/>
+      <path d="M 0,72 h 28"/>
+      <path d="M 0,108 h 28"/>
+      <path d="M 0,144 h 28"/>
+      <path d="M 0,180 h 28"/>
+      <path d="M 0,216 h 28"/>
+      <path d="M 0,252 h 28"/>
+      <path d="M 0,288 h 28"/>
+      <path d="M 0,324 h 28"/>
+      <path d="M 0,360 h 28"/>
+      <path d="M 0,396 h 28"/>
+    </g>
   </defs>
   <g id="grid" />
   <g id="notes" />

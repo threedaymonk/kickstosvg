@@ -289,19 +289,10 @@ class Renderer implements Callable<Boolean> {
 
     private void drawColumn(Builder container, int colNo) {
         var left = metrics.columnLeft(colNo);
-        container.element("rect")
-            .attr("x", metrics.columnLeft(colNo))
-            .attr("y", 0)
-            .attr("width", metrics.columnWidth())
-            .attr("height", metrics.canvasHeight());
-        container.element("path")
-            .attr("d", "M %s,0 v %s",
-                f(left + metrics.cellWidth()), f(metrics.canvasHeight()));
-        for(var i = 1; i < metrics.cellsPerCol(); i++) {
-            container.element("path")
-                .attr("d", "M %s,%s h %s",
-                    f(left), f(metrics.cellTop(i)), f(metrics.cellWidth()));
-        }
+        container.element("use")
+            .attr("href", "#COLUMN")
+            .attr("x", left)
+            .attr("y", 0);
     }
 
     private String f(double f) {
