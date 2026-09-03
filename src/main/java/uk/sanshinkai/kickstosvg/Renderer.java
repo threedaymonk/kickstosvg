@@ -224,11 +224,13 @@ class Renderer implements Callable<Boolean> {
 
         // Reference point is centre of baseline
         // so shift y down by half the font size
-        container.element("text")
+        var elem = container.element("text")
             .attr("x", center.x())
             .attr("y", center.y() + fontSize / 2)
-            .attr("class", n.isSmall() ? "small" : "")
             .text(RendererResources.getNoteText(n.getString(), n.getPlacement()));
+
+        if (n.isSmall())
+            elem.attr("class", "small");
 
         // TODO: articulations
     }
