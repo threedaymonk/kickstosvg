@@ -233,45 +233,58 @@ class Renderer implements Callable<Boolean> {
 
     private void drawTitle(Builder container, int colNo, Song song) {
         var jTitle = new FuriganaString(song.getTitle());
+
         var x0 = metrics.columnLeft(colNo);
 
         // Reference point is top centre of first character
 
-        container.element("text")
-            .attr("x", x0 + metrics.fontSizeTitleJapanese() / 2)
-            .attr("y", 0)
-            .style("font-size", metrics.fontSizeTitleJapanese())
-            .text(jTitle.surface());
-
         var pos = 0;
         for (var c : jTitle.components()) {
+            int sh = c.surface().length() * metrics.fontSizeTitleJapanese();
+            int rh = c.reading() != null ? c.reading().length() * metrics.fontSizeTitleFurigana() : 0;
+            int sindent = 0;
+            int rindent = 0;
+            if (c.reading() != null) {
+                if (sh > rh) {
+                    rindent = Math.round((float) (sh - rh) / (c.reading().length() + 1));
+                    rh = sh - rindent * 2;
+                } else {
+                    sindent = Math.round((float) (rh - sh) / (c.surface().length() + 1));
+                    sh = rh - sindent * 2;
+                }
+            }
+            container.element("text")
+                    .attr("x", x0 + metrics.fontSizeTitleJapanese() / 2)
+                    .attr("y", pos + sindent)
+                    .attr("textLength", sh)
+                    .attr("lengthAdjust", "spacing")
+                    .style("font-size", metrics.fontSizeTitleJapanese())
+                    .text(c.surface());
             if (c.reading() != null) {
                 var x = x0
                     + metrics.fontSizeTitleJapanese()
                     + metrics.fontSizeTitleFurigana() / 2;
-                var h = c.surface().length() * metrics.fontSizeTitleJapanese();
-                var y = metrics.fontSizeTitleJapanese() * pos
-                    + metrics.fontSizeTitleJapanese() * c.surface().length() / 2
-                    - h / 2;
                 container.element("text")
                     .attr("x", x)
-                    .attr("y", y)
-                    .attr("textLength", h)
+                    .attr("y", pos + rindent)
+                    .attr("textLength", rh)
                     .attr("lengthAdjust", "spacing")
                     .style("font-size", metrics.fontSizeTitleFurigana())
                     .text(c.reading());
             }
-            pos += c.surface().length();
+
+            pos += Math.max(sh, rh);
         }
 
         container.element("text")
-            .attr("x", x0 + metrics.fontSizeTitleJapanese()
-                + metrics.fontSizeTitleLatin() / 2
-                + metrics.fontSizeTitleFurigana())
-            .attr("y", 0)
-            .style("font-size", metrics.fontSizeTitleLatin())
-            .style("font-family", "'%s'", metrics.fontFaceLatin())
-            .text(song.getTitleRomaji());
+                .attr("x", x0 + metrics.fontSizeTitleJapanese()
+                        + metrics.fontSizeTitleLatin() / 2
+                        + metrics.fontSizeTitleFurigana())
+                .attr("y", 0)
+                .style("font-size", metrics.fontSizeTitleLatin())
+                .style("font-family", "'%s'", metrics.fontFaceLatin())
+                .text(song.getTitleRomaji());
+
     }
 
     private void drawColumn(Builder container, int colNo) {

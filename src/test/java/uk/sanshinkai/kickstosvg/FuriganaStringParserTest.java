@@ -48,20 +48,4 @@ class FuriganaStringParserTest {
     assertEquals("DD", parsed.get(2).surface());
     assertNull(parsed.get(2).reading());
   }
-
-  @Test
-  public void testCollapseAdjacent() {
-    var parsed = new FuriganaStringParser().parse("AA{BB}{CC}{DD}{EE}FF");
-
-    assertEquals(3, parsed.size());
-
-    assertEquals("AA", parsed.get(0).surface());
-    assertNull(parsed.get(0).reading());
-
-    assertEquals("BBDD", parsed.get(1).surface());
-    assertEquals("CCEE", parsed.get(1).reading());
-
-    assertEquals("FF", parsed.get(2).surface());
-    assertNull(parsed.get(2).reading());
-  }
 }

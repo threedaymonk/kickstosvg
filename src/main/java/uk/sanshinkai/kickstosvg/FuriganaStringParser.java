@@ -3,8 +3,6 @@ package uk.sanshinkai.kickstosvg;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.sanshinkai.kickstosvg.FuriganaComponent;
-
 // Given a string like A{B}{C}D
 enum ParseState {
     NONE, // before A, or after C}
@@ -34,22 +32,7 @@ class FuriganaStringParser {
 
         parseEnd();
 
-        return postProcess(components);
-    }
-
-    private List<FuriganaComponent> postProcess(List<FuriganaComponent> input) {
-        var output = new ArrayList<FuriganaComponent>();
-
-        for (var e : input) {
-            if (!output.isEmpty() && e.hasReading() && output.getLast().hasReading()) {
-                var last = output.removeLast();
-                output.add(new FuriganaComponent(last.surface() + e.surface(), last.reading() + e.reading()));
-            } else {
-                output.add(e);
-            }
-        }
-
-        return output;
+        return components;
     }
 
     private void reset() {
