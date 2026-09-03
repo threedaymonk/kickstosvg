@@ -75,6 +75,7 @@ class Renderer implements Callable<Boolean> {
         var target = DocumentHelper.createDocument();
         var svg = buildSvg(target);
 
+        writeDefinitions(svg);
         drawColumns(svg, columns);
         drawNotes(svg, columns);
         drawLyrics(svg, columns);
@@ -188,7 +189,7 @@ class Renderer implements Callable<Boolean> {
             .attr("id", "repeats1")
             .style("fill", "none")
             .style("stroke", "black")
-            .style("stroke-width", metrics.gridStrokeWidth());
+            .style("stroke-width", metrics.graphicStrokeWidth());
 
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
@@ -302,5 +303,21 @@ class Renderer implements Callable<Boolean> {
                 .attr("d", "M %d,%d h %d",
                     left, metrics.cellTop(i), metrics.cellWidth());
         }
+    }
+
+    private void writeDefinitions(Builder container) {
+        var defs = container.element("defs");
+
+        defs.element("marker")
+            .attr("id", "TRIANGLE_FILLED")
+            .attr("orient", "auto")
+            .attr("refX", 0)
+            .attr("refY", 0)
+            .attr("markerUnits", "strokeWidth")
+            .element("path")
+            .style("fill", "black")
+            .style("stroke", "black")
+            .style("stroke-width", 1)
+            .attr("d", "M 4,0 L -4,-4 L -4,4 z");
     }
 }

@@ -25,12 +25,14 @@ class Metrics {
     public int fontSizeTitleJapanese() { return 20; }
     public int fontSizeTitleLatin() { return 16; }
     public int fontSizeTitleFurigana() { return 8; }
+    public double graphicStrokeWidth() { return 0.5; }
     public int lyricSpaceAdjustment() { return -4; }
     public String gridColor() { return "#969696"; }
     public double gridStrokeWidth() { return 0.5; }
     public int marginLyrics() { return 3; }
     public int paperHeight() { return 595; }
     public int paperWidth() { return 842; }
+    public int repeatHeadSize() { return 2; }
     public int repeatLength() { return 36; }
     public int repeatWidth() { return 14; }
     public int ticksPerCell() { return 12; }
