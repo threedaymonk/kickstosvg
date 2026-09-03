@@ -77,6 +77,14 @@
         style="fill: white; stroke: black; stroke-width: 1"
         />
     </marker>
+    <path
+      id="REPEAT"
+      d="M 0,0 h 14 v 36"
+      />
+    <path
+      id="REPEAT_BACK"
+      d="M 0,0 h 14 v -36"
+      />
   </defs>
   <g id="grid" />
   <g id="notes" />

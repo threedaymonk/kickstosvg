@@ -207,11 +207,12 @@ class Renderer implements Callable<Boolean> {
 
     private void drawRepeat(Builder container, int colNo, Repeat repeat) {
         var start = metrics.repeatCoords(repeat, colNo);
-        var height = metrics.repeatLength() * (repeat.isBack() ? -1 : 1);
+        var href = repeat.isBack() ? "#REPEAT_BACK" : "#REPEAT";
 
-        container.element("path")
-            .attr("d", "M %s,%s h %s v %s",
-                f(start.x()), f(start.y()), f(metrics.repeatWidth()), f(height))
+        container.element("use")
+            .attr("href", href)
+            .attr("x", start.x())
+            .attr("y", start.y())
             .style("marker-end", "url(#%s)", repeat.getStyle().name());
     }
 
