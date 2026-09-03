@@ -17,8 +17,6 @@ class Metrics {
     public double columnSpace() { return 9; }
     public double columnWidth() { return 56; }
     public int columnsPerPage() { return 11; }
-    public String fontFaceJapanese() { return "EPSON 教科書体Ｍ"; }
-    public String fontFaceLatin() { return "FreeSans"; }
     public double fontSizeLarge() { return 16; }
     public double fontSizeLyrics() { return 10; }
     public double fontSizeSmall() { return 12; }
@@ -27,14 +25,9 @@ class Metrics {
     public double fontSizeTitleFurigana() { return 8; }
     public double graphicStrokeWidth() { return 0.5; }
     public double lyricSpaceAdjustment() { return -4; }
-    public String gridColor() { return "#969696"; }
-    public double gridStrokeWidth() { return 0.5; }
     public double marginLyrics() { return 3; }
     public double paperHeight() { return 595; }
     public double paperWidth() { return 842; }
-    public double repeatHeadSize() { return 2; }
-    public double repeatLength() { return 36; }
-    public double repeatWidth() { return 14; }
     public int ticksPerCell() { return 12; }
     public double titleMargin() { return 9; }
 

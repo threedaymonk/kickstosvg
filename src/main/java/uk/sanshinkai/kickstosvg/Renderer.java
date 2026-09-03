@@ -227,7 +227,7 @@ class Renderer implements Callable<Boolean> {
         container.element("text")
             .attr("x", center.x())
             .attr("y", center.y() + fontSize / 2)
-            .style("font-size", fontSize)
+            .attr("class", n.isSmall() ? "small" : "")
             .text(RendererResources.getNoteText(n.getString(), n.getPlacement()));
 
         // TODO: articulations
@@ -260,7 +260,6 @@ class Renderer implements Callable<Boolean> {
                     .attr("y", pos + sindent)
                     .attr("textLength", sh)
                     .attr("lengthAdjust", "spacing")
-                    .style("font-size", metrics.fontSizeTitleJapanese())
                     .text(c.surface());
             if (c.reading() != null) {
                 var x = x0
@@ -271,7 +270,7 @@ class Renderer implements Callable<Boolean> {
                     .attr("y", pos + rindent)
                     .attr("textLength", rh)
                     .attr("lengthAdjust", "spacing")
-                    .style("font-size", metrics.fontSizeTitleFurigana())
+                    .attr("class", "furigana")
                     .text(c.reading());
             }
 
@@ -283,8 +282,7 @@ class Renderer implements Callable<Boolean> {
                         + metrics.fontSizeTitleLatin() / 2
                         + metrics.fontSizeTitleFurigana())
                 .attr("y", 0)
-                .style("font-size", metrics.fontSizeTitleLatin())
-                .style("font-family", "'%s'", metrics.fontFaceLatin())
+                .attr("class", "latin")
                 .text(song.getTitleRomaji());
 
     }

@@ -4,23 +4,34 @@
   width="842pt"
   height="595pt"
   version="1.1"
-  style="stroke-linecap: square; stroke-linejoin: miter; font-family: 'EPSON 教科書体Ｍ'"
   >
   <style type="text/css">
     <![CDATA[
+      svg {
+        font-family: "EPSON 教科書体Ｍ";
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+      }
+      .latin {
+        font-family: "FreeSans";
+      }
       #grid {
         fill: none;
-        stroke: #969696;
         stroke-width: 0.5;
+        stroke: #969696;
       }
       #notes {
+        font-size: 16;
         text-align: center;
         text-anchor: middle;
       }
+      #notes .small {
+        font-size: 12;
+      }
       #lyrics {
         font-size: 10;
-        writing-mode: tb-rl;
         letter-spacing: -4;
+        writing-mode: tb-rl;
       }
       #repeats {
         fill: none;
@@ -28,7 +39,14 @@
         stroke-width: 0.5;
       }
       #titles {
+        font-size: 20;
         writing-mode: tb-rl;
+      }
+      #titles .latin {
+        font-size: 16;
+      }
+      #titles .furigana {
+        font-size: 8;
       }
     ]]>
   </style>
