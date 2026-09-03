@@ -147,11 +147,11 @@ class Renderer implements Callable<Boolean> {
 
     private void configureSvg(org.dom4j.Document doc) {
         new Builder(doc.getRootElement())
-            .attr("viewBox", "%.2f %.2f %.2f %.2f",
-                    -metrics.marginX(), -metrics.marginY(),
-                    metrics.paperWidth(), metrics.paperHeight())
-            .attr("width", "%.2fpt", metrics.paperWidth())
-            .attr("height", "%.2fpt", metrics.paperHeight());
+            .attr("viewBox", "%s %s %s %s",
+                    f(-metrics.marginX()), f(-metrics.marginY()),
+                    f(metrics.paperWidth()), f(metrics.paperHeight()))
+            .attr("width", "%spt", f(metrics.paperWidth()))
+            .attr("height", "%spt", f(metrics.paperHeight()));
     }
 
     private void drawColumns(Document doc, List<Column> columns) {
@@ -210,8 +210,8 @@ class Renderer implements Callable<Boolean> {
         var height = metrics.repeatLength() * (repeat.isBack() ? -1 : 1);
 
         container.element("path")
-            .attr("d", "M %.2f,%.2f h %.2f v %.2f",
-                start.x(), start.y(), metrics.repeatWidth(), height)
+            .attr("d", "M %s,%s h %s v %s",
+                f(start.x()), f(start.y()), f(metrics.repeatWidth()), f(height))
             .style("marker-end", "url(#%s)", repeat.getStyle().name());
     }
 
@@ -296,12 +296,16 @@ class Renderer implements Callable<Boolean> {
             .attr("width", metrics.columnWidth())
             .attr("height", metrics.canvasHeight());
         container.element("path")
-            .attr("d", "M %.2f,%.2f v %.2f",
-                left + metrics.cellWidth(), 0.0, metrics.canvasHeight());
+            .attr("d", "M %s,0 v %s",
+                f(left + metrics.cellWidth()), f(metrics.canvasHeight()));
         for(var i = 1; i < metrics.cellsPerCol(); i++) {
             container.element("path")
-                .attr("d", "M %.2f,%.2f h %.2f",
-                    left, metrics.cellTop(i), metrics.cellWidth());
+                .attr("d", "M %s,%s h %s",
+                    f(left), f(metrics.cellTop(i)), f(metrics.cellWidth()));
         }
+    }
+
+    private String f(double f) {
+        return NumericFormatting.tidy(f);
     }
 }

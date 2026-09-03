@@ -5,6 +5,8 @@ import java.util.Locale;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import uk.sanshinkai.kickstosvg.NumericFormatting;
+
 class Builder {
     private Element obj;
 
@@ -30,11 +32,11 @@ class Builder {
     }
 
     public Builder attr(String name, int value) {
-        return attr(name, String.format(Locale.ROOT, "%d", value));
+        return attr(name, String.valueOf(value));
     }
 
     public Builder attr(String name, double value) {
-        return attr(name, String.format(Locale.ROOT, "%.2f", value));
+        return attr(name, NumericFormatting.tidy(value));
     }
 
     public Builder style(String name, String fmt, Object... args) {
@@ -42,11 +44,11 @@ class Builder {
     }
 
     public Builder style(String name, int value) {
-        return rawStyle(name, String.format(Locale.ROOT, "%d", value));
+        return rawStyle(name, String.valueOf(value));
     }
 
     public Builder style(String name, double value) {
-        return rawStyle(name, String.format(Locale.ROOT, "%.2f", value));
+        return rawStyle(name, NumericFormatting.tidy(value));
     }
 
     private Builder wrap(Element el) {
