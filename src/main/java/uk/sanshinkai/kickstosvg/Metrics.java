@@ -3,6 +3,7 @@ package uk.sanshinkai.kickstosvg;
 import org.colston.kicks.document.Locatable;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
+import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 
 import uk.sanshinkai.kickstosvg.XYCoordinate;
@@ -30,6 +31,8 @@ class Metrics {
     public int marginLyrics() { return 3; }
     public int paperHeight() { return 595; }
     public int paperWidth() { return 842; }
+    public int repeatLength() { return 36; }
+    public int repeatWidth() { return 14; }
     public int ticksPerCell() { return 12; }
     public int titleMargin() { return 9; }
 
@@ -105,4 +108,11 @@ class Metrics {
         );
     }
 
+    // Returns the start (i.e. tail) co-ordinates of the repeat arrow.
+    public XYCoordinate repeatCoords(Repeat r, int colNo) {
+        return new XYCoordinate(
+            columnLeft(colNo) + columnWidth() / 2,
+            cellTop(cellNumber(r)) + cellOffset(r)
+        );
+    }
 }

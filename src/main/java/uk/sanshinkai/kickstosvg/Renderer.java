@@ -15,6 +15,7 @@ import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
+import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
@@ -77,7 +78,7 @@ class Renderer implements Callable<Boolean> {
         drawColumns(svg, columns);
         drawNotes(svg, columns);
         drawLyrics(svg, columns);
-        // TODO: drawRepeats(svg, music);
+        drawRepeats(svg, columns);
         // TODO: drawTuning(svg, music);
         drawSongTitles(svg, columns);
 
@@ -94,14 +95,20 @@ class Renderer implements Callable<Boolean> {
             var c = metrics.columnNumber(l) + 1;
             if (c > colCount) colCount = c;
         }
+        for (var r : music.getRepeats()) {
+            var c = metrics.columnNumber(r) + 1;
+            if (c > colCount) colCount = c;
+        }
 
         var noteses = new ArrayList<List<Note>>(colCount);
         var lyricses = new ArrayList<List<Lyric>>(colCount);
+        var repeatses = new ArrayList<List<Repeat>>(colCount);
         var songs = new ArrayList<Song>(colCount);
 
         for (var i = 0; i < colCount; i++) {
             noteses.add(i, new ArrayList<Note>());
             lyricses.add(i, new ArrayList<Lyric>());
+            repeatses.add(i, new ArrayList<Repeat>());
             songs.add(i, null);
         }
 
@@ -109,6 +116,8 @@ class Renderer implements Callable<Boolean> {
             noteses.get(metrics.columnNumber(n)).add(n);
         for (var l : music.getLyrics())
             lyricses.get(metrics.columnNumber(l)).add(l);
+        for (var r : music.getRepeats())
+            repeatses.get(metrics.columnNumber(r)).add(r);
         for (var song : music.getSongs())
             songs.add(metrics.columnNumber(song), song);
 
@@ -117,6 +126,7 @@ class Renderer implements Callable<Boolean> {
             columns.add(new Column(
                 noteses.get(i),
                 lyricses.get(i),
+                repeatses.get(i),
                 songs.get(i)
             ));
         }
@@ -173,6 +183,19 @@ class Renderer implements Callable<Boolean> {
         }
     }
 
+    private void drawRepeats(Builder svg, List<Column> columns) {
+        var g = svg.element("g")
+            .attr("id", "repeats1")
+            .style("fill", "none")
+            .style("stroke", "black")
+            .style("stroke-width", metrics.gridStrokeWidth());
+
+        for (var i = 0; i < columns.size(); i++) {
+            var column = columns.get(i);
+            for (var repeat : column.repeats()) drawRepeat(g, i, repeat);
+        }
+    }
+
     private void drawSongTitles(Builder svg, List<Column> columns) {
         var g = svg.element("g")
             .attr("id", "title1")
@@ -192,6 +215,16 @@ class Renderer implements Callable<Boolean> {
             .attr("x", center.x())
             .attr("y", center.y() - metrics.fontSizeLyrics() / 2)
             .text(l.getValue());
+    }
+
+    private void drawRepeat(Builder container, int colNo, Repeat repeat) {
+        var start = metrics.repeatCoords(repeat, colNo);
+        var height = metrics.repeatLength() * (repeat.isBack() ? -1 : 1);
+
+        container.element("path")
+            .attr("d", "M %d,%d H %d V %d",
+                start.x(), start.y(), metrics.repeatWidth(), height)
+            .style("marker-end", "url(#%s)", repeat.getStyle().name());
     }
 
     private void drawNote(Builder container, int colNo, Note n) {
