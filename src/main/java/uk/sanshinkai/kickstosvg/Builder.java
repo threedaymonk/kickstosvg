@@ -1,5 +1,7 @@
 package uk.sanshinkai.kickstosvg;
 
+import java.util.Locale;
+
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -24,23 +26,27 @@ class Builder {
     }
 
     public Builder attr(String name, String fmt, Object... args) {
-        return wrap(obj.addAttribute(name, String.format(fmt, args)));
+        return wrap(obj.addAttribute(name, String.format(Locale.ROOT, fmt, args)));
     }
 
     public Builder attr(String name, int value) {
-        return attr(name, String.valueOf(value));
+        return attr(name, String.format(Locale.ROOT, "%d", value));
+    }
+
+    public Builder attr(String name, double value) {
+        return attr(name, String.format(Locale.ROOT, "%.2f", value));
     }
 
     public Builder style(String name, String fmt, Object... args) {
-        return rawStyle(name, String.format(fmt, args));
-    }
-
-    public Builder style(String name, double value) {
-        return rawStyle(name, String.format("%f", value));
+        return rawStyle(name, String.format(Locale.ROOT, fmt, args));
     }
 
     public Builder style(String name, int value) {
-        return rawStyle(name, String.format("%d", value));
+        return rawStyle(name, String.format(Locale.ROOT, "%d", value));
+    }
+
+    public Builder style(String name, double value) {
+        return rawStyle(name, String.format(Locale.ROOT, "%.2f", value));
     }
 
     private Builder wrap(Element el) {
@@ -56,5 +62,4 @@ class Builder {
         else
             return attr("style", existing.getValue() + "; " + addition);
     }
-
 }

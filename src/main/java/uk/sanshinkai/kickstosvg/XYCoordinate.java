@@ -1,3 +1,3 @@
 package uk.sanshinkai.kickstosvg;
 
-record XYCoordinate(int x, int y) {}
+record XYCoordinate(double x, double y) {}

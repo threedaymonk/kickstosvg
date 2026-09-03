@@ -12,46 +12,46 @@ import uk.sanshinkai.kickstosvg.XYCoordinate;
 // to be read from a configuration file) and fonts and computations about
 // positioning and a few other presentational concerns.
 class Metrics {
-    public int cellHeight() { return 36; }
+    public double cellHeight() { return 36; }
     public int cellsPerCol() { return 12; }
-    public int columnSpace() { return 9; }
-    public int columnWidth() { return 56; }
+    public double columnSpace() { return 9; }
+    public double columnWidth() { return 56; }
     public int columnsPerPage() { return 11; }
     public String fontFaceJapanese() { return "EPSON 教科書体Ｍ"; }
     public String fontFaceLatin() { return "FreeSans"; }
-    public int fontSizeLarge() { return 16; }
-    public int fontSizeLyrics() { return 10; }
-    public int fontSizeSmall() { return 12; }
-    public int fontSizeTitleJapanese() { return 20; }
-    public int fontSizeTitleLatin() { return 16; }
-    public int fontSizeTitleFurigana() { return 8; }
+    public double fontSizeLarge() { return 16; }
+    public double fontSizeLyrics() { return 10; }
+    public double fontSizeSmall() { return 12; }
+    public double fontSizeTitleJapanese() { return 20; }
+    public double fontSizeTitleLatin() { return 16; }
+    public double fontSizeTitleFurigana() { return 8; }
     public double graphicStrokeWidth() { return 0.5; }
-    public int lyricSpaceAdjustment() { return -4; }
+    public double lyricSpaceAdjustment() { return -4; }
     public String gridColor() { return "#969696"; }
     public double gridStrokeWidth() { return 0.5; }
-    public int marginLyrics() { return 3; }
-    public int paperHeight() { return 595; }
-    public int paperWidth() { return 842; }
-    public int repeatHeadSize() { return 2; }
-    public int repeatLength() { return 36; }
-    public int repeatWidth() { return 14; }
+    public double marginLyrics() { return 3; }
+    public double paperHeight() { return 595; }
+    public double paperWidth() { return 842; }
+    public double repeatHeadSize() { return 2; }
+    public double repeatLength() { return 36; }
+    public double repeatWidth() { return 14; }
     public int ticksPerCell() { return 12; }
-    public int titleMargin() { return 9; }
+    public double titleMargin() { return 9; }
 
-    public int canvasWidth() {
+    public double canvasWidth() {
         return columnWidth() * columnsPerPage()
             + columnSpace() * (columnsPerPage() - 1);
     }
-    public int canvasHeight() {
+    public double canvasHeight() {
         return cellHeight() * cellsPerCol();
     }
-    public int cellWidth() {
+    public double cellWidth() {
         return columnWidth() / 2;
     }
-    public int marginX() {
+    public double marginX() {
         return (paperWidth() - canvasWidth()) / 2;
     }
-    public int marginY() {
+    public double marginY() {
         return (paperHeight() - canvasHeight()) / 2;
     }
 
@@ -75,21 +75,21 @@ class Metrics {
         return cellNumber(l.getIndex());
     }
 
-    public int columnLeft(int colNo) {
+    public double columnLeft(int colNo) {
         return canvasWidth()
             - columnWidth() * (colNo + 1)
             - columnSpace() * colNo;
     }
 
-    public int cellTop(int cellNo) {
+    public double cellTop(int cellNo) {
         return cellNo * cellHeight();
     }
 
-    public int cellOffset(int offset) {
+    public double cellOffset(int offset) {
         return (offset * cellHeight()) / ticksPerCell();
     }
 
-    public int cellOffset(Locatable l) {
+    public double cellOffset(Locatable l) {
         return cellOffset(l.getOffset());
     }
 

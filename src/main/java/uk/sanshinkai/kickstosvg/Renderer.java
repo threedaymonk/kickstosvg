@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 
@@ -75,7 +76,7 @@ class Renderer implements Callable<Boolean> {
 
     // page is zero-indexed
     private String generateFilename(int page) {
-        var suffix = String.format("-%02d.svg", page + 1);
+        var suffix = String.format(Locale.ROOT, "-%02d.svg", page + 1);
         var name = Path.of(inputPath).getFileName().toString()
             .replaceFirst("\\.[^\\.]+$|$", suffix);
         return Path.of(outputDir, name).toString();
@@ -146,11 +147,11 @@ class Renderer implements Callable<Boolean> {
 
     private void configureSvg(org.dom4j.Document doc) {
         new Builder(doc.getRootElement())
-            .attr("viewBox", "%d %d %d %d",
+            .attr("viewBox", "%.2f %.2f %.2f %.2f",
                     -metrics.marginX(), -metrics.marginY(),
                     metrics.paperWidth(), metrics.paperHeight())
-            .attr("width", "%dpt", metrics.paperWidth())
-            .attr("height", "%dpt", metrics.paperHeight());
+            .attr("width", "%.2fpt", metrics.paperWidth())
+            .attr("height", "%.2fpt", metrics.paperHeight());
     }
 
     private void drawColumns(Document doc, List<Column> columns) {
@@ -209,7 +210,7 @@ class Renderer implements Callable<Boolean> {
         var height = metrics.repeatLength() * (repeat.isBack() ? -1 : 1);
 
         container.element("path")
-            .attr("d", "M %d,%d h %d v %d",
+            .attr("d", "M %.2f,%.2f h %.2f v %.2f",
                 start.x(), start.y(), metrics.repeatWidth(), height)
             .style("marker-end", "url(#%s)", repeat.getStyle().name());
     }
@@ -240,16 +241,16 @@ class Renderer implements Callable<Boolean> {
 
         var pos = 0;
         for (var c : jTitle.components()) {
-            int sh = c.surface().length() * metrics.fontSizeTitleJapanese();
-            int rh = c.reading() != null ? c.reading().length() * metrics.fontSizeTitleFurigana() : 0;
-            int sindent = 0;
-            int rindent = 0;
+            double sh = c.surface().length() * metrics.fontSizeTitleJapanese();
+            double rh = c.reading() != null ? c.reading().length() * metrics.fontSizeTitleFurigana() : 0;
+            double sindent = 0;
+            double rindent = 0;
             if (c.reading() != null) {
                 if (sh > rh) {
-                    rindent = Math.round((float) (sh - rh) / (c.reading().length() + 1));
+                    rindent = (sh - rh) / (c.reading().length() + 1);
                     rh = sh - rindent * 2;
                 } else {
-                    sindent = Math.round((float) (rh - sh) / (c.surface().length() + 1));
+                    sindent = (rh - sh) / (c.surface().length() + 1);
                     sh = rh - sindent * 2;
                 }
             }
@@ -295,11 +296,11 @@ class Renderer implements Callable<Boolean> {
             .attr("width", metrics.columnWidth())
             .attr("height", metrics.canvasHeight());
         container.element("path")
-            .attr("d", "M %d,%d v %d",
-                left + metrics.cellWidth(), 0, metrics.canvasHeight());
+            .attr("d", "M %.2f,%.2f v %.2f",
+                left + metrics.cellWidth(), 0.0, metrics.canvasHeight());
         for(var i = 1; i < metrics.cellsPerCol(); i++) {
             container.element("path")
-                .attr("d", "M %d,%d h %d",
+                .attr("d", "M %.2f,%.2f h %.2f",
                     left, metrics.cellTop(i), metrics.cellWidth());
         }
     }
