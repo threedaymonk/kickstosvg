@@ -262,14 +262,12 @@ class Renderer implements Callable<Boolean> {
             .attr("width", metrics.columnWidth())
             .attr("height", metrics.canvasHeight());
         container.element("path")
-            .attr("d", "M %s,%s %s,%s",
-                left + metrics.cellWidth(), 0,
-                left + metrics.cellWidth(), metrics.canvasHeight());
+            .attr("d", "M %d,%d V %d",
+                left + metrics.cellWidth(), 0, metrics.canvasHeight());
         for(var i = 1; i < metrics.cellsPerCol(); i++) {
             container.element("path")
-                .attr("d", "M %d,%d %d,%d",
-                    left, metrics.cellTop(i),
-                    left + metrics.cellWidth(), metrics.cellTop(i));
+                .attr("d", "M %d,%d H %d",
+                    left, metrics.cellTop(i), metrics.cellWidth());
         }
     }
 }
