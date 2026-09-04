@@ -81,40 +81,40 @@
         <configuration>
           <excludeFilterFile>.settings/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
-				<executions>
-					<execution>
-						<id>spotbugs-integration</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
+        <executions>
+          <execution>
+            <id>spotbugs-integration</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.6.0</version>  
+        <version>3.6.0</version>
         <dependencies>
           <dependency>
               <groupId>com.puppycrawl.tools</groupId>
               <artifactId>checkstyle</artifactId>
               <version>14.1.0</version>
           </dependency>
-          </dependencies>
+        </dependencies>
         <configuration>
           <configLocation>.settings/checks.xml</configLocation>
         </configuration>
-				<executions>
-					<execution>
-						<id>checkstyle-integration</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>checkstyle</goal>
-						</goals>
-					</execution>
-				</executions>
+        <executions>
+          <execution>
+            <id>checkstyle-integration</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>checkstyle</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
