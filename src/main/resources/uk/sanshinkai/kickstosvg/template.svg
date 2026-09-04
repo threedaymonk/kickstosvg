@@ -72,6 +72,10 @@
       #UCHI, #UCHI_SMALL {
         fill: black;
       }
+      #FLAT {
+        font-size: 10;
+        text-align: right;
+      }
     ]]>
   </style>
   <defs>
@@ -140,6 +144,10 @@
     <use id="KAKI_SMALL" href="#KAKI" transform="scale(0.8)" />
     <path id="UCHI" d="M 7,-8 l 4,4 l 1,-1 z"/>
     <use id="UCHI_SMALL" href="#UCHI" transform="scale(0.8)" />
+    <g id="FLAT">
+      <text x="-10" y="9">♭</text>
+    </g>
+    <use id="FLAT_SMALL" href="#FLAT" transform="scale(0.8)" />
   </defs>
   <g id="grid" />
   <g id="notes" />

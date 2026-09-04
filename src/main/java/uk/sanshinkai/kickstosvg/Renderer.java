@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import com.google.common.collect.Lists;
+import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
@@ -184,6 +185,14 @@ class Renderer implements Callable<Boolean> {
         if (n.isSmall())
             elem.attr("class", "small");
 
+        if (n.getAccidental() == Accidental.FLAT) {
+            var href = String.format(
+                Locale.ROOT, "#FLAT%s",
+                n.isSmall() ? "_SMALL" : ""
+            );
+            container.use(href, center);
+        }
+
         if (n.getUtou() != Utou.NONE) {
             var href = String.format(
                 Locale.ROOT, "#%s%s",
@@ -192,8 +201,6 @@ class Renderer implements Callable<Boolean> {
             );
             container.use(href, center);
         }
-
-        // TODO: articulations
     }
 
     private void drawTitle(Builder container, int colNo, Song song) {
