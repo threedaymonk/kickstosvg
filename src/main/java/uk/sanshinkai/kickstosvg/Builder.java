@@ -49,6 +49,14 @@ class Builder {
         return rawStyle(name, String.format(Locale.ROOT, fmt, args));
     }
 
+    public Builder use(String href, XYCoordinate xy) {
+        return use(href, xy.x(), xy.y());
+    }
+
+    public Builder use(String href, double x, double y) {
+        return element("use").attr("href", href).attr("x", x).attr("y", y);
+    }
+
     private Builder wrap(Element el) {
         return new Builder(el);
     }

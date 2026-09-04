@@ -164,10 +164,7 @@ class Renderer implements Callable<Boolean> {
         var start = metrics.repeatCoords(repeat, colNo);
         var href = repeat.isBack() ? "#REPEAT_BACK" : "#REPEAT";
 
-        container.element("use")
-            .attr("href", href)
-            .attr("x", start.x())
-            .attr("y", start.y())
+        container.use(href, start)
             .style("marker-end", "url(#%s)", repeat.getStyle().name());
     }
 
@@ -193,10 +190,7 @@ class Renderer implements Callable<Boolean> {
                 n.getUtou().name(),
                 n.isSmall() ? "_SMALL" : ""
             );
-            container.element("use")
-                .attr("href", href)
-                .attr("x", center.x())
-                .attr("y", center.y());
+            container.use(href, center);
         }
 
         // TODO: articulations
@@ -271,10 +265,7 @@ class Renderer implements Callable<Boolean> {
 
     private void drawColumn(Builder container, int colNo) {
         var left = metrics.columnLeft(colNo);
-        container.element("use")
-            .attr("href", "#COLUMN")
-            .attr("x", left)
-            .attr("y", 0);
+        container.use("#COLUMN", left, 0);
     }
 
     private String fp(double f) {
