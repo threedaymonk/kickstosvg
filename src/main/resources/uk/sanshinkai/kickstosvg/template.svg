@@ -60,15 +60,17 @@
       #titles .tuning {
         font-size: 18;
       }
-      #KAKI, #KAKI_SMALL {
+      #KAKI, #KAKI_SMALL, #UCHI, #UCHI_SMALL {
         stroke: black;
-        fill: none;
         stroke-width: 0.75;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      #KAKI, #KAKI_SMALL {
+        fill: none;
       }
       #UCHI, #UCHI_SMALL {
-        stroke: black;
         fill: black;
-        stroke-width: 0.75;
       }
     ]]>
   </style>
