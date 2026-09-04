@@ -13,97 +13,131 @@ class FuriganaStringParser {
         READING // C
     }
 
-    private ParseState state;
-    private StringBuilder accumulator;
-    private String surface;
-    private String reading;
-    private List<FuriganaComponent> components;
+    private class Session {
+        private ParseState state;
+        private StringBuilder accumulator;
+        private String surface;
+        private String reading;
+        private List<FuriganaComponent> components;
+    
+        Session() {
+            state = ParseState.NONE;
+            components = new ArrayList<FuriganaComponent>();
+            resetSR();
+            resetAccumulator();
+        }
+
+        public ParseState state() {
+            return state;
+        }
+
+        public List<FuriganaComponent> components() {
+            return components;
+        }
+
+        public Session consume(char c) {
+            accumulator.append(c);
+            return this;
+        }
+
+        public Session finishPart() {
+            components.add(new FuriganaComponent(surface, reading));
+            resetSR();
+            return this;
+        }
+
+        public Session flushToSurface() {
+            surface = flushAccumulator();
+            return this;
+        }
+
+        public Session flushToReading() {
+            reading = flushAccumulator();
+            return this;
+        }
+
+        public Session transitionTo(ParseState newState) {
+            state = newState;
+            return this;
+        }
+
+        private String flushAccumulator() {
+            var str = accumulator.toString();
+            resetAccumulator();
+            return str;
+        }
+
+        private void resetAccumulator() {
+            accumulator = new StringBuilder(255);
+        }
+
+        private void resetSR() {
+            surface = null;
+            reading = null;
+        }
+    }
 
     public List<FuriganaComponent> parse(String raw) {
-        reset();
+        var s = new Session();
 
         for (var c : raw.toCharArray()) {
             switch (c) {
-                case '{' -> parseOpen(c);
-                case '}' -> parseClose(c);
-                default -> parseOther(c);
+                case '{' -> parseOpen(s, c);
+                case '}' -> parseClose(s, c);
+                default -> parseOther(s, c);
             }
         }
 
-        parseEnd();
+        parseEnd(s);
 
-        return components;
+        return s.components();
     }
 
-    private void reset() {
-        state = ParseState.NONE;
-        surface = null;
-        reading = null;
-        components = new ArrayList<FuriganaComponent>();
-        accumulator = new StringBuilder(255);
-    }
-
-    private void parseOpen(char c) {
-        switch (state) {
-            case ParseState.NONE -> state = ParseState.SURFACE_WITH_READING;
-            case ParseState.AWAITING_READING -> state = ParseState.READING;
+    private void parseOpen(Session s, char c) {
+        switch (s.state()) {
+            case ParseState.NONE -> s.transitionTo(ParseState.SURFACE_WITH_READING);
+            case ParseState.AWAITING_READING -> s.transitionTo(ParseState.READING);
             case ParseState.SURFACE_ONLY -> {
-                surface = flushAccumulator();
-                finishPart();
-                state = ParseState.SURFACE_WITH_READING;
+                s.flushToSurface()
+                    .finishPart()
+                    .transitionTo(ParseState.SURFACE_WITH_READING);
             }
-            default -> consume(c);
+            default -> s.consume(c);
         }
     }
 
-    private void parseClose(char c) {
-        switch (state) {
+    private void parseClose(Session s, char c) {
+        switch (s.state()) {
             case ParseState.SURFACE_WITH_READING -> {
-                surface = flushAccumulator();
-                state = ParseState.AWAITING_READING;
+                s.flushToSurface()
+                    .transitionTo(ParseState.AWAITING_READING);
             }
             case ParseState.READING -> {
-                reading = flushAccumulator();
-                finishPart();
-                state = ParseState.NONE;
+                s.flushToReading()
+                    .finishPart()
+                    .transitionTo(ParseState.NONE);
             }
-            default -> consume(c);
+            default -> s.consume(c);
         }
     }
 
-    private void parseOther(char c) {
-        switch (state) {
+    private void parseOther(Session s, char c) {
+        switch (s.state()) {
             case ParseState.NONE -> {
-                state = ParseState.SURFACE_ONLY;
-                consume(c);
+                s.transitionTo(ParseState.SURFACE_ONLY)
+                    .consume(c);
             }
-            default -> consume(c);
+            default -> s.consume(c);
         }
     }
 
-    private void parseEnd() {
-        switch (state) {
+    private void parseEnd(Session s) {
+        switch (s.state()) {
             case ParseState.SURFACE_ONLY -> {
-                surface = flushAccumulator();
-                finishPart();
+                s.flushToSurface()
+                    .finishPart();
             }
             default -> {}
         }
-    }
-
-    private void consume(char c) {
-        accumulator.append(c);
-    }
-
-    private String flushAccumulator() {
-        var str = accumulator.toString();
-        accumulator = new StringBuilder(255);
-        return str;
-    }
-
-    private void finishPart() {
-        components.add(new FuriganaComponent(surface, reading));
-        surface = null;
-        reading = null;
     }
 }
