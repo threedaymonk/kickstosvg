@@ -5,7 +5,6 @@ import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
-
 import uk.sanshinkai.kickstosvg.XYCoordinate;
 
 // TODO: Think of a better name for this. It handles dimensions (which I'd like
@@ -49,15 +48,15 @@ class Metrics {
     }
 
     public int columnNumber(int noteIndex) {
-        return (noteIndex / cellsPerCol());
+        return noteIndex / cellsPerCol();
     }
 
     public int columnNumber(Locatable l) {
-      return columnNumber(l.getIndex());
+        return columnNumber(l.getIndex());
     }
 
     public int columnNumber(Song s) {
-      return columnNumber(s.getIndex());
+        return columnNumber(s.getIndex());
     }
 
     public int cellNumber(int noteIndex) {

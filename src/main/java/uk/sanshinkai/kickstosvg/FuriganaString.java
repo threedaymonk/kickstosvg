@@ -2,14 +2,13 @@ package uk.sanshinkai.kickstosvg;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import uk.sanshinkai.kickstosvg.FuriganaComponent;
 import uk.sanshinkai.kickstosvg.FuriganaStringParser;
 
 class FuriganaString {
     private final List<FuriganaComponent> components;
 
-    public FuriganaString(String raw) {
+    FuriganaString(String raw) {
         components = new FuriganaStringParser().parse(raw);
     }
 
@@ -20,6 +19,6 @@ class FuriganaString {
     }
 
     public List<FuriganaComponent> components() {
-      return components;
+        return components;
     }
 }

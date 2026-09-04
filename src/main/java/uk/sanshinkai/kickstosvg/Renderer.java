@@ -2,20 +2,12 @@ package uk.sanshinkai.kickstosvg;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.TreeSet;
 import java.util.concurrent.Callable;
-
 import com.google.common.collect.Lists;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-
-import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
@@ -23,16 +15,18 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
-
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import uk.sanshinkai.kickstosvg.Builder;
 import uk.sanshinkai.kickstosvg.FuriganaString;
 import uk.sanshinkai.kickstosvg.Metrics;
 
 class Renderer implements Callable<Boolean> {
-    private String inputPath, outputDir;
+    private String inputPath;
+    private String outputDir;
     private Metrics metrics;
 
-    public Renderer(String inputPath, String outputDir) {
+    Renderer(String inputPath, String outputDir) {
         this.inputPath = inputPath;
         this.outputDir = outputDir;
         this.metrics = new Metrics();
@@ -154,10 +148,10 @@ class Renderer implements Callable<Boolean> {
     private void configureSvg(org.dom4j.Document doc) {
         new Builder(doc.getRootElement())
             .attr("viewBox", "%s %s %s %s",
-                    f(-metrics.marginX()), f(-metrics.marginY()),
-                    f(metrics.paperWidth()), f(metrics.paperHeight()))
-            .attr("width", "%spt", f(metrics.paperWidth()))
-            .attr("height", "%spt", f(metrics.paperHeight()));
+                    fp(-metrics.marginX()), fp(-metrics.marginY()),
+                    fp(metrics.paperWidth()), fp(metrics.paperHeight()))
+            .attr("width", "%spt", fp(metrics.paperWidth()))
+            .attr("height", "%spt", fp(metrics.paperHeight()));
     }
 
     private void drawColumns(Document doc, List<Column> columns) {
@@ -251,7 +245,9 @@ class Renderer implements Callable<Boolean> {
         var pos = 0;
         for (var c : jTitle.components()) {
             double sh = c.surface().length() * metrics.fontSizeTitleJapanese();
-            double rh = c.reading() != null ? c.reading().length() * metrics.fontSizeTitleFurigana() : 0;
+            double rh = c.reading() != null
+                ? c.reading().length() * metrics.fontSizeTitleFurigana()
+                : 0;
             double sindent = 0;
             double rindent = 0;
             if (c.reading() != null) {
@@ -303,7 +299,7 @@ class Renderer implements Callable<Boolean> {
             .attr("y", 0);
     }
 
-    private String f(double f) {
+    private String fp(double f) {
         return NumericFormatting.tidy(f);
     }
 }

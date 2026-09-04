@@ -3,16 +3,16 @@ package uk.sanshinkai.kickstosvg;
 import java.util.ArrayList;
 import java.util.List;
 
-// Given a string like A{B}{C}D
-enum ParseState {
-    NONE, // before A, or after C}
-    SURFACE_ONLY, // A or D
-    SURFACE_WITH_READING, // B
-    AWAITING_READING, // after B}
-    READING // C
-}
-
 class FuriganaStringParser {
+    // Given a string like A{B}{C}D
+    private enum ParseState {
+        NONE, // before A, or after C}
+        SURFACE_ONLY, // A or D
+        SURFACE_WITH_READING, // B
+        AWAITING_READING, // after B}
+        READING // C
+    }
+
     private ParseState state;
     private StringBuilder accumulator;
     private String surface;
@@ -24,9 +24,9 @@ class FuriganaStringParser {
 
         for (var c : raw.toCharArray()) {
             switch (c) {
-                case '{' -> { parseOpen(c); }
-                case '}' -> { parseClose(c); }
-                default -> { parseOther(c); }
+                case '{' -> parseOpen(c);
+                case '}' -> parseClose(c);
+                default -> parseOther(c);
             }
         }
 

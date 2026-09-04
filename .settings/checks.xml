@@ -79,8 +79,8 @@
     <module name="Indentation">
       <property name="basicOffset" value="4"/>
       <property name="caseIndent" value="4"/>
-      <property name="throwsIndent" value="8"/>
-      <property name="lineWrappingIndentation" value="8"/>
+      <property name="throwsIndent" value="4"/>
+      <property name="lineWrappingIndentation" value="4"/>
       <property name="arrayInitIndent" value="4"/>
     </module>
     <module name="OneTopLevelClass"/>
@@ -146,6 +146,11 @@
     </module>
 
     <module name="EmptyLineSeparator">
+      <property name="tokens"
+               value="PACKAGE_DEF, IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+                    STATIC_INIT, INSTANCE_INIT, CTOR_DEF, VARIABLE_DEF, RECORD_DEF,
+                    COMPACT_CTOR_DEF"/>
+      <property name="allowNoEmptyLineBetweenFields" value="true"/>
       <property name="allowMultipleEmptyLines" value="false"/>
       <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
     </module>
@@ -238,10 +243,10 @@
     </module>
 
     <module name="ImportOrder">
-      <property name="groups" value="java,javax,org,com"/>
+      <property name="groups" value="java,javax"/>
       <property name="ordered" value="true"/>
       <property name="option" value="bottom"/>
-      <property name="staticGroups" value="java,javax,org,com"/>
+      <property name="staticGroups" value="java,javax"/>
       <property name="sortStaticImportsAlphabetically" value="true"/>
     </module>
     <module name="SuppressionXpathSingleFilter">
@@ -306,7 +311,6 @@
 
     <module name="MissingOverride"/>
     <module name="MissingOverrideOnRecordAccessor"/>
-    <module name="TodoComment"/>
     <module name="ParameterAssignment"/>
     <module name="FallThrough"/>
     <module name="MethodLength"/>
@@ -339,10 +343,6 @@
              /LITERAL_IF or parent::LITERAL_TRY/LITERAL_FINALLY
              [not(preceding-sibling::LITERAL_CATCH)]
              or parent::LITERAL_CATCH/following-sibling::LITERAL_FINALLY]]"/>
-    </module>
-    <module name="NeedBraces">
-      <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR,
-                   LITERAL_IF, LITERAL_WHILE, LITERAL_CASE, LITERAL_DEFAULT"/>
     </module>
   </module>
 
