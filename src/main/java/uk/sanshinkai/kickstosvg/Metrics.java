@@ -22,13 +22,9 @@ class Metrics {
     public double fontSizeTitleLatin() { return 16; }
     public double fontSizeTitleFurigana() { return 8; }
     public double fontSizeTuning() { return 18; }
-    public double graphicStrokeWidth() { return 0.5; }
-    public double lyricSpaceAdjustment() { return -4; }
-    public double marginLyrics() { return 3; }
     public double paperHeight() { return 595; }
     public double paperWidth() { return 842; }
-    public int ticksPerCell() { return 12; }
-    public double titleMargin() { return 9; }
+    public int ticksPerCell() { return Locatable.CELL_TICKS; }
 
     public double canvasWidth() {
         return columnWidth() * columnsPerPage()
