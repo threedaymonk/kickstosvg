@@ -15,9 +15,9 @@ class Metrics {
     public double columnSpace() { return 9; }
     public double columnWidth() { return 56; }
     public int columnsPerPage() { return 11; }
-    public double fontSizeLarge() { return 16; }
+    public double fontSizeLarge() { return 18; }
     public double fontSizeLyrics() { return 10; }
-    public double fontSizeSmall() { return 12; }
+    public double fontSizeSmall() { return 14; }
     public double fontSizeTitleJapanese() { return 20; }
     public double fontSizeTitleLatin() { return 16; }
     public double fontSizeTitleFurigana() { return 8; }

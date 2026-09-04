@@ -21,6 +21,7 @@ class Builder {
     }
 
     public Builder text(String str) {
+        if (str == null) str = "";
         return wrap(obj.addText(str));
     }
 

@@ -15,18 +15,18 @@
       .latin {
         font-family: "FreeSans";
       }
-      #grid {
+      #COLUMN {
         fill: none;
         stroke-width: 0.5;
         stroke: #969696;
       }
       #notes {
-        font-size: 16;
+        font-size: 18;
         text-align: center;
         text-anchor: middle;
       }
       #notes .small {
-        font-size: 12;
+        font-size: 14;
       }
       #lyrics {
         font-size: 10;
@@ -38,6 +38,15 @@
         stroke: black;
         stroke-width: 0.5;
       }
+      #TRIANGLE {
+        stroke: black;
+      }
+      #TRIANGLE_FILLED, #CIRCLE_FILLED {
+        fill: black;
+      }
+      #TRIANGLE_OUTLINE, #CIRCLE_OUTLINE {
+        fill: white;
+      }
       #titles {
         font-size: 20;
         writing-mode: tb-rl;
@@ -48,60 +57,64 @@
       #titles .furigana {
         font-size: 8;
       }
+      #KAKI, #KAKI_SMALL {
+        stroke: black;
+        fill: none;
+        stroke-width: 0.75;
+      }
+      #UCHI, #UCHI_SMALL {
+        stroke: black;
+        fill: black;
+        stroke-width: 0.75;
+      }
     ]]>
   </style>
   <defs>
+    <path id="TRIANGLE" d="M 4,0 L -4,-4 L -4,4 z" />
+    <circle id="CIRCLE" cx="0" cy="0" r="4" />
     <marker
       id="TRIANGLE_FILLED"
       orient="auto"
       refX="0" refY="0"
       markerUnits="strokeWidth"
+      style="stroke-width: 1"
       >
-      <path
-        style="fill: black; stroke: black; stroke-width: 1"
-        d="M 4,0 L -4,-4 L -4,4 z"
-        />
+      <use href="#TRIANGLE" />
     </marker>
     <marker
       id="TRIANGLE_OUTLINE"
       orient="auto"
       refX="0" refY="0"
       markerUnits="strokeWidth"
+      style="stroke-width: 1"
       >
-      <path
-        style="fill: white; stroke: black; stroke-width: 1"
-        d="M 4,0 L -4,-4 L -4,4 z"
-        />
+      <use href="#TRIANGLE" />
     </marker>
     <marker
       id="CIRCLE_FILLED"
       orient="auto"
       refX="0" refY="0"
       markerUnits="strokeWidth"
+      style="stroke-width: 1"
       >
-      <circle
-        cx="0" cy="0" r="4"
-        style="fill: black; stroke: black; stroke-width: 1"
-        />
+      <use href="#CIRCLE" />
     </marker>
     <marker
       id="CIRCLE_OUTLINE"
       orient="auto"
       refX="0" refY="0"
       markerUnits="strokeWidth"
+      style="stroke-width: 1"
       >
-      <circle
-        cx="0" cy="0" r="4"
-        style="fill: white; stroke: black; stroke-width: 1"
-        />
+      <use href="#CIRCLE" />
     </marker>
     <path
       id="REPEAT"
-      d="M 0,0 h 14 v 36"
+      d="M 0,0 h 21 v 36"
       />
     <path
       id="REPEAT_BACK"
-      d="M 0,0 h 14 v -36"
+      d="M 0,0 h 21 v -36"
       />
     <g id="COLUMN">
       <rect x="0" y="0" width="56" height="432"/>
@@ -118,6 +131,10 @@
       <path d="M 0,360 h 28"/>
       <path d="M 0,396 h 28"/>
     </g>
+    <path id="KAKI" d="M 1,-8 h 8 v 7" />
+    <use id="KAKI_SMALL" href="#KAKI" transform="scale(0.8)" />
+    <path id="UCHI" d="M 7,-8 l 4,4 l 1,-1 z"/>
+    <use id="UCHI_SMALL" href="#UCHI" transform="scale(0.8)" />
   </defs>
   <g id="grid" />
   <g id="notes" />

@@ -13,6 +13,7 @@ import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
+import org.colston.kicks.document.Utou;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 import org.dom4j.Document;
@@ -232,6 +233,18 @@ class Renderer implements Callable<Boolean> {
 
         if (n.isSmall())
             elem.attr("class", "small");
+
+        if (n.getUtou() != Utou.NONE) {
+            var href = String.format(
+                Locale.ROOT, "#%s%s",
+                n.getUtou().name(),
+                n.isSmall() ? "_SMALL" : ""
+            );
+            container.element("use")
+                .attr("href", href)
+                .attr("x", center.x())
+                .attr("y", center.y());
+        }
 
         // TODO: articulations
     }
