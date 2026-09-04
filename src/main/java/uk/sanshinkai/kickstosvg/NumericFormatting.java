@@ -2,7 +2,9 @@ package uk.sanshinkai.kickstosvg;
 
 import java.util.Locale;
 
-class NumericFormatting {
+final class NumericFormatting {
+    private NumericFormatting() {}
+
     public static String tidy(int n) {
         return String.format(Locale.ROOT, "%d", n);
     }
