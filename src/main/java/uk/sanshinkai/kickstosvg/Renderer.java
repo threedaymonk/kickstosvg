@@ -51,10 +51,13 @@ class Renderer implements Callable<Boolean> {
     }
 
     private Document loadTemplate() throws Exception {
-        var xml = new String(
-            Renderer.class.getResourceAsStream("template.svg").readAllBytes()
-        );
-        return DocumentHelper.parseText(xml);
+        var stream = Renderer.class.getResourceAsStream("template.svg");
+        try {
+            var xml = new String(stream.readAllBytes());
+            return DocumentHelper.parseText(xml);
+        } finally {
+            stream.close();
+        }
     }
 
     public Boolean call() throws Exception {
@@ -65,7 +68,7 @@ class Renderer implements Callable<Boolean> {
         for (var i = 0; i < pages.size(); i++) {
             var xml = renderPage(pages.get(i), i);
             var filename = generateFilename(i);
-            System.err.printf("Writing page %d to %s\n", i + 1, filename);
+            System.err.printf("Writing page %d to %s%n", i + 1, filename);
             var out = new PrintWriter(filename);
             out.print(xml);
             out.close();
@@ -75,9 +78,12 @@ class Renderer implements Callable<Boolean> {
     }
 
     // page is zero-indexed
-    private String generateFilename(int page) {
+    private String generateFilename(int page) throws Exception {
         var suffix = String.format(Locale.ROOT, "-%02d.svg", page + 1);
-        var name = Path.of(inputPath).getFileName().toString()
+        var inputFilename = Path.of(inputPath).getFileName();
+        if (inputFilename == null)
+            throw new Exception("Input path is empty");
+        var name = inputFilename.toString()
             .replaceFirst("\\.[^\\.]+$|$", suffix);
         return Path.of(outputDir, name).toString();
     }

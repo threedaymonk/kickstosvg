@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://spotbugs.readthedocs.io/en/latest/filter.html -->
+<FindBugsFilter>
+  <Match>
+    <!-- Fluent interface of Builder means that we ignore the last return value -->
+    <Class name="uk.sanshinkai.kickstosvg.Renderer"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_INFERRED"/>
+  </Match>
+  <Match>
+    <!-- Bamboozled by picocli entering via call() -->
+    <Class name="uk.sanshinkai.kickstosvg.App"/>
+    <Field name="outputDir"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+</FindBugsFilter>

@@ -15,7 +15,7 @@ Render a [Kicks] kunkunshi document to Inkscape-compatible SVG.
 ## Build
 
     git clone [this repo URL]
-    mvn package
+    mvn clean verify
 
 ## Run
 

@@ -73,6 +73,24 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>3.5.6</version>
       </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>4.10.4.0</version>
+        <configuration>
+          <excludeFilterFile>.settings/spotbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+				<executions>
+					<execution>
+						<id>spotbugs-integration</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+      </plugin>
     </plugins>
   </build>
 
