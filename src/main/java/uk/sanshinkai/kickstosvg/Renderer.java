@@ -120,6 +120,7 @@ class Renderer implements Callable<Boolean> {
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             for (var note : column.notes()) drawNote(g, i, note);
+            drawChordsAndSlurs(g, i, column.notes());
         }
     }
 
@@ -148,6 +149,63 @@ class Renderer implements Callable<Boolean> {
                 drawTuning(g, i, column.song());
             }
         }
+    }
+
+    private void drawChordsAndSlurs(Builder container, int colNo, List<Note> notes) {
+        Note chordStart = null;
+        Note slurStart = null;
+
+        for (var n : notes) {
+            if ((chordStart == null) == n.isChord()) {
+                if (n.isChord()) {
+                    chordStart = n;
+                } else {
+                    drawJoinLine(container, colNo, chordStart, n,
+                        metrics.xOffsetChord());
+                    chordStart = null;
+                }
+            }
+            if ((slurStart == null) == n.isSlur()) {
+                if (n.isSlur()) {
+                    slurStart = n;
+                } else {
+                    drawJoinLine(container, colNo, slurStart, n,
+                        metrics.xOffsetSlur());
+                    slurStart = null;
+                }
+            }
+        }
+        if (chordStart != null) {
+            Note end = notes.getLast();
+            drawJoinLine(container, colNo, chordStart, end,
+                metrics.xOffsetChord());
+        }
+        if (slurStart != null) {
+            Note end = notes.getLast();
+            drawJoinLine(container, colNo, slurStart, end,
+                metrics.xOffsetSlur());
+        }
+    }
+
+    private void drawJoinLine(
+        Builder container, int colNo, Note start, Note end,
+        double xOffset
+    ) {
+        var cStart = metrics.noteCoords(start, colNo);
+        var cEnd = metrics.noteCoords(end, colNo);
+        var fsStart = start.isSmall()
+            ? metrics.fontSizeSmall()
+            : metrics.fontSizeLarge();
+        var fsEnd = end.isSmall()
+            ? metrics.fontSizeSmall()
+            : metrics.fontSizeLarge();
+        var x = cStart.x() + xOffset;
+        // TODO: Do something better than this fudged arbitrary / 4
+        var y = cStart.y() - fsStart / 4;
+        var h = cEnd.y() + fsEnd / 4 - y;
+        container.element("path")
+            .attr("class", "joinLine")
+            .attr("d", "M %s,%s v %s", fp(x), fp(y), fp(h));
     }
 
     private void drawLyric(Builder container, int colNo, Lyric l) {

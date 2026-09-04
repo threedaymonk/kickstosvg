@@ -25,6 +25,8 @@ class Metrics {
     public double paperHeight() { return 595; }
     public double paperWidth() { return 842; }
     public int ticksPerCell() { return Locatable.CELL_TICKS; }
+    public double xOffsetChord() { return 10; }
+    public double xOffsetSlur() { return -10; }
 
     public double canvasWidth() {
         return columnWidth() * columnsPerPage()
