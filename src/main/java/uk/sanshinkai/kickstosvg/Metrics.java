@@ -5,7 +5,6 @@ import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
-import uk.sanshinkai.kickstosvg.XYCoordinate;
 
 // TODO: Think of a better name for this. It handles dimensions (which I'd like
 // to be read from a configuration file) and fonts and computations about
@@ -78,7 +77,7 @@ class Metrics {
     }
 
     public double cellOffset(int offset) {
-        return (offset * cellHeight()) / ticksPerCell();
+        return offset * cellHeight() / ticksPerCell();
     }
 
     public double cellOffset(Locatable l) {

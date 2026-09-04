@@ -3,7 +3,6 @@ package uk.sanshinkai.kickstosvg;
 import java.util.Locale;
 import org.dom4j.Element;
 import org.dom4j.Node;
-import uk.sanshinkai.kickstosvg.NumericFormatting;
 
 class Builder {
     private Element obj;

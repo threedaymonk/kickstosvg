@@ -8,7 +8,7 @@ class NumericFormatting {
     }
 
     public static String tidy(double d) {
-        return NumericFormatting.tidy(d, 3);
+        return tidy(d, 3);
     }
 
     public static String tidy(double d, int precision) {

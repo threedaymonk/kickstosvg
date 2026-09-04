@@ -17,9 +17,6 @@ import org.colston.kicks.document.persistence.DocumentStoreFactory;
 import org.colston.kicks.render.RendererResources;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
-import uk.sanshinkai.kickstosvg.Builder;
-import uk.sanshinkai.kickstosvg.FuriganaString;
-import uk.sanshinkai.kickstosvg.Metrics;
 
 class Renderer implements Callable<Boolean> {
     private String inputPath;
@@ -60,7 +57,7 @@ class Renderer implements Callable<Boolean> {
         var pages = Lists.partition(columns, metrics.columnsPerPage());
 
         for (var i = 0; i < pages.size(); i++) {
-            var xml = renderPage(pages.get(i), i);
+            var xml = renderPage(pages.get(i));
             var filename = generateFilename(i);
             System.err.printf("Writing page %d to %s%n", i + 1, filename);
             var out = new PrintWriter(filename);
@@ -82,7 +79,7 @@ class Renderer implements Callable<Boolean> {
         return Path.of(outputDir, name).toString();
     }
 
-    private String renderPage(List<Column> columns, int page) throws Exception {
+    private String renderPage(List<Column> columns) throws Exception {
         var target = loadTemplate();
 
         configureSvg(target);
@@ -145,7 +142,7 @@ class Renderer implements Callable<Boolean> {
         return columns;
     }
 
-    private void configureSvg(org.dom4j.Document doc) {
+    private void configureSvg(Document doc) {
         new Builder(doc.getRootElement())
             .attr("viewBox", "%s %s %s %s",
                     fp(-metrics.marginX()), fp(-metrics.marginY()),

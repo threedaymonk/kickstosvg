@@ -2,8 +2,6 @@ package uk.sanshinkai.kickstosvg;
 
 import java.util.ArrayList;
 import java.util.List;
-import uk.sanshinkai.kickstosvg.FuriganaComponent;
-import uk.sanshinkai.kickstosvg.FuriganaStringParser;
 
 class FuriganaString {
     private final List<FuriganaComponent> components;

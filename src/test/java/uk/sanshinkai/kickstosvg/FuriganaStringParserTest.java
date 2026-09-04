@@ -2,7 +2,6 @@ package uk.sanshinkai.kickstosvg;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import uk.sanshinkai.kickstosvg.FuriganaStringParser;
 
 class FuriganaStringParserTest {
   @Test
