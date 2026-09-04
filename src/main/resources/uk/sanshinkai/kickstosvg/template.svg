@@ -57,6 +57,9 @@
       #titles .furigana {
         font-size: 8;
       }
+      #titles .tuning {
+        font-size: 18;
+      }
       #KAKI, #KAKI_SMALL {
         stroke: black;
         fill: none;

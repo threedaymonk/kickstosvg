@@ -21,6 +21,7 @@ class Metrics {
     public double fontSizeTitleJapanese() { return 20; }
     public double fontSizeTitleLatin() { return 16; }
     public double fontSizeTitleFurigana() { return 8; }
+    public double fontSizeTuning() { return 18; }
     public double graphicStrokeWidth() { return 0.5; }
     public double lyricSpaceAdjustment() { return -4; }
     public double marginLyrics() { return 3; }
@@ -108,4 +109,13 @@ class Metrics {
             cellTop(cellNumber(r)) + cellOffset(r)
         );
     }
+
+    // Returns the top co-ordinates of the tuning
+    public XYCoordinate tuningCoords(int colNo) {
+        return new XYCoordinate(
+            columnLeft(colNo) + columnWidth() / 2,
+            canvasHeight() - fontSizeTuning() * 4
+        );
+    }
+
 }

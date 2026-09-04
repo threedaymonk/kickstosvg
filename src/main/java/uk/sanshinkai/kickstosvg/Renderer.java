@@ -93,7 +93,6 @@ class Renderer implements Callable<Boolean> {
         drawLyrics(target, columns);
         drawRepeats(target, columns);
         drawSongTitles(target, columns);
-        // TODO: drawTuning(target, columns);
 
         return target.asXML();
     }
@@ -192,7 +191,10 @@ class Renderer implements Callable<Boolean> {
         var g = new Builder(doc.selectSingleNode("//g[@id='titles']"));
         for (var i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
-            if (column.isTitle()) drawTitle(g, i, column.song());
+            if (column.isTitle()) {
+                drawTitle(g, i, column.song());
+                drawTuning(g, i, column.song());
+            }
         }
     }
 
@@ -302,7 +304,18 @@ class Renderer implements Callable<Boolean> {
                 .attr("y", 0)
                 .attr("class", "latin")
                 .text(song.getTitleRomaji());
+    }
 
+    private void drawTuning(Builder container, int colNo, Song song) {
+        var tuning = song.getTuning();
+        if (tuning == null) return;
+
+        var start = metrics.tuningCoords(colNo);
+        container.element("text")
+                .attr("x", start.x())
+                .attr("y", start.y())
+                .attr("class", "tuning")
+                .text(tuning.getDisplayName());
     }
 
     private void drawColumn(Builder container, int colNo) {
