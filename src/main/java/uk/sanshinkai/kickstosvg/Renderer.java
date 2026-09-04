@@ -51,18 +51,22 @@ class Renderer implements Callable<Boolean> {
         }
     }
 
+    @Override
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
         var columns = processIntoColumns(music);
         var pages = Lists.partition(columns, metrics.columnsPerPage());
 
         for (var i = 0; i < pages.size(); i++) {
-            var xml = renderPage(pages.get(i));
-            var filename = generateFilename(i);
-            System.err.printf("Writing page %d to %s%n", i + 1, filename);
-            var out = new PrintWriter(filename);
-            out.print(xml);
-            out.close();
+                var xml = renderPage(pages.get(i));
+                var filename = generateFilename(i);
+                var out = new PrintWriter(filename);
+            try {
+                System.err.printf("Writing page %d to %s%n", i + 1, filename);
+                out.print(xml);
+            } finally {
+                out.close();
+            }
         }
 
         return true;
