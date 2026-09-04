@@ -117,14 +117,8 @@
       >
       <use href="#CIRCLE" />
     </marker>
-    <path
-      id="REPEAT"
-      d="M 0,0 h 21 v 36"
-      />
-    <path
-      id="REPEAT_BACK"
-      d="M 0,0 h 21 v -36"
-      />
+    <path id="REPEAT" d="M 0,0 h 21 v 36" />
+    <use id="REPEAT_BACK" href="#REPEAT" transform="scale(1 -1)"/>
     <g id="COLUMN">
       <rect x="0" y="0" width="56" height="432"/>
       <path d="M 28,0 v 432"/>
