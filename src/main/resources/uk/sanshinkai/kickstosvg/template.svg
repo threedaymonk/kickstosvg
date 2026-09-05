@@ -24,6 +24,7 @@
         font-size: 18;
         text-align: center;
         text-anchor: middle;
+        baseline-shift: 0.2ex;
       }
       #notes .small {
         font-size: 14;
@@ -139,12 +140,12 @@
       <path d="M 0,360 h 28"/>
       <path d="M 0,396 h 28"/>
     </g>
-    <path id="KAKI" d="M 1,-8 h 8 v 7" />
+    <path id="KAKI" d="M 1,-9 h 8 v 7" />
     <use id="KAKI_SMALL" href="#KAKI" transform="scale(0.8)" />
     <path id="UCHI" d="M 7,-8 l 4,4 l 1,-1 z"/>
     <use id="UCHI_SMALL" href="#UCHI" transform="scale(0.8)" />
     <g id="FLAT">
-      <text x="-10" y="9">♭</text>
+      <text x="-10" y="16">♭</text>
     </g>
     <use id="FLAT_SMALL" href="#FLAT" transform="scale(0.8)" />
   </defs>
