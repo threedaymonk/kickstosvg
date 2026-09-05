@@ -15,13 +15,14 @@ class Metrics {
     public double columnSpace() { return 9; }
     public double columnWidth() { return 56; }
     public int columnsPerPage() { return 11; }
-    public double fontSizeLarge() { return 18; }
+    public double fontSizeFinger() { return 7; }
     public double fontSizeLyrics() { return 10; }
-    public double fontSizeSmall() { return 14; }
-    public double fontSizeTitleJapanese() { return 20; }
-    public double fontSizeTitleLatin() { return 16; }
-    public double fontSizeTitleFurigana() { return 8; }
-    public double fontSizeTuning() { return 18; }
+    public double fontSizeNote() { return 18; }
+    public double fontSizeNoteSmall() { return 14; }
+    public double fontSizeTitleFurigana() { return 12; }
+    public double fontSizeTitleJapanese() { return 26; }
+    public double fontSizeTitleLatin() { return 14; }
+    public double fontSizeTuning() { return 14; }
     public double paperHeight() { return 595; }
     public double paperWidth() { return 842; }
     public int ticksPerCell() { return Locatable.CELL_TICKS; }

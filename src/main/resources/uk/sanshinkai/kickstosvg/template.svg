@@ -49,17 +49,17 @@
         fill: white;
       }
       #titles {
-        font-size: 20;
+        font-size: 26;
         writing-mode: tb-rl;
       }
       #titles .latin {
-        font-size: 16;
+        font-size: 14;
       }
       #titles .furigana {
-        font-size: 8;
+        font-size: 12;
       }
       #titles .tuning {
-        font-size: 18;
+        font-size: 14;
       }
       #KAKI, #KAKI_SMALL, #UCHI, #UCHI_SMALL {
         stroke: black;

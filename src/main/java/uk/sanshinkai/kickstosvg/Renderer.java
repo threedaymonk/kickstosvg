@@ -194,11 +194,11 @@ class Renderer implements Callable<Boolean> {
         var cStart = metrics.noteCoords(start, colNo);
         var cEnd = metrics.noteCoords(end, colNo);
         var fsStart = start.isSmall()
-            ? metrics.fontSizeSmall()
-            : metrics.fontSizeLarge();
+            ? metrics.fontSizeNoteSmall()
+            : metrics.fontSizeNote();
         var fsEnd = end.isSmall()
-            ? metrics.fontSizeSmall()
-            : metrics.fontSizeLarge();
+            ? metrics.fontSizeNoteSmall()
+            : metrics.fontSizeNote();
         var x = cStart.x() + xOffset;
         // TODO: Do something better than this fudged arbitrary / 4
         var y = cStart.y() - fsStart / 4;
@@ -229,8 +229,8 @@ class Renderer implements Callable<Boolean> {
 
     private void drawNote(Builder container, int colNo, Note n) {
         var fontSize = n.isSmall()
-            ? metrics.fontSizeSmall()
-            : metrics.fontSizeLarge();
+            ? metrics.fontSizeNoteSmall()
+            : metrics.fontSizeNote();
         var center = metrics.noteCoords(n, colNo);
 
         // Reference point is centre of baseline
