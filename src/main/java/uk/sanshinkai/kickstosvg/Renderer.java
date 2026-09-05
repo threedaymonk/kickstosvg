@@ -263,8 +263,27 @@ class Renderer implements Callable<Boolean> {
 
     private void drawTitle(Builder container, int colNo, Song song) {
         var jTitle = new FuriganaString(song.getTitle());
-
+        double jx;
         var x0 = metrics.columnLeft(colNo);
+
+        if (song.getTitleRomaji() == null) {
+            jx = x0 + metrics.columnWidth() / 2;
+        } else {
+            jx = x0 + metrics.fontSizeTitleJapanese() / 2;
+
+            var rx = x0 + metrics.fontSizeTitleJapanese()
+                + metrics.fontSizeTitleLatin() / 2
+                + metrics.fontSizeTitleFurigana();
+
+            container.element("text")
+                    .attr("x", rx)
+                    .attr("y", 0)
+                    .attr("class", "latin")
+                    .text(song.getTitleRomaji());
+        }
+
+        var fx = jx + metrics.fontSizeTitleJapanese() / 2
+            + metrics.fontSizeTitleFurigana() / 2;
 
         // Reference point is top centre of first character
 
@@ -286,17 +305,14 @@ class Renderer implements Callable<Boolean> {
                 }
             }
             container.element("text")
-                    .attr("x", x0 + metrics.fontSizeTitleJapanese() / 2)
+                    .attr("x", jx)
                     .attr("y", pos + sindent)
                     .attr("textLength", sh)
                     .attr("lengthAdjust", "spacing")
                     .text(c.surface());
             if (c.reading() != null) {
-                var x = x0
-                    + metrics.fontSizeTitleJapanese()
-                    + metrics.fontSizeTitleFurigana() / 2;
                 container.element("text")
-                    .attr("x", x)
+                    .attr("x", fx)
                     .attr("y", pos + rindent)
                     .attr("textLength", rh)
                     .attr("lengthAdjust", "spacing")
@@ -307,13 +323,6 @@ class Renderer implements Callable<Boolean> {
             pos += Math.max(sh, rh);
         }
 
-        container.element("text")
-                .attr("x", x0 + metrics.fontSizeTitleJapanese()
-                        + metrics.fontSizeTitleLatin() / 2
-                        + metrics.fontSizeTitleFurigana())
-                .attr("y", 0)
-                .attr("class", "latin")
-                .text(song.getTitleRomaji());
     }
 
     private void drawTuning(Builder container, int colNo, Song song) {
