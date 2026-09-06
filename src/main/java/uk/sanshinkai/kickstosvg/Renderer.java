@@ -15,7 +15,6 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.Utou;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
-import org.colston.kicks.render.RendererResources;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 
@@ -228,35 +227,18 @@ class Renderer implements Callable<Boolean> {
     }
 
     private void drawNote(Builder container, int colNo, Note n) {
-        var fontSize = n.isSmall()
-            ? metrics.fontSizeNoteSmall()
-            : metrics.fontSizeNote();
         var center = metrics.noteCoords(n, colNo);
 
-        // Reference point is centre of baseline
-        // so shift y down by half the font size
-        var elem = container.element("text")
-            .attr("x", center.x())
-            .attr("y", center.y() + fontSize / 2)
-            .text(RendererResources.getNoteText(n.getString(), n.getPlacement()));
+        var suffix = n.isSmall() ? "_small" : "";
 
-        if (n.isSmall())
-            elem.attr("class", "small");
+        container.use(Symbols.noteRef(n) + suffix, center);
 
-        if (n.getAccidental() == Accidental.FLAT) {
-            var href = String.format(
-                Locale.ROOT, "#FLAT%s",
-                n.isSmall() ? "_SMALL" : ""
-            );
-            container.use(href, center);
-        }
+        if (n.getAccidental() == Accidental.FLAT)
+            container.use("#flat" + suffix, center);
 
         if (n.getUtou() != Utou.NONE) {
-            var href = String.format(
-                Locale.ROOT, "#%s%s",
-                n.getUtou().name(),
-                n.isSmall() ? "_SMALL" : ""
-            );
+            var href = "#" + n.getUtou().name().toLowerCase(Locale.ROOT)
+                + suffix;
             container.use(href, center);
         }
     }
