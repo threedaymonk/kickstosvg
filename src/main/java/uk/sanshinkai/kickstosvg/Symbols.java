@@ -2,7 +2,9 @@ package uk.sanshinkai.kickstosvg;
 
 import org.colston.kicks.document.Note;
 
-public class Symbols {
+public final class Symbols {
+    private Symbols() {}
+
     private static final String[][] VALUES = {
         {"maru", "", "", "", "", "", "", "", ""},
         {"ai", "otsu", "rou", "gerou", "koujou", "kounaka", "koushaku", "iai", "iotsu"},
