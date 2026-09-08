@@ -3,7 +3,7 @@
 <FindBugsFilter>
   <Match>
     <!-- Fluent interface of Builder means that we ignore the last return value -->
-    <Class name="uk.sanshinkai.kickstosvg.Renderer"/>
+    <Class name="uk.sanshinkai.kickstosvg.Page"/>
     <Bug pattern="RV_RETURN_VALUE_IGNORED_INFERRED"/>
   </Match>
   <Match>
