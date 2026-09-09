@@ -16,7 +16,26 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>27</java.version>
+
+    <!-- Dependency versions -->
+    <dom4j.version>2.1.4</dom4j.version>
+    <guava.version>33.7.1-jre</guava.version>
+    <jaxen.version>2.0.6</jaxen.version>
     <junit.version>6.1.3</junit.version>
+    <kicks-core.version>0.0.1-SNAPSHOT</kicks-core.version>
+    <picocli.version>4.7.0</picocli.version>
+
+    <!-- Plugin versions -->
+    <checkstyle.version>14.1.0</checkstyle.version>
+    <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
+    <maven-checkstyle-plugin.version>3.6.0</maven-checkstyle-plugin.version>
+    <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+    <maven-failsafe-plugin.version>3.5.6</maven-failsafe-plugin.version>
+    <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
+    <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
+    <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
+    <pmd.version>7.27.0</pmd.version>
+    <spotbugs-maven-plugin.version>4.10.4.0</spotbugs-maven-plugin.version>
   </properties>
 
   <build>
@@ -26,7 +45,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>${maven-compiler-plugin.version}</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -36,17 +55,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.5.1</version>
+        <version>${maven-jar-plugin.version}</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-         <version>3.7.1</version>
+         <version>${maven-assembly-plugin.version}</version>
         <configuration>
           <archive>
             <manifest>
-              <mainClass>uk.sanshinkai.kickstosvg.App</mainClass>
+              <mainClass>${groupId}.${artifactId}.App</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
@@ -66,18 +85,18 @@
 
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.5.6</version>
+        <version>${maven-surefire-plugin.version}</version>
       </plugin>
 
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.5.6</version>
+        <version>${maven-failsafe-plugin.version}</version>
       </plugin>
 
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>4.10.4.0</version>
+        <version>${spotbugs-maven-plugin.version}</version>
         <configuration>
           <excludeFilterFile>.settings/spotbugs-exclude.xml</excludeFilterFile>
         </configuration>
@@ -95,12 +114,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>${maven-checkstyle-plugin.version}</version>
         <dependencies>
           <dependency>
-              <groupId>com.puppycrawl.tools</groupId>
-              <artifactId>checkstyle</artifactId>
-              <version>14.1.0</version>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -120,17 +139,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.28.0</version>
+        <version>${maven-pmd-plugin.version}</version>
         <dependencies>
           <dependency>
-              <groupId>net.sourceforge.pmd</groupId>
-              <artifactId>pmd-java</artifactId>
-              <version>7.27.0</version>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${pmd.version}</version>
           </dependency>
           <dependency>
-              <groupId>net.sourceforge.pmd</groupId>
-              <artifactId>pmd-core</artifactId>
-              <version>7.27.0</version>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${pmd.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -155,26 +174,26 @@
     <dependency>
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
-      <version>4.7.0</version>
+      <version>${picocli.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>2.1.4</version>
+      <version>${dom4j.version}</version>
     </dependency>
 
     <dependency>
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
-      <version>2.0.6</version>
+      <version>${jaxen.version}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>33.7.1-jre</version>
+      <version>${guava.version}</version>
     </dependency>
 
     <dependency>
@@ -199,7 +218,7 @@
     <dependency>
       <groupId>org.colston.kicks</groupId>
       <artifactId>kicks-core</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${kicks-core.version}</version>
     </dependency>
   </dependencies>
 </project>
