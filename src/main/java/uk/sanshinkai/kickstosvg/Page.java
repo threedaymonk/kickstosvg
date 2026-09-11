@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
+import java.util.Map;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.Locatable;
@@ -19,13 +19,13 @@ import org.w3c.dom.Document;
 
 class Page {
     interface ColumnOperation {
-      public void call(List<ModelMap> acc, Column column, int colNo);
+        void call(List<Map<String, Object>> acc, Column column, int colNo);
     }
 
-    private ModelMap metrics;
+    private Metrics metrics;
     private List<Column> columns;
 
-    Page(ModelMap metrics, List<Column> columns) {
+    Page(Metrics metrics, List<Column> columns) {
         this.metrics = metrics;
         this.columns = columns;
     }
@@ -46,14 +46,14 @@ class Page {
     public String render() throws Exception {
         var template = FreeMarker.getTemplate("template.ftlx");
         var root = new ModelMap()
-            .addAllAttributes(metrics)
+            .addAllAttributes(metrics.map())
             .addAttribute("definitions", readDefinitions())
             .addAttribute("columns", mapMusicColumns(columns))
             .addAttribute("notes", mapNotes(columns))
             .addAttribute("lyrics", mapLyrics(columns))
             .addAttribute("repeats", mapRepeats(columns))
-            .addAttribute("chords", mapLines(columns, n -> n.isChord()))
-            .addAttribute("slurs", mapLines(columns, n -> n.isSlur()))
+            .addAttribute("chords", mapLines(columns, Note::isChord))
+            .addAttribute("slurs", mapLines(columns, Note::isSlur))
             .addAttribute("songs", mapSongs(columns));
 
         var out = new StringWriter();
@@ -67,8 +67,8 @@ class Page {
         return DefinitionExtractor.extract(xml);
     }
 
-    private List<ModelMap> processColumn(List<Column> columns, ColumnOperation op) {
-        var ret = new ArrayList<ModelMap>();
+    private List<Map<String, Object>> processColumn(List<Column> columns, ColumnOperation op) {
+        var ret = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < columns.size(); i++) {
             var column = columns.get(i);
             op.call(ret, column, i);
@@ -76,14 +76,14 @@ class Page {
         return ret;
     }
 
-    private List<ModelMap> mapMusicColumns(List<Column> columns) {
+    private List<Map<String, Object>> mapMusicColumns(List<Column> columns) {
         return processColumn(columns, (acc, column, colNo) -> {
             if (column.isMusic())
                 acc.add(new ModelMap("x", columnLeft(colNo)));
         });
     }
 
-    private List<ModelMap> mapSongs(List<Column> columns) {
+    private List<Map<String, Object>> mapSongs(List<Column> columns) {
         return processColumn(columns, (acc, column, colNo) -> {
             if (column.isTitle()) {
                 acc.add(mapSong(colNo, column.song()));
@@ -91,28 +91,28 @@ class Page {
         });
     }
 
-    private List<ModelMap> mapNotes(List<Column> columns) {
+    private List<Map<String, Object>> mapNotes(List<Column> columns) {
         return processColumn(columns, (acc, column, colNo) -> {
             for (var note : column.notes())
                 acc.add(mapNote(colNo, note));
         });
     }
 
-    private List<ModelMap> mapLyrics(List<Column> columns) {
+    private List<Map<String, Object>> mapLyrics(List<Column> columns) {
         return processColumn(columns, (acc, column, colNo) -> {
             for (var lyric : column.lyrics())
                 acc.add(mapLyric(colNo, lyric));
         });
     }
 
-    private List<ModelMap> mapRepeats(List<Column> columns) {
+    private List<Map<String, Object>> mapRepeats(List<Column> columns) {
         return processColumn(columns, (acc, column, colNo) -> {
             for (var repeat : column.repeats())
                 acc.add(mapRepeat(colNo, repeat));
         });
     }
 
-    private List<ModelMap> mapLines(List<Column> columns, Predicate<Note> predicate) {
+    private List<Map<String, Object>> mapLines(List<Column> columns, Predicate<Note> predicate) {
         return processColumn(columns, (acc, column, colNo) -> {
             Note start = null;
             Note end = null;
@@ -133,7 +133,7 @@ class Page {
         });
     }
 
-    private ModelMap mapJoinLine(int colNo, Note start, Note end) {
+    private Map<String, Object> mapJoinLine(int colNo, Note start, Note end) {
         return new ModelMap("x", columnLeft(colNo))
             .addAttribute("startY", yPos(start))
             .addAttribute("endY", yPos(end))
@@ -141,20 +141,20 @@ class Page {
             .addAttribute("endSmall", end.isSmall());
     }
 
-    private ModelMap mapLyric(int colNo, Lyric lyric) {
+    private Map<String, Object> mapLyric(int colNo, Lyric lyric) {
         return new ModelMap("x", columnLeft(colNo))
             .addAttribute("y", yPos(lyric))
             .addAttribute("text", lyric.getValue());
     }
 
-    private ModelMap mapRepeat(int colNo, Repeat repeat) {
+    private Map<String, Object> mapRepeat(int colNo, Repeat repeat) {
         return new ModelMap("x", columnLeft(colNo))
             .addAttribute("y", yPos(repeat))
             .addAttribute("back", repeat.isBack())
-            .addAttribute("style", repeat.getStyle().name().toLowerCase());
+            .addAttribute("style", repeat.getStyle().name().toLowerCase(Locale.ROOT));
     }
 
-    private ModelMap mapNote(int colNo, Note note) {
+    private Map<String, Object> mapNote(int colNo, Note note) {
         var map = new ModelMap("x", columnLeft(colNo))
             .addAttribute("y", yPos(note))
             .addAttribute("name", Symbols.noteRef(note))
@@ -170,7 +170,7 @@ class Page {
         return map;
     }
 
-    private ModelMap mapSong(int colNo, Song song) {
+    private Map<String, Object> mapSong(int colNo, Song song) {
         var map = new ModelMap("x", columnLeft(colNo));
 
         if (song.getTuning() != null)
@@ -184,7 +184,7 @@ class Page {
         return map;
     }
 
-    private List<ModelMap> mapJapaneseTitle(Song song) {
+    private List<Map<String, Object>> mapJapaneseTitle(Song song) {
         var jTitle = new FuriganaString(song.getTitle());
         var parts = new ArrayList();
         for (var component : jTitle.components()) {
@@ -199,15 +199,14 @@ class Page {
 
     private double columnLeft(int colNo) {
         // Columns start from the right, but the SVG origin is top left
-        int i = (int) metrics.getAttribute("columnsPerPage") - 1 - colNo;
-        double width = (double) metrics.getAttribute("columnWidth")
-            + (double) metrics.getAttribute("columnSpace");
+        int i = metrics.columnsPerPage() - 1 - colNo;
+        double width = metrics.columnWidth() + metrics.columnSpace();
         return i * width;
     }
 
     public double yPos(Locatable l) {
-        double cellHeight = (double) metrics.getAttribute("cellHeight");
-        int cellsPerCol = (int) metrics.getAttribute("cellsPerCol");
+        double cellHeight = metrics.cellHeight();
+        int cellsPerCol = metrics.cellsPerCol();
         double cellTop = cellHeight * (l.getIndex() % cellsPerCol);
         double offset = (double) l.getOffset() / (double) Locatable.CELL_TICKS * cellHeight;
         return cellTop + offset;

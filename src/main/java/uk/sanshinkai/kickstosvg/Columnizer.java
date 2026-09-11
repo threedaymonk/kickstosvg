@@ -8,12 +8,11 @@ import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
-import org.springframework.ui.ModelMap;
 
 class Columnizer {
-    private ModelMap metrics;
+    private Metrics metrics;
 
-    Columnizer(ModelMap metrics) {
+    Columnizer(Metrics metrics) {
         this.metrics = metrics;
     }
 
@@ -67,6 +66,6 @@ class Columnizer {
     }
 
     private int columnNumber(Locatable a) {
-        return a.getIndex() / ((int) metrics.getAttribute("cellsPerCol"));
+        return a.getIndex() / metrics.cellsPerCol();
     }
 }

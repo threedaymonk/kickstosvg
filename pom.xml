@@ -18,10 +18,8 @@
     <java.version>27</java.version>
 
     <!-- Dependency versions -->
-    <dom4j.version>2.1.4</dom4j.version>
     <freemarker.version>2.3.35</freemarker.version>
     <guava.version>33.7.1-jre</guava.version>
-    <jaxen.version>2.0.6</jaxen.version>
     <junit.version>6.1.3</junit.version>
     <kicks-core.version>0.0.1-SNAPSHOT</kicks-core.version>
     <picocli.version>4.7.0</picocli.version>
@@ -177,19 +175,6 @@
       <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
       <version>${picocli.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>${dom4j.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>jaxen</groupId>
-      <artifactId>jaxen</artifactId>
-      <version>${jaxen.version}</version>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>

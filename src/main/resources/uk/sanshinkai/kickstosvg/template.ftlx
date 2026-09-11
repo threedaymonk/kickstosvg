@@ -11,8 +11,6 @@
 <#assign repeatLength = cellHeight >
 <#assign repeatMinY = cellHeight / -4.0 >
 <#assign repeatMaxY = canvasHeight + cellHeight / 4.0 >
-<#assign slurXOffset = columnWidth * 1.0/16.0 >
-<#assign chordXOffset = columnWidth * 7.0/16.0 >
 <#assign tuningTop = canvasHeight - fontSizeTuning * 4 >
 <svg
   viewBox="${-marginX} ${-marginY} ${paperWidth} ${paperHeight}"
