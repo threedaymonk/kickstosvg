@@ -8,16 +8,17 @@ import java.util.concurrent.Callable;
 import com.google.common.collect.Lists;
 import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
+import org.springframework.ui.ModelMap;
 
 class Renderer implements Callable<Boolean> {
     private String inputPath;
     private String outputDir;
-    private Metrics metrics;
+    private ModelMap metrics;
 
     Renderer(String inputPath, String outputDir) {
         this.inputPath = inputPath;
         this.outputDir = outputDir;
-        this.metrics = new Metrics();
+        this.metrics = new Metrics().map();
     }
 
     private KicksDocument loadDocument(File file) throws Exception {
@@ -35,8 +36,10 @@ class Renderer implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
-        var columns = Columnizer.columnize(metrics, music);
-        var pages = Lists.partition(columns, metrics.columnsPerPage());
+        var columns = new Columnizer(metrics).columnize(music);
+        var pages = Lists.partition(
+            columns, (int) metrics.getAttribute("columnsPerPage")
+        );
 
         for (var i = 0; i < pages.size(); i++) {
             var xml = new Page(metrics, pages.get(i)).render();

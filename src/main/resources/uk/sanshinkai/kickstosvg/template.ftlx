@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<#assign canvasWidth = columnWidth * columnsPerPage + columnSpace * (columnsPerPage - 1) >
+<#assign canvasHeight = cellHeight * cellsPerCol >
+<#assign marginX = (paperWidth - canvasWidth) / 2 >
+<#assign marginY = (paperHeight - canvasHeight) / 2 >
+<#assign smallScale = 0.75 >
+<#assign lyricXOffset = columnWidth * 5.0/8.0 >
+<#assign lyricYOffset = fontSizeLyrics / -2.0 >
+<#assign repeatXOffset = columnWidth / 2.0 >
+<#assign repeatWidth = 21 >
+<#assign repeatLength = cellHeight >
+<#assign repeatMinY = cellHeight / -4.0 >
+<#assign repeatMaxY = canvasHeight + cellHeight / 4.0 >
+<#assign slurXOffset = columnWidth * 1.0/16.0 >
+<#assign chordXOffset = columnWidth * 7.0/16.0 >
+<#assign tuningTop = canvasHeight - fontSizeTuning * 4 >
+<svg
+  viewBox="${-marginX} ${-marginY} ${paperWidth} ${paperHeight}"
+  width="${paperWidth}pt"
+  height="${paperHeight}pt"
+  version="1.1"
+  >
+  <style type="text/css">
+    <![CDATA[
+      svg {
+        font-family: "EPSON 教科書体Ｍ";
+        stroke-linecap: square;
+        stroke-linejoin: miter;
+      }
+      .latin {
+        font-family: "FreeSans";
+      }
+      #column {
+        fill: none;
+        stroke-width: 0.5;
+        stroke: #969696;
+      }
+      #lyrics {
+        font-size: ${fontSizeLyrics};
+        letter-spacing: -4;
+        writing-mode: tb-rl;
+      }
+      #repeats {
+        fill: none;
+        stroke: black;
+        stroke-width: 0.5;
+      }
+      #triangle_filled, #circle_filled {
+        stroke: black;
+        fill: black;
+      }
+      #triangle_outline, #circle_outline {
+        stroke: black;
+        fill: white;
+      }
+      #titles {
+        font-size: ${fontSizeTitleJapanese};
+        writing-mode: tb-rl;
+      }
+      #titles .latin {
+        font-size: ${fontSizeTitleLatin};
+      }
+      #titles .furigana {
+        font-size: ${fontSizeTitleFurigana};
+      }
+      #titles .tuning {
+        font-size: 14;
+      }
+      .chord, .slur {
+        stroke: black;
+        stroke-width: 1;
+        stroke-linecap: round;
+      }
+    ]]>
+  </style>
+  <defs>
+    <path id="triangle" d="M 4,0 L -4,-4 L -4,4 z" />
+    <circle id="circle" cx="0" cy="0" r="4" />
+    <marker
+      id="triangle_filled"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      style="stroke-width: 1"
+      >
+      <use href="#triangle" />
+    </marker>
+    <marker
+      id="triangle_outline"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      style="stroke-width: 1"
+      >
+      <use href="#triangle" />
+    </marker>
+    <marker
+      id="circle_filled"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      style="stroke-width: 1"
+      >
+      <use href="#circle" />
+    </marker>
+    <marker
+      id="circle_outline"
+      orient="auto"
+      refX="0" refY="0"
+      markerUnits="strokeWidth"
+      style="stroke-width: 1"
+      >
+      <use href="#circle" />
+    </marker>
+    <path id="repeat" d="M 0,0 h 21 v 36" />
+    <use id="repeat_back" href="#repeat" transform="scale(1 -1)"/>
+    <g id="column">
+      <rect x="0" y="0" width="${columnWidth}" height="${canvasHeight}"/>
+      <path d="M ${columnWidth / 2},0 v ${canvasHeight}"/>
+      <#list 1..(cellsPerCol - 1) as i>
+        <path d="M 0,${cellHeight * i} h ${columnWidth / 2}"/>
+      </#list>
+    </g>
+    ${definitions?no_esc}
+    <use id="mark_f1_small" href="#mark_f1" transform="scale(${smallScale})" />
+    <use id="mark_f2_small" href="#mark_f2" transform="scale(${smallScale})" />
+    <use id="mark_f3_small" href="#mark_f3" transform="scale(${smallScale})" />
+    <use id="mark_f4_small" href="#mark_f4" transform="scale(${smallScale})" />
+    <use id="mark_flat_small" href="#mark_flat" transform="scale(${smallScale})" />
+    <use id="mark_kaki_small" href="#mark_kaki" transform="scale(${smallScale})" />
+    <use id="mark_sharp_small" href="#mark_sharp" transform="scale(${smallScale})" />
+    <use id="mark_uchi_small" href="#mark_uchi" transform="scale(${smallScale})" />
+    <use id="mark_vend_small" href="#mark_vend" transform="scale(${smallScale})" />
+    <use id="mark_vstart_small" href="#mark_vstart" transform="scale(${smallScale})" />
+    <use id="note_ai_small" href="#note_ai" transform="scale(${smallScale})" />
+    <use id="note_bon_small" href="#note_bon" transform="scale(${smallScale})" />
+    <use id="note_gerou_small" href="#note_gerou" transform="scale(${smallScale})" />
+    <use id="note_geshaku_small" href="#note_geshaku" transform="scale(${smallScale})" />
+    <use id="note_go_small" href="#note_go" transform="scale(${smallScale})" />
+    <use id="note_hachi_small" href="#note_hachi" transform="scale(${smallScale})" />
+    <use id="note_iai_small" href="#note_iai" transform="scale(${smallScale})" />
+    <use id="note_igo_small" href="#note_igo" transform="scale(${smallScale})" />
+    <use id="note_ijou_small" href="#note_ijou" transform="scale(${smallScale})" />
+    <use id="note_ikou_small" href="#note_ikou" transform="scale(${smallScale})" />
+    <use id="note_iotsu_small" href="#note_iotsu" transform="scale(${smallScale})" />
+    <use id="note_irou_small" href="#note_irou" transform="scale(${smallScale})" />
+    <use id="note_ishaku_small" href="#note_ishaku" transform="scale(${smallScale})" />
+    <use id="note_iyon_small" href="#note_iyon" transform="scale(${smallScale})" />
+    <use id="note_jou_small" href="#note_jou" transform="scale(${smallScale})" />
+    <use id="note_kou_small" href="#note_kou" transform="scale(${smallScale})" />
+    <use id="note_kougo_small" href="#note_kougo" transform="scale(${smallScale})" />
+    <use id="note_koujou_small" href="#note_koujou" transform="scale(${smallScale})" />
+    <use id="note_kounaka_small" href="#note_kounaka" transform="scale(${smallScale})" />
+    <use id="note_koushaku_small" href="#note_koushaku" transform="scale(${smallScale})" />
+    <use id="note_kyuu_small" href="#note_kyuu" transform="scale(${smallScale})" />
+    <use id="note_maru_small" href="#note_maru" transform="scale(${smallScale})" />
+    <use id="note_naka_small" href="#note_naka" transform="scale(${smallScale})" />
+    <use id="note_otsu_small" href="#note_otsu" transform="scale(${smallScale})" />
+    <use id="note_roku_small" href="#note_roku" transform="scale(${smallScale})" />
+    <use id="note_rou_small" href="#note_rou" transform="scale(${smallScale})" />
+    <use id="note_sai_small" href="#note_sai" transform="scale(${smallScale})" />
+    <use id="note_shaku8_small" href="#note_shaku8" transform="scale(${smallScale})" />
+    <use id="note_shaku_small" href="#note_shaku" transform="scale(${smallScale})" />
+    <use id="note_shichi_small" href="#note_shichi" transform="scale(${smallScale})" />
+    <use id="note_yon_small" href="#note_yon" transform="scale(${smallScale})" />
+  </defs>
+  <g id="grid">
+    <#list columns as column>
+      <use href="#column" x="${column.x}" y="0"/>
+    </#list>
+  </g>
+  <g id="notes"> 
+    <#list notes as note>
+      <#assign x = note.x + columnWidth / 4 >
+      <#assign suffix = note.small?string("_small", "")>
+      <use href="#${note.name}${suffix}" x="${x}" y="${note.y}"/>
+      <#if note.articulation??>
+        <use href="#mark_${note.articulation}${suffix}" x="${x}" y="${note.y}"/>
+      </#if>
+      <#if note.accidental??>
+        <use href="#mark_${note.accidental}${suffix}" x="${x}" y="${note.y}"/>
+      </#if>
+    </#list>
+
+    <#list chords as chord>
+      <#assign y0 = chord.startY - (fontSizeNote / 4.0) * chord.startSmall?then(smallScale,1)>
+      <#assign y1 = chord.endY + (fontSizeNote / 4.0) * chord.endSmall?then(smallScale,1)>
+      <path class="chord" d="M ${chord.x + chordXOffset},${y0} V ${y1}"/>
+    </#list>
+
+    <#list slurs as slur>
+      <#assign y0 = slur.startY - (fontSizeNote / 4.0) * slur.startSmall?then(smallScale,1)>
+      <#assign y1 = slur.endY + (fontSizeNote / 4.0) * slur.endSmall?then(smallScale,1)>
+      <path class="slur" d="M ${slur.x + slurXOffset},${y0} V ${y1}"/>
+    </#list>
+  </g>
+  <g id="lyrics">
+    <#list lyrics as lyric>
+      <text x="${lyric.x + lyricXOffset}" y="${lyric.y + lyricYOffset}">${lyric.text}</text>
+    </#list>
+  </g>
+  <g id="repeats">
+    <#list repeats as repeat>
+      <#if repeat.back>
+        <#assign yEnd = [repeat.y - repeatLength, repeatMinY]?max>
+      <#else>
+        <#assign yEnd = [repeat.y + repeatLength, repeatMaxY]?min>
+      </#if>
+      <path d="M ${repeat.x + repeatXOffset},${repeat.y} h ${repeatWidth} V ${yEnd}"
+        style="marker-end: url(#${repeat.style})"/>
+    </#list>
+  </g>
+  <g id="titles">
+    <#list songs as song>
+      <#assign ctr = song.x + columnWidth / 2.0>
+      <#if song.romaji??>
+        <#assign jx = song.x + fontSizeTitleJapanese / 2.0>
+        <#assign rx = song.x + fontSizeTitleJapanese + fontSizeTitleFurigana + fontSizeTitleLatin / 2.0>
+        <text x="${rx}" y="0" class="latin">${song.romaji}</text>
+      <#else>
+        <#assign jx = ctr>
+      </#if>
+      <#assign fx = jx + fontSizeTitleJapanese / 2.0 + fontSizeTitleFurigana / 2.0>
+      <#assign y = 0>
+      <#list song.title as part>
+        <#assign len = part.surface?length * fontSizeTitleJapanese>
+        <#if part.reading??>
+          <#assign rlen = part.reading?length * fontSizeTitleFurigana>
+          <#assign len = [len, rlen]?max>
+          <text x="${fx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
+            class="furigana">${part.reading}</text>
+        </#if>
+        <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing">${part.surface}</text>
+        <#assign y = y + len>
+      </#list>
+      <text x="${ctr}" y="${tuningTop}" class="tuning">${song.tuning}</text>
+    </#list>
+  </g>
+</svg>

@@ -1,5 +1,6 @@
 package uk.sanshinkai.kickstosvg;
 
+import java.util.Locale;
 import org.colston.kicks.document.Note;
 
 public final class Symbols {
@@ -11,13 +12,12 @@ public final class Symbols {
         {"yon", "jou", "naka", "shaku", "geshaku", "kougo", "irou", "iyon", "ijou"},
         {"kou", "go", "roku", "shichi", "hachi", "kyuu", "ishaku", "ikou", "igo"}
     };
-    private static final String[] FINGER_VALUES = {"", "①", "②", "③", "④"};
 
     public static String noteRef(Note note) {
-        return "#" + VALUES[note.getString()][note.getPlacement()];
+        return "note_" + VALUES[note.getString()][note.getPlacement()];
     }
 
     public static String getNoteFingerText(Note note) {
-        return FINGER_VALUES[note.getFinger()];
+        return String.format(Locale.ROOT, "mark_f%d", note.getFinger());
     }
 }
