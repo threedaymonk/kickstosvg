@@ -28,6 +28,8 @@
 <#assign noteScaleL = fsNote / 18.0><!-- 18 is nominal size of SVG kanji -->
 <#assign noteScaleS = noteScaleL * smallScale>
 
+<#assign fingerOffsetX = -4.5>
+
 <#-- Chord and slur lines -->
 <#assign chordXOffset = 24.5>
 <#assign slurXOffset = 3.5>
@@ -198,12 +200,17 @@
             <#assign scale = note.small?then(noteScaleS,noteScaleL)>
             <use href="#${note.name}" transform="scale(${scale})"/>
             <#if note.articulation??>
-              <use href="#mark_${note.articulation}" transform="scale(${scale})"/>
+              <use href="#${note.articulation}" transform="scale(${scale})"/>
             </#if>
             <#if note.accidental??>
-              <use href="#mark_${note.accidental}" transform="scale(${scale})"/>
+              <use href="#${note.accidental}" transform="scale(${scale})"/>
             </#if>
           </g>
+          <#if note.finger??>
+          <g transform="translate(${colX + fingerOffsetX} ${y})">
+              <use href="#${note.finger}" transform="scale(${noteScaleL})"/>
+            </g>
+          </#if>
         </#list>
 
         <#assign x = colX + chordXOffset>

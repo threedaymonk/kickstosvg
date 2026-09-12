@@ -141,14 +141,12 @@ class Page {
         var map = new ModelMap("y", yPos(note))
             .addAttribute("name", Symbols.noteRef(note))
             .addAttribute("small", note.isSmall());
-        if (note.getAccidental() != Accidental.NONE) {
-            map.addAttribute("accidental",
-                note.getAccidental().name().toLowerCase(Locale.ROOT));
-        }
-        if (note.getUtou() != Utou.NONE) {
-            map.addAttribute("articulation",
-                note.getUtou().name().toLowerCase(Locale.ROOT));
-        }
+        if (note.getAccidental() != Accidental.NONE)
+            map.addAttribute("accidental", Symbols.accidentalRef(note));
+        if (note.getUtou() != Utou.NONE)
+            map.addAttribute("articulation", Symbols.articulationRef(note));
+        if (note.getFinger() != 0)
+            map.addAttribute("finger", Symbols.fingerRef(note));
         return map;
     }
 
