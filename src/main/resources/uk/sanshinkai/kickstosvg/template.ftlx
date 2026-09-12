@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <#-- The basics: paper and column sizes (in points; 1pt = 1/72" or 0.3527mm) -->
-<#assign paperHeight = 595>
-<#assign paperWidth = 842>
+<#assign paperHeight = 595.4>
+<#assign paperWidth = 842.1>
 <#assign columnWidth = 56>
 <#assign columnSpace = 9>
 <#assign cellHeight = 36>
