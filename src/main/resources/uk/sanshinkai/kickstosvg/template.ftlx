@@ -38,7 +38,6 @@
 <#-- Lyrics -->
 <#assign lyricXOffset = columnWidth * 5.0/8.0 >
 <#assign lyricYOffset = fsLyrics / -2.0 >
-<#assign tuningTop = canvasHeight - fsTuning * 4 >
 
 <#-- Other styling can be altered in CSS below -->
 <svg
@@ -213,7 +212,9 @@
           <#assign y = y + len>
         </#list>
 
-        <text x="${ctr}" y="${tuningTop}" class="tuning">${song.tuning}</text>
+        <#assign tlen = song.tuning?length * fsTuning>
+        <text x="${ctr}" y="${canvasHeight - tlen}" class="tuning"
+          textLength="${tlen}" lengthAdjust="spacing">${song.tuning}</text>
       </g>
 
     <#else>
