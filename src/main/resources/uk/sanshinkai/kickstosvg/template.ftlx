@@ -21,11 +21,11 @@
 <#assign fsTuning = 14>
 <#assign fsNote = 18>
 
-<!-- How big are small notes compared to large ones? -->
+<#-- How big are small notes compared to large ones? -->
 <#assign smallScale = 0.75>
 
 <#-- Scales are computed from font sizes and scale above; don't change these -->
-<#assign noteScaleL = fsNote / 18.0><!-- 18 is nominal size of SVG kanji -->
+<#assign noteScaleL = fsNote / 18.0><#-- 18 is nominal size of SVG kanji -->
 <#assign noteScaleS = noteScaleL * smallScale>
 
 <#assign fingerOffsetX = -4.5>
@@ -109,7 +109,7 @@
     ]]>
   </style>
   <defs>
-    <!-- Repeat head styles -->
+    <#-- Repeat head styles -->
     <path id="rpt_triangle" d="M 4,0 L -4,-4 L -4,4 z" />
     <circle id="rpt_circle" cx="0" cy="0" r="4" />
     <marker
@@ -137,7 +137,7 @@
       <use href="#rpt_circle" />
     </marker>
 
-    <!-- The note column grid -->
+    <#-- The note column grid -->
     <g id="column">
       <rect x="0" y="0" width="${columnWidth}" height="${canvasHeight}"/>
       <path d="M ${columnWidth / 2},0 v ${canvasHeight}"/>
@@ -146,7 +146,7 @@
       </#list>
     </g>
 
-    <!-- SVG notes etc. are interpolated here -->
+    <#-- SVG notes etc. are interpolated here -->
     ${definitions?no_esc}
   </defs>
 
