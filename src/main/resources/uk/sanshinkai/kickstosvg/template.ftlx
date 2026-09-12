@@ -157,7 +157,9 @@
         <#if song.romaji??>
           <#assign jx = colX + fsTitleJapanese / 2.0>
           <#assign rx = colX + fsTitleJapanese + fsTitleFurigana + fsTitleLatin / 2.0>
-          <text x="0" y="0" class="latin" transform="rotate(90) translate(0 ${-rx})">${song.romaji}</text>
+          <g transform="translate(${rx} 0)">
+            <text class="latin" transform="rotate(90)">${song.romaji}</text>
+          </g>
         <#else>
           <#assign jx = ctr>
         </#if>
