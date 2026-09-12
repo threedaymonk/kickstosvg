@@ -195,7 +195,7 @@
       <g class="notes">
         <#assign x = colX + cellWidth / 2 >
         <#list column.notes as note>
-          <#assign y = note.y * cellHeight>
+          <#assign y = note.pos * cellHeight>
           <g transform="translate(${x} ${y})">
             <#assign scale = note.small?then(noteScaleS,noteScaleL)>
             <use href="#${note.name}" transform="scale(${scale})"/>
@@ -215,15 +215,15 @@
 
         <#assign x = colX + chordXOffset>
         <#list column.chords as chord>
-          <#assign y0 = chord.startY * cellHeight - joinLineYOffset * chord.startSmall?then(smallScale,1)>
-          <#assign y1 = chord.endY * cellHeight + joinLineYOffset * chord.endSmall?then(smallScale,1)>
+          <#assign y0 = chord.top * cellHeight - joinLineYOffset * chord.startSmall?then(smallScale,1)>
+          <#assign y1 = chord.bottom * cellHeight + joinLineYOffset * chord.endSmall?then(smallScale,1)>
           <path class="chord" d="M ${x},${y0} V ${y1}"/>
         </#list>
 
         <#assign x = colX + slurXOffset>
         <#list column.slurs as slur>
-          <#assign y0 = slur.startY * cellHeight - joinLineYOffset * slur.startSmall?then(smallScale,1)>
-          <#assign y1 = slur.endY * cellHeight + joinLineYOffset * slur.endSmall?then(smallScale,1)>
+          <#assign y0 = slur.top * cellHeight - joinLineYOffset * slur.startSmall?then(smallScale,1)>
+          <#assign y1 = slur.bottom * cellHeight + joinLineYOffset * slur.endSmall?then(smallScale,1)>
           <path class="slur" d="M ${x},${y0} V ${y1}"/>
         </#list>
       </g>
@@ -231,7 +231,7 @@
       <g class="lyrics">
         <#assign x = colX + lyricXOffset>
         <#list column.lyrics as lyric>
-          <#assign y = lyric.y * cellHeight + lyricYOffset>
+          <#assign y = lyric.pos * cellHeight + lyricYOffset>
           <text x="${x}" y="${y}">${lyric.text}</text>
         </#list>
       </g>
@@ -239,7 +239,7 @@
       <g class="repeats">
         <#assign x = colX + cellWidth>
         <#list column.repeats as repeat>
-          <#assign y0 = repeat.y * cellHeight>
+          <#assign y0 = repeat.pos * cellHeight>
           <#if repeat.back>
             <#assign y1 = [y0 - repeatLength, repeatMinY]?max>
           <#else>

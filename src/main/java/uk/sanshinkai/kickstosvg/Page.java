@@ -119,25 +119,25 @@ class Page {
     }
 
     private Map<String, Object> mapJoinLine(Note start, Note end) {
-        return new TemplateMap("startY", verticalPos(start))
-            .addAttribute("endY", verticalPos(end))
+        return new TemplateMap("top", verticalPos(start))
+            .addAttribute("bottom", verticalPos(end))
             .addAttribute("startSmall", start.isSmall())
             .addAttribute("endSmall", end.isSmall());
     }
 
     private Map<String, Object> mapLyric(Lyric lyric) {
-        return new TemplateMap("y", verticalPos(lyric))
+        return new TemplateMap("pos", verticalPos(lyric))
             .addAttribute("text", lyric.getValue());
     }
 
     private Map<String, Object> mapRepeat(Repeat repeat) {
-        return new TemplateMap("y", verticalPos(repeat))
+        return new TemplateMap("pos", verticalPos(repeat))
             .addAttribute("back", repeat.isBack())
             .addAttribute("style", repeat.getStyle().name().toLowerCase(Locale.ROOT));
     }
 
     private Map<String, Object> mapNote(Note note) {
-        var map = new TemplateMap("y", verticalPos(note))
+        var map = new TemplateMap("pos", verticalPos(note))
             .addAttribute("name", Symbols.noteRef(note))
             .addAttribute("small", note.isSmall());
         if (note.getAccidental() != Accidental.NONE)
@@ -175,7 +175,7 @@ class Page {
         return parts;
     }
 
-    // Units are cells, so if there are 12 cells per column, 0.0 <= y <= 12.0
+    // Units are cells, so if there are 12 cells per column, 0.0 <= pos <= 12.0
     public double verticalPos(Locatable l) {
         double cellTop = l.getIndex() % metrics.cellsPerCol();
         double offset = (double) l.getOffset() / (double) Locatable.CELL_TICKS;
