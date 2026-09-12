@@ -1,17 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<#-- The basics: paper and column sizes (in points; 1pt = 1/72" or 0.3527mm) -->
+<#assign paperHeight = 595>
+<#assign paperWidth = 842>
+<#assign columnWidth = 56>
+<#assign columnSpace = 9>
+<#assign cellHeight = 36>
+<#assign cellWidth = columnWidth / 2>
+
+<#-- Canvas size and margins are computed from above; don't change these -->
 <#assign canvasWidth = columnWidth * columnsPerPage + columnSpace * (columnsPerPage - 1) >
 <#assign canvasHeight = cellHeight * cellsPerCol >
 <#assign marginX = (paperWidth - canvasWidth) / 2 >
 <#assign marginY = (paperHeight - canvasHeight) / 2 >
-<#assign smallScale = 0.75 >
-<#assign lyricXOffset = columnWidth * 5.0/8.0 >
-<#assign lyricYOffset = fontSizeLyrics / -2.0 >
-<#assign repeatXOffset = columnWidth / 2.0 >
+
+<#-- Font sizes -->
+<#assign fsLyrics = 10>
+<#assign fsTitleFurigana = 12>
+<#assign fsTitleJapanese = 26>
+<#assign fsTitleLatin = 14>
+<#assign fsTuning = 14>
+<#assign fsNote = 18><#-- no effect as we're using SVG notes -->
+
+<#-- Notes -->
+<#assign smallScale = 0.75 ><#-- relative size of small notes -->
+
+<#-- Chord and slur lines -->
+<#assign chordXOffset = 24.5>
+<#assign slurXOffset = 3.5>
+<#assign joinLineYOffset = fsNote / 4.0>
+
+<#-- Repeat marks, with limits at top and bottom of canvas -->
 <#assign repeatWidth = 21 >
 <#assign repeatLength = cellHeight >
 <#assign repeatMinY = cellHeight / -4.0 >
 <#assign repeatMaxY = canvasHeight + cellHeight / 4.0 >
-<#assign tuningTop = canvasHeight - fontSizeTuning * 4 >
+
+<#-- Lyrics -->
+<#assign lyricXOffset = columnWidth * 5.0/8.0 >
+<#assign lyricYOffset = fsLyrics / -2.0 >
+<#assign tuningTop = canvasHeight - fsTuning * 4 >
+
+<#-- Other styling can be altered in CSS below -->
 <svg
   viewBox="${-marginX} ${-marginY} ${paperWidth} ${paperHeight}"
   width="${paperWidth}pt"
@@ -25,23 +54,10 @@
         stroke-linecap: square;
         stroke-linejoin: miter;
       }
-      .latin {
-        font-family: "FreeSans";
-      }
       #column {
         fill: none;
         stroke-width: 0.5;
         stroke: #969696;
-      }
-      #lyrics {
-        font-size: ${fontSizeLyrics};
-        letter-spacing: -4;
-        writing-mode: tb-rl;
-      }
-      #repeats {
-        fill: none;
-        stroke: black;
-        stroke-width: 0.5;
       }
       #triangle_filled, #circle_filled {
         stroke: black;
@@ -51,18 +67,31 @@
         stroke: black;
         fill: white;
       }
-      #titles {
-        font-size: ${fontSizeTitleJapanese};
+      .latin {
+        font-family: "FreeSans";
+      }
+      .lyrics {
+        font-size: ${fsLyrics};
+        letter-spacing: -4;
         writing-mode: tb-rl;
       }
-      #titles .latin {
-        font-size: ${fontSizeTitleLatin};
+      .repeats {
+        fill: none;
+        stroke: black;
+        stroke-width: 0.5;
       }
-      #titles .furigana {
-        font-size: ${fontSizeTitleFurigana};
+      .title {
+        font-size: ${fsTitleJapanese};
+        writing-mode: tb-rl;
       }
-      #titles .tuning {
-        font-size: 14;
+      .title .latin {
+        font-size: ${fsTitleLatin};
+      }
+      .title .furigana {
+        font-size: ${fsTitleFurigana};
+      }
+      .title .tuning {
+        font-size: ${fsTuning};
       }
       .chord, .slur {
         stroke: black;
@@ -72,46 +101,35 @@
     ]]>
   </style>
   <defs>
-    <path id="triangle" d="M 4,0 L -4,-4 L -4,4 z" />
-    <circle id="circle" cx="0" cy="0" r="4" />
+    <!-- Repeat head styles -->
+    <path id="rpt_triangle" d="M 4,0 L -4,-4 L -4,4 z" />
+    <circle id="rpt_circle" cx="0" cy="0" r="4" />
     <marker
-      id="triangle_filled"
-      orient="auto"
-      refX="0" refY="0"
-      markerUnits="strokeWidth"
-      style="stroke-width: 1"
-      >
-      <use href="#triangle" />
+      id="rpt_triangle_filled"
+      refX="0" refY="0" orient="auto"
+      markerUnits="strokeWidth" style="stroke-width: 1">
+      <use href="#rpt_triangle" />
     </marker>
     <marker
-      id="triangle_outline"
-      orient="auto"
-      refX="0" refY="0"
-      markerUnits="strokeWidth"
-      style="stroke-width: 1"
-      >
-      <use href="#triangle" />
+      id="rpt_triangle_outline"
+      refX="0" refY="0" orient="auto"
+      markerUnits="strokeWidth" style="stroke-width: 1">
+      <use href="#rpt_triangle" />
     </marker>
     <marker
-      id="circle_filled"
-      orient="auto"
-      refX="0" refY="0"
-      markerUnits="strokeWidth"
-      style="stroke-width: 1"
-      >
-      <use href="#circle" />
+      id="rpt_circle_filled"
+      refX="0" refY="0" orient="auto"
+      markerUnits="strokeWidth" style="stroke-width: 1">
+      <use href="#rpt_circle" />
     </marker>
     <marker
-      id="circle_outline"
-      orient="auto"
-      refX="0" refY="0"
-      markerUnits="strokeWidth"
-      style="stroke-width: 1"
-      >
-      <use href="#circle" />
+      id="rpt_circle_outline"
+      refX="0" refY="0" orient="auto"
+      markerUnits="strokeWidth" style="stroke-width: 1">
+      <use href="#rpt_circle" />
     </marker>
-    <path id="repeat" d="M 0,0 h 21 v 36" />
-    <use id="repeat_back" href="#repeat" transform="scale(1 -1)"/>
+
+    <!-- The note column grid -->
     <g id="column">
       <rect x="0" y="0" width="${columnWidth}" height="${canvasHeight}"/>
       <path d="M ${columnWidth / 2},0 v ${canvasHeight}"/>
@@ -119,6 +137,8 @@
         <path d="M 0,${cellHeight * i} h ${columnWidth / 2}"/>
       </#list>
     </g>
+
+    <!-- SVG notes etc. are interpolated here -->
     ${definitions?no_esc}
     <use id="mark_f1_small" href="#mark_f1" transform="scale(${smallScale})" />
     <use id="mark_f2_small" href="#mark_f2" transform="scale(${smallScale})" />
@@ -162,76 +182,95 @@
     <use id="note_shichi_small" href="#note_shichi" transform="scale(${smallScale})" />
     <use id="note_yon_small" href="#note_yon" transform="scale(${smallScale})" />
   </defs>
-  <g id="grid">
-    <#list columns as column>
-      <use href="#column" x="${column.x}" y="0"/>
-    </#list>
-  </g>
-  <g id="notes"> 
-    <#list notes as note>
-      <#assign x = note.x + columnWidth / 4 >
-      <#assign suffix = note.small?string("_small", "")>
-      <use href="#${note.name}${suffix}" x="${x}" y="${note.y}"/>
-      <#if note.articulation??>
-        <use href="#mark_${note.articulation}${suffix}" x="${x}" y="${note.y}"/>
-      </#if>
-      <#if note.accidental??>
-        <use href="#mark_${note.accidental}${suffix}" x="${x}" y="${note.y}"/>
-      </#if>
-    </#list>
 
-    <#list chords as chord>
-      <#assign y0 = chord.startY - (fontSizeNote / 4.0) * chord.startSmall?then(smallScale,1)>
-      <#assign y1 = chord.endY + (fontSizeNote / 4.0) * chord.endSmall?then(smallScale,1)>
-      <path class="chord" d="M ${chord.x + chordXOffset},${y0} V ${y1}"/>
-    </#list>
+  <#list columns as column>
+    <#assign colX = (columnsPerPage - 1 - column.index) * (columnWidth + columnSpace)>
 
-    <#list slurs as slur>
-      <#assign y0 = slur.startY - (fontSizeNote / 4.0) * slur.startSmall?then(smallScale,1)>
-      <#assign y1 = slur.endY + (fontSizeNote / 4.0) * slur.endSmall?then(smallScale,1)>
-      <path class="slur" d="M ${slur.x + slurXOffset},${y0} V ${y1}"/>
-    </#list>
-  </g>
-  <g id="lyrics">
-    <#list lyrics as lyric>
-      <text x="${lyric.x + lyricXOffset}" y="${lyric.y + lyricYOffset}">${lyric.text}</text>
-    </#list>
-  </g>
-  <g id="repeats">
-    <#list repeats as repeat>
-      <#if repeat.back>
-        <#assign yEnd = [repeat.y - repeatLength, repeatMinY]?max>
-      <#else>
-        <#assign yEnd = [repeat.y + repeatLength, repeatMaxY]?min>
-      </#if>
-      <path d="M ${repeat.x + repeatXOffset},${repeat.y} h ${repeatWidth} V ${yEnd}"
-        style="marker-end: url(#${repeat.style})"/>
-    </#list>
-  </g>
-  <g id="titles">
-    <#list songs as song>
-      <#assign ctr = song.x + columnWidth / 2.0>
-      <#if song.romaji??>
-        <#assign jx = song.x + fontSizeTitleJapanese / 2.0>
-        <#assign rx = song.x + fontSizeTitleJapanese + fontSizeTitleFurigana + fontSizeTitleLatin / 2.0>
-        <text x="${rx}" y="0" class="latin">${song.romaji}</text>
-      <#else>
-        <#assign jx = ctr>
-      </#if>
-      <#assign fx = jx + fontSizeTitleJapanese / 2.0 + fontSizeTitleFurigana / 2.0>
-      <#assign y = 0>
-      <#list song.title as part>
-        <#assign len = part.surface?length * fontSizeTitleJapanese>
-        <#if part.reading??>
-          <#assign rlen = part.reading?length * fontSizeTitleFurigana>
-          <#assign len = [len, rlen]?max>
-          <text x="${fx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
-            class="furigana">${part.reading}</text>
+    <#if column.song??>
+
+      <g class="title">
+        <#assign song = column.song>
+        <#assign ctr = colX + columnWidth / 2.0>
+        <#if song.romaji??>
+          <#assign jx = colX + fsTitleJapanese / 2.0>
+          <#assign rx = colX + fsTitleJapanese + fsTitleFurigana + fsTitleLatin / 2.0>
+          <text x="${rx}" y="0" class="latin">${song.romaji}</text>
+        <#else>
+          <#assign jx = ctr>
         </#if>
-        <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing">${part.surface}</text>
-        <#assign y = y + len>
-      </#list>
-      <text x="${ctr}" y="${tuningTop}" class="tuning">${song.tuning}</text>
-    </#list>
-  </g>
+
+        <#assign fx = jx + fsTitleJapanese / 2.0 + fsTitleFurigana / 2.0>
+        <#assign y = 0>
+        <#list song.title as part>
+          <#assign len = part.surface?length * fsTitleJapanese>
+          <#if part.reading??>
+            <#assign rlen = part.reading?length * fsTitleFurigana>
+            <#assign len = [len, rlen]?max>
+            <text x="${fx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
+              class="furigana">${part.reading}</text>
+          </#if>
+          <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing">${part.surface}</text>
+          <#assign y = y + len>
+        </#list>
+
+        <text x="${ctr}" y="${tuningTop}" class="tuning">${song.tuning}</text>
+      </g>
+
+    <#else>
+
+      <use href="#column" x="${colX}" y="0"/>
+
+      <g class="notes">
+      <#assign x = colX + cellWidth / 2 >
+        <#list column.notes as note>
+          <#assign y = note.y * cellHeight>
+          <#assign suffix = note.small?string("_small", "")>
+          <use href="#${note.name}${suffix}" x="${x}" y="${y}"/>
+          <#if note.articulation??>
+            <use href="#mark_${note.articulation}${suffix}" x="${x}" y="${y}"/>
+          </#if>
+          <#if note.accidental??>
+            <use href="#mark_${note.accidental}${suffix}" x="${x}" y="${y}"/>
+          </#if>
+        </#list>
+
+        <#assign x = colX + chordXOffset>
+        <#list column.chords as chord>
+          <#assign y0 = chord.startY * cellHeight - joinLineYOffset * chord.startSmall?then(smallScale,1)>
+          <#assign y1 = chord.endY * cellHeight + joinLineYOffset * chord.endSmall?then(smallScale,1)>
+          <path class="chord" d="M ${x},${y0} V ${y1}"/>
+        </#list>
+
+        <#assign x = colX + slurXOffset>
+        <#list column.slurs as slur>
+          <#assign y0 = slur.startY * cellHeight - joinLineYOffset * slur.startSmall?then(smallScale,1)>
+          <#assign y1 = slur.endY * cellHeight + joinLineYOffset * slur.endSmall?then(smallScale,1)>
+          <path class="slur" d="M ${x},${y0} V ${y1}"/>
+        </#list>
+      </g>
+
+      <g class="lyrics">
+        <#assign x = colX + lyricXOffset>
+        <#list column.lyrics as lyric>
+          <#assign y = lyric.y * cellHeight + lyricYOffset>
+          <text x="${x}" y="${y}">${lyric.text}</text>
+        </#list>
+      </g>
+
+      <g class="repeats">
+        <#assign x = colX + cellWidth>
+        <#list column.repeats as repeat>
+          <#assign y0 = repeat.y * cellHeight>
+          <#if repeat.back>
+            <#assign y1 = [y0 - repeatLength, repeatMinY]?max>
+          <#else>
+            <#assign y1 = [y0 + repeatLength, repeatMaxY]?min>
+          </#if>
+          <path d="M ${x},${y0} h ${repeatWidth} V ${y1}"
+            style="marker-end: url(#rpt_${repeat.style})"/>
+        </#list>
+      </g>
+
+    </#if>
+  </#list>
 </svg>
