@@ -19,10 +19,14 @@
 <#assign fsTitleJapanese = 26>
 <#assign fsTitleLatin = 14>
 <#assign fsTuning = 14>
-<#assign fsNote = 18><#-- no effect as we're using SVG notes -->
+<#assign fsNote = 18>
 
-<#-- Notes -->
-<#assign smallScale = 0.75 ><#-- relative size of small notes -->
+<!-- How big are small notes compared to large ones? -->
+<#assign smallScale = 0.75>
+
+<#-- Scales are computed from font sizes and scale above; don't change these -->
+<#assign noteScaleL = fsNote / 18.0><!-- 18 is nominal size of SVG kanji -->
+<#assign noteScaleS = noteScaleL * smallScale>
 
 <#-- Chord and slur lines -->
 <#assign chordXOffset = 24.5>
@@ -140,47 +144,6 @@
 
     <!-- SVG notes etc. are interpolated here -->
     ${definitions?no_esc}
-    <use id="mark_f1_small" href="#mark_f1" transform="scale(${smallScale})" />
-    <use id="mark_f2_small" href="#mark_f2" transform="scale(${smallScale})" />
-    <use id="mark_f3_small" href="#mark_f3" transform="scale(${smallScale})" />
-    <use id="mark_f4_small" href="#mark_f4" transform="scale(${smallScale})" />
-    <use id="mark_flat_small" href="#mark_flat" transform="scale(${smallScale})" />
-    <use id="mark_kaki_small" href="#mark_kaki" transform="scale(${smallScale})" />
-    <use id="mark_sharp_small" href="#mark_sharp" transform="scale(${smallScale})" />
-    <use id="mark_uchi_small" href="#mark_uchi" transform="scale(${smallScale})" />
-    <use id="mark_vend_small" href="#mark_vend" transform="scale(${smallScale})" />
-    <use id="mark_vstart_small" href="#mark_vstart" transform="scale(${smallScale})" />
-    <use id="note_ai_small" href="#note_ai" transform="scale(${smallScale})" />
-    <use id="note_bon_small" href="#note_bon" transform="scale(${smallScale})" />
-    <use id="note_gerou_small" href="#note_gerou" transform="scale(${smallScale})" />
-    <use id="note_geshaku_small" href="#note_geshaku" transform="scale(${smallScale})" />
-    <use id="note_go_small" href="#note_go" transform="scale(${smallScale})" />
-    <use id="note_hachi_small" href="#note_hachi" transform="scale(${smallScale})" />
-    <use id="note_iai_small" href="#note_iai" transform="scale(${smallScale})" />
-    <use id="note_igo_small" href="#note_igo" transform="scale(${smallScale})" />
-    <use id="note_ijou_small" href="#note_ijou" transform="scale(${smallScale})" />
-    <use id="note_ikou_small" href="#note_ikou" transform="scale(${smallScale})" />
-    <use id="note_iotsu_small" href="#note_iotsu" transform="scale(${smallScale})" />
-    <use id="note_irou_small" href="#note_irou" transform="scale(${smallScale})" />
-    <use id="note_ishaku_small" href="#note_ishaku" transform="scale(${smallScale})" />
-    <use id="note_iyon_small" href="#note_iyon" transform="scale(${smallScale})" />
-    <use id="note_jou_small" href="#note_jou" transform="scale(${smallScale})" />
-    <use id="note_kou_small" href="#note_kou" transform="scale(${smallScale})" />
-    <use id="note_kougo_small" href="#note_kougo" transform="scale(${smallScale})" />
-    <use id="note_koujou_small" href="#note_koujou" transform="scale(${smallScale})" />
-    <use id="note_kounaka_small" href="#note_kounaka" transform="scale(${smallScale})" />
-    <use id="note_koushaku_small" href="#note_koushaku" transform="scale(${smallScale})" />
-    <use id="note_kyuu_small" href="#note_kyuu" transform="scale(${smallScale})" />
-    <use id="note_maru_small" href="#note_maru" transform="scale(${smallScale})" />
-    <use id="note_naka_small" href="#note_naka" transform="scale(${smallScale})" />
-    <use id="note_otsu_small" href="#note_otsu" transform="scale(${smallScale})" />
-    <use id="note_roku_small" href="#note_roku" transform="scale(${smallScale})" />
-    <use id="note_rou_small" href="#note_rou" transform="scale(${smallScale})" />
-    <use id="note_sai_small" href="#note_sai" transform="scale(${smallScale})" />
-    <use id="note_shaku8_small" href="#note_shaku8" transform="scale(${smallScale})" />
-    <use id="note_shaku_small" href="#note_shaku" transform="scale(${smallScale})" />
-    <use id="note_shichi_small" href="#note_shichi" transform="scale(${smallScale})" />
-    <use id="note_yon_small" href="#note_yon" transform="scale(${smallScale})" />
   </defs>
 
   <#list columns as column>
@@ -223,17 +186,19 @@
       <use href="#column" x="${colX}" y="0"/>
 
       <g class="notes">
-      <#assign x = colX + cellWidth / 2 >
+        <#assign x = colX + cellWidth / 2 >
         <#list column.notes as note>
           <#assign y = note.y * cellHeight>
-          <#assign suffix = note.small?string("_small", "")>
-          <use href="#${note.name}${suffix}" x="${x}" y="${y}"/>
-          <#if note.articulation??>
-            <use href="#mark_${note.articulation}${suffix}" x="${x}" y="${y}"/>
-          </#if>
-          <#if note.accidental??>
-            <use href="#mark_${note.accidental}${suffix}" x="${x}" y="${y}"/>
-          </#if>
+          <g transform="translate(${x} ${y})">
+            <#assign scale = note.small?then(noteScaleS,noteScaleL)>
+            <use href="#${note.name}" transform="scale(${scale})"/>
+            <#if note.articulation??>
+              <use href="#mark_${note.articulation}" transform="scale(${scale})"/>
+            </#if>
+            <#if note.accidental??>
+              <use href="#mark_${note.accidental}" transform="scale(${scale})"/>
+            </#if>
+          </g>
         </#list>
 
         <#assign x = colX + chordXOffset>
