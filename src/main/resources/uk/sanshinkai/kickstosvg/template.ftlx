@@ -85,6 +85,7 @@
       }
       .title .latin {
         font-size: ${fsTitleLatin};
+        writing-mode: lr-tb;
       }
       .title .furigana {
         font-size: ${fsTitleFurigana};
@@ -193,7 +194,7 @@
         <#if song.romaji??>
           <#assign jx = colX + fsTitleJapanese / 2.0>
           <#assign rx = colX + fsTitleJapanese + fsTitleFurigana + fsTitleLatin / 2.0>
-          <text x="${rx}" y="0" class="latin">${song.romaji}</text>
+          <text x="0" y="0" class="latin" transform="rotate(90) translate(0 ${-rx})">${song.romaji}</text>
         <#else>
           <#assign jx = ctr>
         </#if>
