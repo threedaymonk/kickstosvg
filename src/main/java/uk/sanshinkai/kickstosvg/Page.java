@@ -14,7 +14,6 @@ import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.Utou;
-import org.springframework.ui.ModelMap;
 import org.w3c.dom.Document;
 
 class Page {
@@ -41,7 +40,7 @@ class Page {
 
     public String render() throws Exception {
         var template = FreeMarker.getTemplate("template.ftlx");
-        var root = new ModelMap()
+        var root = new TemplateMap()
             .addAttribute("cellsPerCol", metrics.cellsPerCol())
             .addAttribute("columnsPerPage", metrics.columnsPerPage())
             .addAttribute("definitions", readDefinitions())
@@ -62,7 +61,7 @@ class Page {
         var list = new ArrayList<Map<String, Object>>();
         for (int colNo = 0; colNo < columns.size(); colNo++) {
             var column = columns.get(colNo);
-            var map = new ModelMap("index", colNo);
+            var map = new TemplateMap("index", colNo);
             if (column.isTitle()) {
                 map.addAttribute("song", mapSong(column));
             } else {
@@ -120,25 +119,25 @@ class Page {
     }
 
     private Map<String, Object> mapJoinLine(Note start, Note end) {
-        return new ModelMap("startY", yPos(start))
+        return new TemplateMap("startY", yPos(start))
             .addAttribute("endY", yPos(end))
             .addAttribute("startSmall", start.isSmall())
             .addAttribute("endSmall", end.isSmall());
     }
 
     private Map<String, Object> mapLyric(Lyric lyric) {
-        return new ModelMap("y", yPos(lyric))
+        return new TemplateMap("y", yPos(lyric))
             .addAttribute("text", lyric.getValue());
     }
 
     private Map<String, Object> mapRepeat(Repeat repeat) {
-        return new ModelMap("y", yPos(repeat))
+        return new TemplateMap("y", yPos(repeat))
             .addAttribute("back", repeat.isBack())
             .addAttribute("style", repeat.getStyle().name().toLowerCase(Locale.ROOT));
     }
 
     private Map<String, Object> mapNote(Note note) {
-        var map = new ModelMap("y", yPos(note))
+        var map = new TemplateMap("y", yPos(note))
             .addAttribute("name", Symbols.noteRef(note))
             .addAttribute("small", note.isSmall());
         if (note.getAccidental() != Accidental.NONE)
@@ -152,7 +151,7 @@ class Page {
 
     private Map<String, Object> mapSong(Column column) {
         var song = column.song();
-        var map = new ModelMap("title", mapJapaneseTitle(song));
+        var map = new TemplateMap("title", mapJapaneseTitle(song));
 
         if (song.getTuning() != null)
             map.addAttribute("tuning", song.getTuning().getDisplayName());
@@ -167,7 +166,7 @@ class Page {
         var jTitle = new FuriganaString(song.getTitle());
         var parts = new ArrayList();
         for (var component : jTitle.components()) {
-            var part = new ModelMap("surface", component.surface());
+            var part = new TemplateMap("surface", component.surface());
             if (component.reading() != null)
                 part.addAttribute("reading", component.reading());
             parts.add(part);
