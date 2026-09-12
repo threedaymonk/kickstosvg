@@ -84,8 +84,10 @@
         stroke-width: 0.5;
       }
       .title {
-        font-size: ${fsTitleJapanese};
         writing-mode: tb-rl;
+      }
+      .title .surface {
+        font-size: ${fsTitleJapanese};
       }
       .title .latin {
         font-size: ${fsTitleLatin};
@@ -174,7 +176,8 @@
             <text x="${fx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
               class="furigana">${part.reading}</text>
           </#if>
-          <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing">${part.surface}</text>
+          <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
+            class="surface">${part.surface}</text>
           <#assign y = y + len>
         </#list>
 
