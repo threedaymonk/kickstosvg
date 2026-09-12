@@ -162,7 +162,6 @@ class Page {
         if (song.getTitleRomaji() != null)
             map.addAttribute("romaji", song.getTitleRomaji());
 
-
         return map;
     }
 
