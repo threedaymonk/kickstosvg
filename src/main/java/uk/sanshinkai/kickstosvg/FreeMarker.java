@@ -6,9 +6,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 
 final class FreeMarker {
-    private FreeMarker() {}
-
     private static Configuration cfg;
+
+    private FreeMarker() {}
 
     static {
         cfg = new Configuration(Configuration.VERSION_2_3_35);

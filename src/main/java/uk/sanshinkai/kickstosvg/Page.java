@@ -1,11 +1,11 @@
 package uk.sanshinkai.kickstosvg;
 
 import java.io.StringWriter;
-import java.util.function.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.Locatable;
@@ -44,7 +44,7 @@ class Page {
             .addAttribute("cellsPerCol", metrics.cellsPerCol())
             .addAttribute("columnsPerPage", metrics.columnsPerPage())
             .addAttribute("definitions", readDefinitions())
-            .addAttribute("columns", mapColumns(columns));
+            .addAttribute("columns", mapColumns());
 
         var out = new StringWriter();
         template.process(root, out);
@@ -57,7 +57,7 @@ class Page {
         return DefinitionExtractor.extract(xml);
     }
 
-    private List<Map<String, Object>> mapColumns(List<Column> columns) {
+    private List<Map<String, Object>> mapColumns() {
         var list = new ArrayList<Map<String, Object>>();
         for (int colNo = 0; colNo < columns.size(); colNo++) {
             var column = columns.get(colNo);
@@ -119,25 +119,25 @@ class Page {
     }
 
     private Map<String, Object> mapJoinLine(Note start, Note end) {
-        return new TemplateMap("startY", yPos(start))
-            .addAttribute("endY", yPos(end))
+        return new TemplateMap("startY", verticalPos(start))
+            .addAttribute("endY", verticalPos(end))
             .addAttribute("startSmall", start.isSmall())
             .addAttribute("endSmall", end.isSmall());
     }
 
     private Map<String, Object> mapLyric(Lyric lyric) {
-        return new TemplateMap("y", yPos(lyric))
+        return new TemplateMap("y", verticalPos(lyric))
             .addAttribute("text", lyric.getValue());
     }
 
     private Map<String, Object> mapRepeat(Repeat repeat) {
-        return new TemplateMap("y", yPos(repeat))
+        return new TemplateMap("y", verticalPos(repeat))
             .addAttribute("back", repeat.isBack())
             .addAttribute("style", repeat.getStyle().name().toLowerCase(Locale.ROOT));
     }
 
     private Map<String, Object> mapNote(Note note) {
-        var map = new TemplateMap("y", yPos(note))
+        var map = new TemplateMap("y", verticalPos(note))
             .addAttribute("name", Symbols.noteRef(note))
             .addAttribute("small", note.isSmall());
         if (note.getAccidental() != Accidental.NONE)
@@ -175,7 +175,8 @@ class Page {
         return parts;
     }
 
-    public double yPos(Locatable l) {
+    // Units are cells, so if there are 12 cells per column, 0.0 <= y <= 12.0
+    public double verticalPos(Locatable l) {
         double cellTop = l.getIndex() % metrics.cellsPerCol();
         double offset = (double) l.getOffset() / (double) Locatable.CELL_TICKS;
         return cellTop + offset;

@@ -4,14 +4,14 @@ import java.util.Locale;
 import org.colston.kicks.document.Note;
 
 public final class Symbols {
-    private Symbols() {}
-
     private static final String[][] VALUES = {
         {"maru", "", "", "", "", "", "", "", ""},
         {"ai", "otsu", "rou", "gerou", "koujou", "kounaka", "koushaku", "iai", "iotsu"},
         {"yon", "jou", "naka", "shaku", "geshaku", "kougo", "irou", "iyon", "ijou"},
         {"kou", "go", "roku", "shichi", "hachi", "kyuu", "ishaku", "ikou", "igo"}
     };
+
+    private Symbols() {}
 
     public static String noteRef(Note note) {
         return "note_" + VALUES[note.getString()][note.getPlacement()];

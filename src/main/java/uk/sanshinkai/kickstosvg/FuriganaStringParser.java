@@ -19,7 +19,7 @@ class FuriganaStringParser {
         private String surface;
         private String reading;
         private List<FuriganaComponent> components;
-    
+
         Session() {
             state = ParseState.NONE;
             components = new ArrayList<FuriganaComponent>();

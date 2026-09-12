@@ -13,7 +13,7 @@ import org.w3c.dom.NodeList;
 public final class DefinitionExtractor {
     private DefinitionExtractor() {}
 
-    public static String extract(Document doc) throws Exception { 
+    public static String extract(Document doc) throws Exception {
         var writer = new StringWriter();
         var transformer = TransformerFactory.newInstance().newTransformer();
 
