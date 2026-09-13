@@ -233,27 +233,31 @@
         </#list>
       </g>
 
-      <g class="lyrics">
-        <#assign x = colX + lyricXOffset>
-        <#list column.lyrics as lyric>
-          <#assign y = lyric.pos * cellHeight + lyricYOffset>
-          <text x="${x}" y="${y}">${lyric.text}</text>
-        </#list>
-      </g>
+      <#if column.lyrics??>
+        <g class="lyrics">
+          <#assign x = colX + lyricXOffset>
+          <#list column.lyrics as lyric>
+            <#assign y = lyric.pos * cellHeight + lyricYOffset>
+            <text x="${x}" y="${y}">${lyric.text}</text>
+          </#list>
+        </g>
+      </#if>
 
-      <g class="repeats">
-        <#assign x = colX + cellWidth>
-        <#list column.repeats as repeat>
-          <#assign y0 = repeat.pos * cellHeight>
-          <#if repeat.back>
-            <#assign y1 = [y0 - repeatLength, repeatMinY]?max>
-          <#else>
-            <#assign y1 = [y0 + repeatLength, repeatMaxY]?min>
-          </#if>
-          <path d="M ${x},${y0} h ${repeatWidth} V ${y1}"
-            style="marker-end: url(#rpt_${repeat.style})"/>
-        </#list>
-      </g>
+      <#if column.repeats??>
+        <g class="repeats">
+          <#assign x = colX + cellWidth>
+          <#list column.repeats as repeat>
+            <#assign y0 = repeat.pos * cellHeight>
+            <#if repeat.back>
+              <#assign y1 = [y0 - repeatLength, repeatMinY]?max>
+            <#else>
+              <#assign y1 = [y0 + repeatLength, repeatMaxY]?min>
+            </#if>
+            <path d="M ${x},${y0} h ${repeatWidth} V ${y1}"
+              style="marker-end: url(#rpt_${repeat.style})"/>
+          </#list>
+        </g>
+      </#if>
 
     </#if>
   </#list>
