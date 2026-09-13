@@ -203,16 +203,18 @@
           <#assign y = note.pos * cellHeight>
           <g transform="translate(${x} ${y})">
             <#assign scale = note.small?then(noteScaleS,noteScaleL)>
-            <use href="#${note.name}" transform="scale(${scale})"/>
-            <#if note.articulation??>
-              <use href="#${note.articulation}" transform="scale(${scale})"/>
-            </#if>
-            <#if note.accidental??>
-              <use href="#${note.accidental}" transform="scale(${scale})"/>
-            </#if>
+            <g transform="scale(${scale})">
+              <use href="#${note.name}" />
+              <#if note.articulation??>
+                <use href="#${note.articulation}" />
+              </#if>
+              <#if note.accidental??>
+                <use href="#${note.accidental}" />
+              </#if>
+            </g>
           </g>
           <#if note.finger??>
-          <g transform="translate(${colX + fingerOffsetX} ${y})">
+            <g transform="translate(${colX + fingerOffsetX} ${y})">
               <use href="#${note.finger}" transform="scale(${noteScaleL})"/>
             </g>
           </#if>
