@@ -55,6 +55,13 @@ public class App implements Callable<Integer> {
     )
     private Map<String, Object> templateParams = new HashMap<String, Object>();
 
+    @Option(
+        names = { "-h", "--help" },
+        usageHelp = true,
+        description = "Display this help and exit"
+    )
+    boolean help;
+
     @Parameters(
         paramLabel = "FILE",
         description = "One or more files to be rendered"
