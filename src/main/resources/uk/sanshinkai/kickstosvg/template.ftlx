@@ -62,18 +62,18 @@
       }
       #column {
         fill: none;
-        stroke-width: 0.5;
+        stroke-width: 0.5px;
         stroke: #969696;
       }
       #rpt_triangle_filled, #rpt_circle_filled {
         overflow: visible;
-        stroke-width: 1;
+        stroke-width: 1px;
         stroke: black;
         fill: black;
       }
       #rpt_triangle_outline, #rpt_circle_outline {
         overflow: visible;
-        stroke-width: 1;
+        stroke-width: 1px;
         stroke: black;
         fill: white;
       }
@@ -88,7 +88,7 @@
       .repeats {
         fill: none;
         stroke: black;
-        stroke-width: 0.5;
+        stroke-width: 0.5px;
       }
       .title {
         writing-mode: tb-rl;
@@ -108,7 +108,7 @@
       }
       .chord, .slur {
         stroke: black;
-        stroke-width: 1;
+        stroke-width: 1px;
         stroke-linecap: round;
       }
     ]]>
