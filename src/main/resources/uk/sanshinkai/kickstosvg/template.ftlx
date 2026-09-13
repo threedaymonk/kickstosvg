@@ -65,11 +65,15 @@
         stroke-width: 0.5;
         stroke: #969696;
       }
-      #triangle_filled, #circle_filled {
+      #rpt_triangle_filled, #rpt_circle_filled {
+        overflow: visible;
+        stroke-width: 1;
         stroke: black;
         fill: black;
       }
-      #triangle_outline, #circle_outline {
+      #rpt_triangle_outline, #rpt_circle_outline {
+        overflow: visible;
+        stroke-width: 1;
         stroke: black;
         fill: white;
       }
@@ -116,25 +120,25 @@
     <marker
       id="rpt_triangle_filled"
       refX="0" refY="0" orient="auto"
-      markerUnits="strokeWidth" style="stroke-width: 1">
+      markerUnits="strokeWidth">
       <use href="#rpt_triangle" />
     </marker>
     <marker
       id="rpt_triangle_outline"
       refX="0" refY="0" orient="auto"
-      markerUnits="strokeWidth" style="stroke-width: 1">
+      markerUnits="strokeWidth">
       <use href="#rpt_triangle" />
     </marker>
     <marker
       id="rpt_circle_filled"
       refX="0" refY="0" orient="auto"
-      markerUnits="strokeWidth" style="stroke-width: 1">
+      markerUnits="strokeWidth">
       <use href="#rpt_circle" />
     </marker>
     <marker
       id="rpt_circle_outline"
       refX="0" refY="0" orient="auto"
-      markerUnits="strokeWidth" style="stroke-width: 1">
+      markerUnits="strokeWidth">
       <use href="#rpt_circle" />
     </marker>
 
