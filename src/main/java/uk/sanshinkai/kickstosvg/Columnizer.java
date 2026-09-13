@@ -10,11 +10,7 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 
 class Columnizer {
-    private Metrics metrics;
-
-    Columnizer(Metrics metrics) {
-        this.metrics = metrics;
-    }
+    Columnizer() {}
 
     public List<Column> columnize(KicksDocument music) {
         var colCount = 0;
@@ -66,6 +62,6 @@ class Columnizer {
     }
 
     private int columnNumber(Locatable a) {
-        return a.getIndex() / metrics.cellsPerCol();
+        return a.getIndex() / Page.CELLS_PER_COL;
     }
 }
