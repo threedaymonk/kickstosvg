@@ -19,6 +19,7 @@ import org.w3c.dom.Document;
 class Page {
     private Metrics metrics;
     private List<Column> columns;
+    public static final int CELLS_PER_COL = 12;
 
     Page(Metrics metrics, List<Column> columns) {
         this.metrics = metrics;
@@ -41,7 +42,7 @@ class Page {
     public String render() throws Exception {
         var template = FreeMarker.getTemplate("template.ftlx");
         var root = new TemplateMap()
-            .addAttribute("cellsPerCol", metrics.cellsPerCol())
+            .addAttribute("cellsPerCol", CELLS_PER_COL)
             .addAttribute("columnsPerPage", metrics.columnsPerPage())
             .addAttribute("definitions", readDefinitions())
             .addAttribute("columns", mapColumns());
@@ -177,7 +178,7 @@ class Page {
 
     // Units are cells, so if there are 12 cells per column, 0.0 <= pos <= 12.0
     public double verticalPos(Locatable l) {
-        double cellTop = l.getIndex() % metrics.cellsPerCol();
+        double cellTop = l.getIndex() % CELLS_PER_COL;
         double offset = (double) l.getOffset() / (double) Locatable.CELL_TICKS;
         return cellTop + offset;
     }
