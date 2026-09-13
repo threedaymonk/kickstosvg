@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<#-- The basics: paper and column sizes (in points; 1pt = 1/72" or 0.3527mm) -->
-<#assign paperHeight = 595.4>
-<#assign paperWidth = 842.1>
+<#--
+All dimensions are in points; 1pt = 1/72" or 0.3527mm.
+
+However, once we get into the world of SVG, points are now user units, which are
+defined to be equal to one pixel, we can't use point measurements, and we have
+to use px in CSS where we want points. Confusing!
+-->
+
+<#-- Basic dimensions of grid -->
 <#assign columnWidth = 56>
 <#assign columnSpace = 9>
+<#assign cellWidth = 28>
 <#assign cellHeight = 36>
-<#assign cellWidth = columnWidth / 2>
 
-<#-- Canvas size and margins are computed from above; don't change these -->
-<#assign canvasWidth = columnWidth * columnsPerPage + columnSpace * (columnsPerPage - 1) >
-<#assign canvasHeight = cellHeight * cellsPerCol >
-<#assign marginX = (paperWidth - canvasWidth) / 2 >
-<#assign marginY = (paperHeight - canvasHeight) / 2 >
+<#-- A4 landscape; might be overridden by shrinkToFit option -->
+<#assign paperWidth = 842.1>
+<#assign paperHeight = 595.4>
 
 <#-- Font sizes -->
 <#assign fsLyrics = 10>
@@ -19,37 +23,58 @@
 <#assign fsTitleJapanese = 26>
 <#assign fsTitleLatin = 14>
 <#assign fsTuning = 14>
-<#assign fsNote = 18>
+<#assign fsNotes = 18>
 
 <#-- How big are small notes compared to large ones? -->
 <#assign smallScale = 0.75>
 
-<#-- Scales are computed from font sizes and scale above; don't change these -->
-<#assign noteScaleL = fsNote / 18.0><#-- 18 is nominal size of SVG kanji -->
-<#assign noteScaleS = noteScaleL * smallScale>
-
+<#-- Position of fingering numbers -->
 <#assign fingerOffsetX = -4.5>
 
 <#-- Chord and slur lines -->
 <#assign chordXOffset = 24.5>
 <#assign slurXOffset = 3.5>
-<#assign joinLineYOffset = fsNote / 4.0>
-
-<#-- Repeat marks, with limits at top and bottom of canvas -->
-<#assign repeatWidth = 21 >
-<#assign repeatLength = cellHeight >
-<#assign repeatMinY = cellHeight / -4.0 >
-<#assign repeatMaxY = canvasHeight + cellHeight / 4.0 >
+<#-- How much do we extend the end of a slur/chord line from the centre? -->
+<#assign joinLineOverlap = 5><#-- will be scaled for small notes -->
 
 <#-- Lyrics -->
-<#assign lyricXOffset = columnWidth * 5.0/8.0 >
-<#assign lyricYOffset = fsLyrics / -2.0 >
+<#assign lyricXOffset = 35>
+<#assign lyricYOffset = 0>
+
+<#-- Repeats -->
+<#assign repeatWidth = 21>
+<#assign repeatLength = 36>
+
+<#if shrinkToFit??>
+  <#assign columnsPerPage = columns?size>
+</#if>
+
+<#-- Canvas size is computed from above; don't change these -->
+<#assign canvasWidth = columnWidth * columnsPerPage + columnSpace * (columnsPerPage - 1) >
+<#assign canvasHeight = cellHeight * cellsPerCol>
+
+<#if shrinkToFit??>
+  <#-- 1pt each side to avoid cropping lines -->
+  <#assign paperWidth = canvasWidth + 2>
+  <#-- ½ cell top and bottom for overflowing notes/repeats -->
+  <#assign paperHeight = canvasHeight + cellHeight>
+</#if>
+
+<#-- Repeat mark limits at top and bottom of canvas -->
+<#assign repeatMinY = cellHeight / -4.0>
+<#assign repeatMaxY = canvasHeight + cellHeight / 4.0>
+
+<#-- Computed from above -->
+<#assign marginX = (paperWidth - canvasWidth) / 2>
+<#assign marginY = (paperHeight - canvasHeight) / 2>
+<#assign noteScaleL = fsNotes / 18.0><#-- 18 is nominal size of SVG kanji -->
+<#assign noteScaleS = noteScaleL * smallScale>
 
 <#-- Other styling can be altered in CSS below -->
 <svg
   viewBox="${-marginX} ${-marginY} ${paperWidth} ${paperHeight}"
-  width="${paperWidth}pt"
-  height="${paperHeight}pt"
+  width="${paperWidth}"
+  height="${paperHeight}"
   version="1.1"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:svg="http://www.w3.org/2000/svg">
@@ -222,15 +247,15 @@
 
         <#assign x = colX + chordXOffset>
         <#list column.chords as chord>
-          <#assign y0 = chord.top * cellHeight - joinLineYOffset * chord.startSmall?then(smallScale,1)>
-          <#assign y1 = chord.bottom * cellHeight + joinLineYOffset * chord.endSmall?then(smallScale,1)>
+          <#assign y0 = chord.top * cellHeight - joinLineOverlap * chord.startSmall?then(smallScale,1)>
+          <#assign y1 = chord.bottom * cellHeight + joinLineOverlap * chord.endSmall?then(smallScale,1)>
           <path class="chord" d="M ${x},${y0} V ${y1}"/>
         </#list>
 
         <#assign x = colX + slurXOffset>
         <#list column.slurs as slur>
-          <#assign y0 = slur.top * cellHeight - joinLineYOffset * slur.startSmall?then(smallScale,1)>
-          <#assign y1 = slur.bottom * cellHeight + joinLineYOffset * slur.endSmall?then(smallScale,1)>
+          <#assign y0 = slur.top * cellHeight - joinLineOverlap * slur.startSmall?then(smallScale,1)>
+          <#assign y1 = slur.bottom * cellHeight + joinLineOverlap * slur.endSmall?then(smallScale,1)>
           <path class="slur" d="M ${x},${y0} V ${y1}"/>
         </#list>
       </g>
@@ -239,7 +264,8 @@
         <g class="lyrics">
           <#assign x = colX + lyricXOffset>
           <#list column.lyrics as lyric>
-            <#assign y = lyric.pos * cellHeight + lyricYOffset>
+            <#-- Vertical text starts at top middle. Move up to centre first char -->
+            <#assign y = lyric.pos * cellHeight - fsLyrics / 2 + lyricYOffset>
             <text x="${x}" y="${y}">${lyric.text}</text>
           </#list>
         </g>
