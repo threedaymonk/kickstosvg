@@ -56,7 +56,7 @@
   <style type="text/css">
     <![CDATA[
       svg {
-        font-family: "EPSON 教科書体Ｍ";
+        font-family: "EPSON 教科書体Ｍ", serif;
         stroke-linecap: square;
         stroke-linejoin: miter;
       }
@@ -78,7 +78,7 @@
         fill: white;
       }
       .latin {
-        font-family: "FreeSans";
+        font-family: "FreeSans", sans-serif;
       }
       .lyrics {
         font-size: ${fsLyrics}px;
