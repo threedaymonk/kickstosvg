@@ -8,44 +8,52 @@ to use px in CSS where we want points. Confusing!
 -->
 
 <#-- Basic dimensions of grid -->
-<#assign columnWidth = 56>
-<#assign columnSpace = 9>
-<#assign cellWidth = 28>
-<#assign cellHeight = 36>
+<#assign columnWidth = columnWidth!56>
+<#assign columnSpace = columnSpace!9>
+<#assign cellWidth = cellWidth!28>
+<#assign cellHeight = cellHeight!36>
 
-<#-- A4 landscape; might be overridden by shrinkToFit option -->
-<#assign paperWidth = 842.1>
-<#assign paperHeight = 595.4>
+<#-- A4 landscape; might be overridden by cropToFit option -->
+<#assign paperWidth = paperWidth!842.1>
+<#assign paperHeight = paperHeight!595.4>
 
 <#-- Font sizes -->
-<#assign fsLyrics = 10>
-<#assign fsTitleFurigana = 12>
-<#assign fsTitleJapanese = 26>
-<#assign fsTitleLatin = 14>
-<#assign fsTuning = 14>
-<#assign fsNotes = 18>
+<#assign fsLyrics = fsLyrics!10>
+<#assign fsTitleFurigana = fsTitleFurigana!12>
+<#assign fsTitleJapanese = fsTitleJapanese!26>
+<#assign fsTitleLatin = fsTitleLatin!14>
+<#assign fsTuning = fsTuning!14>
+<#assign fsNotes = fsNotes!18>
+
+<#-- Font faces -->
+<#assign japaneseFont = japaneseFont!"\"EPSON 教科書体Ｍ\", serif">
+<#assign latinFont = latinFont!"FreeSans, sans-serif">
+<#assign lyricFont = lyricFont!japaneseFont>
+<#assign titleFont = titleFont!japaneseFont>
+<#assign tuningFont = tuningFont!japaneseFont>
+<#assign latinTitleFont = latinTitleFont!latinFont>
 
 <#-- How big are small notes compared to large ones? -->
-<#assign smallScale = 0.75>
+<#assign smallScale = smallScale!0.75>
 
 <#-- Position of fingering numbers -->
 <#assign fingerOffsetX = -4.5>
 
 <#-- Chord and slur lines -->
-<#assign chordXOffset = 24.5>
-<#assign slurXOffset = 3.5>
+<#assign chordXOffset = chordXOffset!24.5>
+<#assign slurXOffset = slurXOffset!3.5>
 <#-- How much do we extend the end of a slur/chord line from the centre? -->
-<#assign joinLineOverlap = 5><#-- will be scaled for small notes -->
+<#assign joinLineOverlap = joinLineOverlap!5><#-- will be scaled for small notes -->
 
 <#-- Lyrics -->
-<#assign lyricXOffset = 35>
-<#assign lyricYOffset = 0>
+<#assign lyricXOffset = lyricXOffset!35>
+<#assign lyricYOffset = lyricYOffset!0>
 
 <#-- Repeats -->
-<#assign repeatWidth = 21>
-<#assign repeatLength = 36>
+<#assign repeatWidth = repeatWidth!21>
+<#assign repeatLength = repeatLength!36>
 
-<#if shrinkToFit??>
+<#if cropToFit>
   <#assign columnsPerPage = columns?size>
 </#if>
 
@@ -53,7 +61,7 @@ to use px in CSS where we want points. Confusing!
 <#assign canvasWidth = columnWidth * columnsPerPage + columnSpace * (columnsPerPage - 1) >
 <#assign canvasHeight = cellHeight * cellsPerCol>
 
-<#if shrinkToFit??>
+<#if cropToFit>
   <#-- 1pt each side to avoid cropping lines -->
   <#assign paperWidth = canvasWidth + 2>
   <#-- ½ cell top and bottom for overflowing notes/repeats -->
@@ -81,7 +89,7 @@ to use px in CSS where we want points. Confusing!
   <style type="text/css">
     <![CDATA[
       svg {
-        font-family: "EPSON 教科書体Ｍ", serif;
+        font-family: ${japaneseFont?no_esc};
         stroke-linecap: square;
         stroke-linejoin: miter;
       }
@@ -90,20 +98,16 @@ to use px in CSS where we want points. Confusing!
         stroke-width: 0.5px;
         stroke: #969696;
       }
-      #rpt_triangle_filled, #rpt_circle_filled {
+      .rpt_marker {
         overflow: visible;
         stroke-width: 1px;
         stroke: black;
+      }
+      #rpt_triangle_filled, #rpt_circle_filled {
         fill: black;
       }
       #rpt_triangle_outline, #rpt_circle_outline {
-        overflow: visible;
-        stroke-width: 1px;
-        stroke: black;
         fill: white;
-      }
-      .latin {
-        font-family: "FreeSans", sans-serif;
       }
       .lyrics {
         font-size: ${fsLyrics}px;
@@ -119,16 +123,20 @@ to use px in CSS where we want points. Confusing!
         writing-mode: tb-rl;
       }
       .title .surface {
+        font: ${titleFont?no_esc};
         font-size: ${fsTitleJapanese}px;
       }
       .title .latin {
+        font: ${latinTitleFont?no_esc};
         font-size: ${fsTitleLatin}px;
         writing-mode: lr-tb;
       }
       .title .furigana {
+        font: ${titleFont?no_esc};
         font-size: ${fsTitleFurigana}px;
       }
       .title .tuning {
+        font: ${tuningFont?no_esc};
         font-size: ${fsTuning}px;
       }
       .chord, .slur {
@@ -143,24 +151,28 @@ to use px in CSS where we want points. Confusing!
     <path id="rpt_triangle" d="M 4,0 L -4,-4 L -4,4 z" />
     <circle id="rpt_circle" cx="0" cy="0" r="4" />
     <marker
+      class="rpt_marker"
       id="rpt_triangle_filled"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_triangle" />
     </marker>
     <marker
+      class="rpt_marker"
       id="rpt_triangle_outline"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_triangle" />
     </marker>
     <marker
+      class="rpt_marker"
       id="rpt_circle_filled"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_circle" />
     </marker>
     <marker
+      class="rpt_marker"
       id="rpt_circle_outline"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">

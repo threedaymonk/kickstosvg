@@ -12,12 +12,12 @@ import org.colston.kicks.document.persistence.DocumentStoreFactory;
 class Renderer implements Callable<Boolean> {
     private String inputPath;
     private String outputDir;
-    private Metrics metrics;
+    private App options;
 
-    Renderer(String inputPath, String outputDir) {
+    Renderer(String inputPath, String outputDir, App options) {
         this.inputPath = inputPath;
         this.outputDir = outputDir;
-        this.metrics = new Metrics();
+        this.options = options;
     }
 
     private KicksDocument loadDocument(File file) throws Exception {
@@ -36,10 +36,10 @@ class Renderer implements Callable<Boolean> {
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
         var columns = new Columnizer().columnize(music);
-        var pages = Lists.partition(columns, metrics.columnsPerPage());
+        var pages = Lists.partition(columns, options.columnsPerPage());
 
         for (var i = 0; i < pages.size(); i++) {
-            var xml = new Page(metrics, pages.get(i)).render();
+            var xml = new Page(options, pages.get(i)).render();
             var filename = generateFilename(i + 1);
             var out = new PrintWriter(filename);
             try {

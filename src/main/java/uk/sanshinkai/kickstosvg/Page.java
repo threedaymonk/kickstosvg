@@ -17,12 +17,12 @@ import org.colston.kicks.document.Utou;
 import org.w3c.dom.Document;
 
 class Page {
-    private Metrics metrics;
+    private App options;
     private List<Column> columns;
     public static final int CELLS_PER_COL = 12;
 
-    Page(Metrics metrics, List<Column> columns) {
-        this.metrics = metrics;
+    Page(App options, List<Column> columns) {
+        this.options = options;
         this.columns = columns;
     }
 
@@ -43,9 +43,13 @@ class Page {
         var template = FreeMarker.getTemplate("template.ftlx");
         var root = new TemplateMap()
             .addAttribute("cellsPerCol", CELLS_PER_COL)
-            .addAttribute("columnsPerPage", metrics.columnsPerPage())
+            .addAttribute("columnsPerPage", options.columnsPerPage())
+            .addAttribute("cropToFit", options.cropToFit())
             .addAttribute("definitions", readDefinitions())
             .addAttribute("columns", mapColumns());
+
+        for (var entry : options.templateParams().entrySet())
+            root.addAttribute(entry.getKey(), entry.getValue());
 
         var out = new StringWriter();
         template.process(root, out);

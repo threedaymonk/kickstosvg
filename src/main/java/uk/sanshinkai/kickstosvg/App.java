@@ -1,10 +1,13 @@
 package uk.sanshinkai.kickstosvg;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+import picocli.CommandLine.UseDefaultConverter;
 
 @Command(
     name = "main",
@@ -12,22 +15,56 @@ import picocli.CommandLine.Parameters;
 )
 public class App implements Callable<Integer> {
     @Option(
-        paramLabel = "<path>",
         names = { "-o", "--output-dir" },
+        paramLabel = "PATH",
         description = "Where to write output files"
     )
     private String outputDir = ".";
 
+    @Option(
+        names = { "-C", "--columns-per-page" },
+        paramLabel = "N",
+        description = "Number of columns per page"
+    )
+    private int columnsPerPage = 11;
+
+    @Option(
+        names = { "-c", "--crop-to-fit" },
+        description = "Crop SVG to the minimum size needed for the music"
+    )
+    private boolean cropToFit = false;
+
+    @Option(
+        names = { "-P", "--template-parameter" },
+        converter = {UseDefaultConverter.class, TemplateParamConverter.class},
+        paramLabel = "KEY=VALUE",
+        description = "Set a parameter to be passed to the template"
+    )
+    private Map<String, Object> templateParams = new HashMap<String, Object>();
+
     @Parameters(
-        paramLabel = "<input>",
-        description = "Files to be rendered"
+        paramLabel = "FILE",
+        arity = "1..*",
+        description = "One or more files to be rendered"
     )
     private String[] inputPaths = {};
+
+    public int columnsPerPage() {
+        return this.columnsPerPage;
+    }
+
+    public boolean cropToFit() {
+        return this.cropToFit;
+    }
+
+    public Map<String, Object> templateParams() {
+        return Map.copyOf(this.templateParams);
+    }
 
     @Override
     public Integer call() throws Exception {
         for (var inputPath : inputPaths) {
-            new Renderer(inputPath, outputDir).call();
+            new Renderer(inputPath, outputDir, this).call();
         }
         return 0;
     }

@@ -10,8 +10,6 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 
 class Columnizer {
-    Columnizer() {}
-
     public List<Column> columnize(KicksDocument music) {
         var colCount = 0;
         for (var n : music.getNotes()) {
