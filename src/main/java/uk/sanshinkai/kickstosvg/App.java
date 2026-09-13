@@ -42,6 +42,12 @@ public class App implements Callable<Integer> {
     private boolean cropToFit = false;
 
     @Option(
+        names = { "-r", "--romaji-lyrics" },
+        description = "Convert the lyrics to romaji"
+    )
+    private boolean romajiLyrics = false;
+
+    @Option(
         names = { "-P", "--template-parameter" },
         converter = {UseDefaultConverter.class, TemplateParamConverter.class},
         paramLabel = "KEY=VALUE",
@@ -66,6 +72,10 @@ public class App implements Callable<Integer> {
 
     public boolean cropToFit() {
         return this.cropToFit;
+    }
+
+    public boolean romajiLyrics() {
+        return this.romajiLyrics;
     }
 
     public Map<String, Object> templateParams() {

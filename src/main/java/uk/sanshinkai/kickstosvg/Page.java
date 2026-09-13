@@ -14,6 +14,7 @@ import org.colston.kicks.document.Note;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.Utou;
+import org.colston.utils.KanaConverter;
 import org.w3c.dom.Document;
 
 class Page {
@@ -45,6 +46,7 @@ class Page {
             .addAttribute("cellsPerCol", CELLS_PER_COL)
             .addAttribute("columnsPerPage", options.columnsPerPage())
             .addAttribute("cropToFit", options.cropToFit())
+            .addAttribute("romajiLyrics", options.romajiLyrics())
             .addAttribute("definitions", readDefinitions())
             .addAttribute("columns", mapColumns());
 
@@ -131,8 +133,12 @@ class Page {
     }
 
     private Map<String, Object> mapLyric(Lyric lyric) {
+        var text = options.romajiLyrics()
+            ? KanaConverter.toRomaji(lyric.getValue())
+            : lyric.getValue();
+
         return new TemplateMap("pos", verticalPos(lyric))
-            .addAttribute("text", lyric.getValue());
+            .addAttribute("text", text);
     }
 
     private Map<String, Object> mapRepeat(Repeat repeat) {

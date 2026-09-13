@@ -28,7 +28,7 @@ to use px in CSS where we want points. Confusing!
 <#-- Font faces -->
 <#assign japaneseFont = japaneseFont!"\"EPSON 教科書体Ｍ\", serif">
 <#assign latinFont = latinFont!"FreeSans, sans-serif">
-<#assign lyricFont = lyricFont!japaneseFont>
+<#assign lyricFont = lyricFont!(romajiLyrics?then(latinFont,japaneseFont))>
 <#assign titleFont = titleFont!japaneseFont>
 <#assign tuningFont = tuningFont!japaneseFont>
 <#assign latinTitleFont = latinTitleFont!latinFont>
@@ -46,8 +46,13 @@ to use px in CSS where we want points. Confusing!
 <#assign joinLineOverlap = joinLineOverlap!5><#-- will be scaled for small notes -->
 
 <#-- Lyrics -->
-<#assign lyricXOffset = lyricXOffset!35>
-<#assign lyricYOffset = lyricYOffset!0>
+<#if romajiLyrics>
+  <#assign lyricXOffset = lyricXOffset!30>
+  <#assign lyricYOffset = lyricYOffset!(fsLyrics / 2.0)>
+<#else>
+  <#assign lyricXOffset = lyricXOffset!35>
+  <#assign lyricYOffset = lyricYOffset!(fsLyrics / -2.0)>
+</#if>
 
 <#-- Repeats -->
 <#assign repeatWidth = repeatWidth!21>
@@ -110,9 +115,14 @@ to use px in CSS where we want points. Confusing!
         fill: white;
       }
       .lyrics {
+        font: ${lyricFont?no_esc};
         font-size: ${fsLyrics}px;
+      }
+      .lyrics.japanese {
         letter-spacing: -4px;
         writing-mode: tb-rl;
+      }
+      .lyrics.latin {
       }
       .repeats {
         fill: none;
@@ -273,11 +283,10 @@ to use px in CSS where we want points. Confusing!
       </g>
 
       <#if column.lyrics??>
-        <g class="lyrics">
+        <g class="lyrics ${romajiLyrics?string("latin","japanese")}">
           <#assign x = colX + lyricXOffset>
           <#list column.lyrics as lyric>
-            <#-- Vertical text starts at top middle. Move up to centre first char -->
-            <#assign y = lyric.pos * cellHeight - fsLyrics / 2 + lyricYOffset>
+            <#assign y = lyric.pos * cellHeight + lyricYOffset>
             <text x="${x}" y="${y}">${lyric.text}</text>
           </#list>
         </g>
