@@ -77,8 +77,8 @@
         font-family: "FreeSans";
       }
       .lyrics {
-        font-size: ${fsLyrics};
-        letter-spacing: -4;
+        font-size: ${fsLyrics}px;
+        letter-spacing: -4px;
         writing-mode: tb-rl;
       }
       .repeats {
@@ -90,17 +90,17 @@
         writing-mode: tb-rl;
       }
       .title .surface {
-        font-size: ${fsTitleJapanese};
+        font-size: ${fsTitleJapanese}px;
       }
       .title .latin {
-        font-size: ${fsTitleLatin};
+        font-size: ${fsTitleLatin}px;
         writing-mode: lr-tb;
       }
       .title .furigana {
-        font-size: ${fsTitleFurigana};
+        font-size: ${fsTitleFurigana}px;
       }
       .title .tuning {
-        font-size: ${fsTuning};
+        font-size: ${fsTuning}px;
       }
       .chord, .slur {
         stroke: black;
