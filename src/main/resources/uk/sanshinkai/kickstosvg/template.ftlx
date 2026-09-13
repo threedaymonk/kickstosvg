@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<#setting locale="en">
+<#setting number_format="c">
 <#--
 All dimensions are in points; 1pt = 1/72" or 0.3527mm.
 
