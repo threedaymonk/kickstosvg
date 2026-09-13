@@ -54,7 +54,7 @@ class Renderer implements Callable<Boolean> {
     }
 
     private String generateFilename(int pageNo) throws Exception {
-        var suffix = String.format(Locale.ROOT, "-%02d.svg", pageNo);
+        var suffix = String.format(Locale.ROOT, "%s-%02d.svg", options.fileSuffix(), pageNo);
         var inputFilename = Path.of(inputPath).getFileName();
         if (inputFilename == null)
             throw new Exception("Input path is empty");

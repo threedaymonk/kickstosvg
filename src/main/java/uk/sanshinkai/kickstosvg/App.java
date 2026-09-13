@@ -22,6 +22,13 @@ public class App implements Callable<Integer> {
     private String outputDir = ".";
 
     @Option(
+        names = { "-s", "--suffix" },
+        paramLabel = "STRING",
+        description = "Suffix to be added to file names (before the page number)"
+    )
+    private String fileSuffix = "";
+
+    @Option(
         names = { "-C", "--columns-per-page" },
         paramLabel = "N",
         description = "Number of columns per page"
@@ -44,10 +51,14 @@ public class App implements Callable<Integer> {
 
     @Parameters(
         paramLabel = "FILE",
-        arity = "1..*",
         description = "One or more files to be rendered"
     )
     private String[] inputPaths = {};
+
+    public String fileSuffix() {
+        if (this.fileSuffix == "") return "";
+        else return "-" + this.fileSuffix;
+    }
 
     public int columnsPerPage() {
         return this.columnsPerPage;
