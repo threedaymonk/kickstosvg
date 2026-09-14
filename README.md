@@ -29,4 +29,10 @@ For command-line options, run
 
 Refer to the [template file] for template parameters and CSS classes.
 
+## SVG components for notes etc.
+
+These come from the [kunkunshi symbols] project; the combined file is copied
+into this repository and packaged into the jar file.
+
 [template file]: ./src/main/resources/uk/sanshinkai/kickstosvg/template.ftlx
+[kunkunshi symbols]: https://github.com/threedaymonk/kunkunshi-symbols
