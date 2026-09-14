@@ -80,8 +80,8 @@ to use px in CSS where we want points. Confusing!
 <#-- Other styling can be altered in CSS -->
 <svg
   viewBox="${-marginX} ${-marginY} ${paperWidth} ${paperHeight}"
-  width="${paperWidth}"
-  height="${paperHeight}"
+  width="${paperWidth}pt"
+  height="${paperHeight}pt"
   version="1.1"
   xmlns="http://www.w3.org/2000/svg"
   xmlns:svg="http://www.w3.org/2000/svg">
