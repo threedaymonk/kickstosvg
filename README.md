@@ -1,6 +1,7 @@
 # kickstosvg
 
-Render a [Kicks] kunkunshi document to Inkscape-compatible SVG.
+Render a [Kicks] kunkunshi document to an SVG document that works in Inkscape
+or in a browser (tested in Firefox and Chromium).
 
 [Kicks]: https://github.com/simoncolston/kicks
 
