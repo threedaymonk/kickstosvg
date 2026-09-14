@@ -12,7 +12,7 @@ import picocli.CommandLine.Parameters;
 import picocli.CommandLine.UseDefaultConverter;
 
 @Command(
-    name = "main",
+    name = "kickstosvg",
     description = "Render kicks file(s) to SVG"
 )
 public class App implements Callable<Integer> {
