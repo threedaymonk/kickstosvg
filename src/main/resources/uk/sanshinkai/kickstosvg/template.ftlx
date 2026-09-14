@@ -105,12 +105,6 @@ to use px in CSS where we want points. Confusing!
         stroke-width: 1px;
         stroke: black;
       }
-      #rpt_triangle_filled, #rpt_circle_filled {
-        fill: black;
-      }
-      #rpt_triangle_outline, #rpt_circle_outline {
-        fill: white;
-      }
       .lyrics {
         font-size: ${fsLyrics}px;
       }
@@ -155,6 +149,7 @@ to use px in CSS where we want points. Confusing!
     <marker
       class="rpt_marker"
       id="rpt_triangle_filled"
+      fill="black"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_triangle" />
@@ -162,6 +157,7 @@ to use px in CSS where we want points. Confusing!
     <marker
       class="rpt_marker"
       id="rpt_triangle_outline"
+      fill="white"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_triangle" />
@@ -169,6 +165,7 @@ to use px in CSS where we want points. Confusing!
     <marker
       class="rpt_marker"
       id="rpt_circle_filled"
+      fill="black"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_circle" />
@@ -176,6 +173,7 @@ to use px in CSS where we want points. Confusing!
     <marker
       class="rpt_marker"
       id="rpt_circle_outline"
+      fill="white"
       refX="0" refY="0" orient="auto"
       markerUnits="strokeWidth">
       <use href="#rpt_circle" />
