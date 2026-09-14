@@ -15,18 +15,10 @@ import picocli.CommandLine.UseDefaultConverter;
 )
 public class App implements Callable<Integer> {
     @Option(
-        names = { "-o", "--output-dir" },
-        paramLabel = "PATH",
-        description = "Where to write output files"
+        names = { "-c", "--crop-to-fit" },
+        description = "Crop SVG to the minimum size needed for the music"
     )
-    private String outputDir = ".";
-
-    @Option(
-        names = { "-s", "--suffix" },
-        paramLabel = "STRING",
-        description = "Suffix to be added to file names (before the page number)"
-    )
-    private String fileSuffix;
+    private boolean cropToFit = false;
 
     @Option(
         names = { "-C", "--columns-per-page" },
@@ -36,25 +28,18 @@ public class App implements Callable<Integer> {
     private int columnsPerPage = 11;
 
     @Option(
-        names = { "-c", "--crop-to-fit" },
-        description = "Crop SVG to the minimum size needed for the music"
+        names = { "-h", "--help" },
+        usageHelp = true,
+        description = "Display this help and exit"
     )
-    private boolean cropToFit = false;
+    boolean help;
 
     @Option(
-        names = { "-r", "--romaji-lyrics" },
-        description = "Convert the lyrics to romaji"
+        names = { "-o", "--output-dir" },
+        paramLabel = "PATH",
+        description = "Where to write output files"
     )
-    private boolean romajiLyrics = false;
-
-    @Option(
-        names = { "--titles" },
-        negatable = true,
-        defaultValue = "true",
-        fallbackValue = "true",
-        description = "Show title columns. True by default"
-    )
-    private boolean showTitles = true;
+    private String outputDir = ".";
 
     @Option(
         names = { "-P", "--template-parameter" },
@@ -65,11 +50,26 @@ public class App implements Callable<Integer> {
     private Map<String, Object> templateParams = new HashMap<String, Object>();
 
     @Option(
-        names = { "-h", "--help" },
-        usageHelp = true,
-        description = "Display this help and exit"
+        names = { "-r", "--romaji-lyrics" },
+        description = "Convert the lyrics to romaji"
     )
-    boolean help;
+    private boolean romajiLyrics = false;
+
+    @Option(
+        names = { "-s", "--suffix" },
+        paramLabel = "STRING",
+        description = "Suffix to be added to file names (before the page number)"
+    )
+    private String fileSuffix;
+
+    @Option(
+        names = { "--titles" },
+        negatable = true,
+        defaultValue = "true",
+        fallbackValue = "true",
+        description = "Show title columns. True by default"
+    )
+    private boolean showTitles = true;
 
     @Parameters(
         paramLabel = "FILE",
@@ -77,25 +77,14 @@ public class App implements Callable<Integer> {
     )
     private String[] inputPaths = {};
 
+    public int columnsPerPage() { return this.columnsPerPage; }
+    public boolean cropToFit() { return this.cropToFit; }
+    public boolean romajiLyrics() { return this.romajiLyrics; }
+    public boolean showTitles() { return this.showTitles; }
+
     public String fileSuffix() {
         if (this.fileSuffix == null) return "";
-        else return "-" + this.fileSuffix;
-    }
-
-    public int columnsPerPage() {
-        return this.columnsPerPage;
-    }
-
-    public boolean cropToFit() {
-        return this.cropToFit;
-    }
-
-    public boolean romajiLyrics() {
-        return this.romajiLyrics;
-    }
-
-    public boolean showTitles() {
-        return this.showTitles;
+        return "-" + this.fileSuffix;
     }
 
     public Map<String, Object> templateParams() {
