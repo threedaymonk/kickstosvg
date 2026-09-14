@@ -26,7 +26,7 @@ public class App implements Callable<Integer> {
         paramLabel = "STRING",
         description = "Suffix to be added to file names (before the page number)"
     )
-    private String fileSuffix = "";
+    private String fileSuffix;
 
     @Option(
         names = { "-C", "--columns-per-page" },
@@ -78,7 +78,7 @@ public class App implements Callable<Integer> {
     private String[] inputPaths = {};
 
     public String fileSuffix() {
-        if (this.fileSuffix == "") return "";
+        if (this.fileSuffix == null) return "";
         else return "-" + this.fileSuffix;
     }
 
