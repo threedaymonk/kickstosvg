@@ -35,7 +35,8 @@ class Renderer implements Callable<Boolean> {
     @Override
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
-        var columns = new Columnizer().columnize(music);
+        var columns = new Columnizer(options).columnize(music);
+
         var pages = Lists.partition(columns, options.columnsPerPage());
 
         for (var i = 0; i < pages.size(); i++) {

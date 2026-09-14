@@ -48,6 +48,15 @@ public class App implements Callable<Integer> {
     private boolean romajiLyrics = false;
 
     @Option(
+        names = { "--titles" },
+        negatable = true,
+        defaultValue = "true",
+        fallbackValue = "true",
+        description = "Show title columns. True by default"
+    )
+    private boolean showTitles = true;
+
+    @Option(
         names = { "-P", "--template-parameter" },
         converter = {UseDefaultConverter.class, TemplateParamConverter.class},
         paramLabel = "KEY=VALUE",
@@ -83,6 +92,10 @@ public class App implements Callable<Integer> {
 
     public boolean romajiLyrics() {
         return this.romajiLyrics;
+    }
+
+    public boolean showTitles() {
+        return this.showTitles;
     }
 
     public Map<String, Object> templateParams() {

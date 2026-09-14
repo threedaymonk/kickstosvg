@@ -10,6 +10,12 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 
 class Columnizer {
+    private App options;
+
+    Columnizer(App options) {
+        this.options = options;
+    }
+
     public List<Column> columnize(KicksDocument music) {
         var colCount = 0;
         for (var n : music.getNotes()) {
@@ -48,12 +54,14 @@ class Columnizer {
 
         var columns = new ArrayList<Column>(colCount);
         for (var i = 0; i < colCount ; i++) {
-            columns.add(new Column(
+            var column = new Column(
                 noteses.get(i),
                 lyricses.get(i),
                 repeatses.get(i),
                 songs.get(i)
-            ));
+            );
+            if (column.isMusic() || options.showTitles())
+                columns.add(column);
         }
 
         return columns;
