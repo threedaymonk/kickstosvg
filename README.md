@@ -22,3 +22,11 @@ Render a [Kicks] kunkunshi document to Inkscape-compatible SVG.
     java -jar target/kickstosvg.jar SOURCE
 
 Source can be a `.kicks` or `.kicksabc` file.
+
+For command-line options, run
+
+    java -jar target/kickstosvg.jar --help
+
+Refer to the [template file] for template parameters and CSS classes.
+
+[template file]: ./src/main/resources/uk/sanshinkai/kickstosvg/template.ftlx
