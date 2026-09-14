@@ -242,7 +242,9 @@ to use px in CSS where we want points. Confusing!
           <#assign y = note.pos * cellHeight>
           <g transform="translate(${x} ${y})">
             <#assign scale = note.small?then(noteScaleS,noteScaleL)>
-            <g transform="scale(${scale})">
+            <#if scale != 1>
+              <g transform="scale(${scale})">
+            </#if>
               <use href="#${note.name}" />
               <#if note.articulation??>
                 <use href="#${note.articulation}" />
@@ -250,7 +252,9 @@ to use px in CSS where we want points. Confusing!
               <#if note.accidental??>
                 <use href="#${note.accidental}" />
               </#if>
-            </g>
+            <#if scale != 1>
+              </g>
+            </#if>
           </g>
           <#if note.finger??>
             <g transform="translate(${colX + fingerOffsetX} ${y})">
