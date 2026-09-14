@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Predicate;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.Locatable;
 import org.colston.kicks.document.Lyric;
@@ -15,7 +14,6 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.Utou;
 import org.colston.utils.KanaConverter;
-import org.w3c.dom.Document;
 
 class Page {
     private App options;
@@ -25,19 +23,6 @@ class Page {
     Page(App options, List<Column> columns) {
         this.options = options;
         this.columns = columns;
-    }
-
-    private Document loadXML(String name) throws Exception {
-        var stream = Page.class.getResourceAsStream(name);
-        try {
-            if (stream == null)
-                throw new Exception("Couldn't open resource: " + name);
-            return DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(stream);
-        } finally {
-            if (stream != null) stream.close();
-        }
     }
 
     public String render() throws Exception {
@@ -57,12 +42,19 @@ class Page {
         var out = new StringWriter();
         template.process(root, out);
 
-        return out.toString();
+        return SVGOptimizer.optimize(out.toString());
     }
 
     private String readDefinitions() throws Exception {
-        var xml = loadXML("kunkunshi-all.svg");
-        return DefinitionExtractor.extract(xml);
+        var stream = Page.class.getResourceAsStream("kunkunshi-all.svg");
+        try {
+            if (stream == null)
+                throw new Exception("Couldn't open resource: kunkunshi-all.svg");
+
+            return DefinitionExtractor.extract(stream);
+        } finally {
+            if (stream != null) stream.close();
+        }
     }
 
     private List<Map<String, Object>> mapColumns() {

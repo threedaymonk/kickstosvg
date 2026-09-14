@@ -225,7 +225,7 @@
     </module>
     <module name="AbbreviationAsWordInName">
       <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF"/>
-      <property name="allowedAbbreviationLength" value="0"/>
+      <property name="allowedAbbreviationLength" value="3"/>
       <property name="ignoreFinal" value="false"/>
       <property name="ignoreStatic" value="false"/>
       <property name="ignoreStaticFinal" value="false"/>
