@@ -41,7 +41,7 @@ class Renderer implements Callable<Boolean> {
 
         for (var i = 0; i < pages.size(); i++) {
             var xml = new Page(options, pages.get(i)).render();
-            var filename = generateFilename(i + 1);
+            var filename = generateFilename(pages.size() > 1 ? i + 1 : 0);
             var out = new PrintWriter(filename);
             try {
                 System.err.printf("Writing page %d to %s%n", i + 1, filename);
@@ -55,12 +55,18 @@ class Renderer implements Callable<Boolean> {
     }
 
     private String generateFilename(int pageNo) throws Exception {
-        var suffix = String.format(Locale.ROOT, "%s-%02d.svg", options.fileSuffix(), pageNo);
+        var suffix = options.fileSuffix();
+        if (pageNo > 0)
+            suffix += String.format(Locale.ROOT, "-%02d", pageNo);
+        suffix += ".svg";
+
         var inputFilename = Path.of(inputPath).getFileName();
         if (inputFilename == null)
             throw new Exception("Input path is empty");
+
         var name = inputFilename.toString()
             .replaceFirst("\\.[^\\.]+$|$", suffix);
+
         return Path.of(outputDir, name).toString();
     }
 }
