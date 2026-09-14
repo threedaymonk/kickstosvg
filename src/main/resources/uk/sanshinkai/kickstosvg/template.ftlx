@@ -27,38 +27,30 @@ to use px in CSS where we want points. Confusing!
 <#assign fsTuning = fsTuning!14>
 <#assign fsNotes = fsNotes!18>
 
-<#-- Font faces -->
-<#assign japaneseFont = japaneseFont!"\"EPSON 教科書体Ｍ\", serif">
-<#assign latinFont = latinFont!"FreeSans, sans-serif">
-<#assign lyricFont = lyricFont!(romajiLyrics?then(latinFont,japaneseFont))>
-<#assign titleFont = titleFont!japaneseFont>
-<#assign tuningFont = tuningFont!japaneseFont>
-<#assign latinTitleFont = latinTitleFont!latinFont>
-
 <#-- How big are small notes compared to large ones? -->
 <#assign smallScale = smallScale!0.75>
 
 <#-- Position of fingering numbers -->
-<#assign fingerOffsetX = -4.5>
+<#assign fingerOffsetX = fingerOffsetX!(columnSpace / -2)>
 
 <#-- Chord and slur lines -->
-<#assign chordXOffset = chordXOffset!24.5>
-<#assign slurXOffset = slurXOffset!3.5>
+<#assign chordXOffset = chordXOffset!(cellWidth * 7/8)>
+<#assign slurXOffset = slurXOffset!(cellWidth * 1/8)>
 <#-- How much do we extend the end of a slur/chord line from the centre? -->
-<#assign joinLineOverlap = joinLineOverlap!5><#-- will be scaled for small notes -->
+<#assign joinLineOverlap = joinLineOverlap!(fsNotes / 4)><#-- will be scaled for small notes -->
 
 <#-- Lyrics -->
 <#if romajiLyrics>
-  <#assign lyricXOffset = lyricXOffset!30>
-  <#assign lyricYOffset = lyricYOffset!(fsLyrics / 2.0)>
+<#assign lyricXOffset = lyricXOffset!(cellWidth * 17/16)>
+  <#assign lyricYOffset = lyricYOffset!(fsLyrics / 2)>
 <#else>
-  <#assign lyricXOffset = lyricXOffset!35>
-  <#assign lyricYOffset = lyricYOffset!(fsLyrics / -2.0)>
+<#assign lyricXOffset = lyricXOffset!(cellWidth * 17/16 + fsLyrics / 2)>
+  <#assign lyricYOffset = lyricYOffset!(fsLyrics / -2)>
 </#if>
 
 <#-- Repeats -->
 <#assign repeatWidth = repeatWidth!21>
-<#assign repeatLength = repeatLength!36>
+<#assign repeatLength = repeatLength!cellHeight>
 
 <#if cropToFit>
   <#assign columnsPerPage = columns?size>
@@ -71,21 +63,21 @@ to use px in CSS where we want points. Confusing!
 <#if cropToFit>
   <#-- 1pt each side to avoid cropping lines -->
   <#assign paperWidth = canvasWidth + 2>
-  <#-- ½ cell top and bottom for overflowing notes/repeats -->
-  <#assign paperHeight = canvasHeight + cellHeight>
+  <#-- ½ font top and bottom for overflowing notes/repeats -->
+  <#assign paperHeight = canvasHeight + fsNotes>
 </#if>
 
 <#-- Repeat mark limits at top and bottom of canvas -->
-<#assign repeatMinY = cellHeight / -4.0>
-<#assign repeatMaxY = canvasHeight + cellHeight / 4.0>
+<#assign repeatMinY = cellHeight / -8>
+<#assign repeatMaxY = canvasHeight + cellHeight / 8>
 
 <#-- Computed from above -->
 <#assign marginX = (paperWidth - canvasWidth) / 2>
 <#assign marginY = (paperHeight - canvasHeight) / 2>
-<#assign noteScaleL = fsNotes / 18.0><#-- 18 is nominal size of SVG kanji -->
+<#assign noteScaleL = fsNotes / 18><#-- 18 is nominal size of SVG kanji -->
 <#assign noteScaleS = noteScaleL * smallScale>
 
-<#-- Other styling can be altered in CSS below -->
+<#-- Other styling can be altered in CSS -->
 <svg
   viewBox="${-marginX} ${-marginY} ${paperWidth} ${paperHeight}"
   width="${paperWidth}"
@@ -96,9 +88,12 @@ to use px in CSS where we want points. Confusing!
   <style type="text/css">
     <![CDATA[
       svg {
-        font-family: ${japaneseFont?no_esc};
+        font-family: "EPSON 教科書体Ｍ", serif;
         stroke-linecap: square;
         stroke-linejoin: miter;
+      }
+      .Latn {
+        font-family: "FreeSans", sans-serif;
       }
       #column {
         fill: none;
@@ -117,14 +112,11 @@ to use px in CSS where we want points. Confusing!
         fill: white;
       }
       .lyrics {
-        font: ${lyricFont?no_esc};
         font-size: ${fsLyrics}px;
       }
-      .lyrics.japanese {
+      .lyrics.Japn {
         letter-spacing: -4px;
         writing-mode: tb-rl;
-      }
-      .lyrics.latin {
       }
       .repeats {
         fill: none;
@@ -135,20 +127,16 @@ to use px in CSS where we want points. Confusing!
         writing-mode: tb-rl;
       }
       .title .surface {
-        font: ${titleFont?no_esc};
         font-size: ${fsTitleJapanese}px;
       }
-      .title .latin {
-        font: ${latinTitleFont?no_esc};
+      .title .Latn {
         font-size: ${fsTitleLatin}px;
         writing-mode: lr-tb;
       }
       .title .furigana {
-        font: ${titleFont?no_esc};
         font-size: ${fsTitleFurigana}px;
       }
       .title .tuning {
-        font: ${tuningFont?no_esc};
         font-size: ${fsTuning}px;
       }
       .chord, .slur {
@@ -218,7 +206,7 @@ to use px in CSS where we want points. Confusing!
           <#assign jx = colX + fsTitleJapanese / 2.0>
           <#assign rx = colX + fsTitleJapanese + fsTitleFurigana + fsTitleLatin / 2.0>
           <g transform="translate(${rx} 0)">
-            <text class="latin" transform="rotate(90)">${song.romaji}</text>
+            <text class="Latn" transform="rotate(90)">${song.romaji}</text>
           </g>
         <#else>
           <#assign jx = ctr>
@@ -232,15 +220,15 @@ to use px in CSS where we want points. Confusing!
             <#assign rlen = part.reading?length * fsTitleFurigana>
             <#assign len = [len, rlen]?max>
             <text x="${fx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
-              class="furigana">${part.reading}</text>
+              class="furigana Japn">${part.reading}</text>
           </#if>
           <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
-            class="surface">${part.surface}</text>
+            class="surface Japn">${part.surface}</text>
           <#assign y = y + len>
         </#list>
 
         <#assign tlen = song.tuning?length * fsTuning>
-        <text x="${ctr}" y="${canvasHeight - tlen}" class="tuning"
+        <text x="${ctr}" y="${canvasHeight - tlen}" class="tuning Japn"
           textLength="${tlen}" lengthAdjust="spacing">${song.tuning}</text>
       </g>
 
@@ -287,7 +275,7 @@ to use px in CSS where we want points. Confusing!
       </g>
 
       <#if column.lyrics??>
-        <g class="lyrics ${romajiLyrics?string("latin","japanese")}">
+        <g class="lyrics ${romajiLyrics?string("Latn","Japn")}">
           <#assign x = colX + lyricXOffset>
           <#list column.lyrics as lyric>
             <#assign y = lyric.pos * cellHeight + lyricYOffset>
