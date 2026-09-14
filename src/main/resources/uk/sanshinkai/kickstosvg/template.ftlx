@@ -156,6 +156,8 @@ to use px in CSS where we want points. Confusing!
         stroke-width: 1px;
         stroke-linecap: round;
       }
+
+      ${(stylesheet!"")?no_esc}
     ]]>
   </style>
   <defs>

@@ -47,6 +47,7 @@ class Page {
             .addAttribute("columnsPerPage", options.columnsPerPage())
             .addAttribute("cropToFit", options.cropToFit())
             .addAttribute("romajiLyrics", options.romajiLyrics())
+            .addAttribute("stylesheet", options.stylesheet())
             .addAttribute("definitions", readDefinitions())
             .addAttribute("columns", mapColumns());
 

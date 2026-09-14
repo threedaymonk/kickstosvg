@@ -1,5 +1,7 @@
 package uk.sanshinkai.kickstosvg;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -63,6 +65,14 @@ public class App implements Callable<Integer> {
     private String fileSuffix;
 
     @Option(
+        names = { "--stylesheet" },
+        paramLabel = "FILE",
+        description = "Stylesheet to insert into SVG"
+    )
+    private String stylesheetPath;
+    private String stylesheet;
+
+    @Option(
         names = { "--titles" },
         negatable = true,
         defaultValue = "true",
@@ -85,6 +95,14 @@ public class App implements Callable<Integer> {
     public String fileSuffix() {
         if (this.fileSuffix == null) return "";
         return "-" + this.fileSuffix;
+    }
+
+    public String stylesheet() throws Exception {
+        if (this.stylesheetPath == null) return null;
+
+        if (this.stylesheet == null)
+            this.stylesheet = new String(Files.readAllBytes(Paths.get(stylesheetPath)));
+        return this.stylesheet;
     }
 
     public Map<String, Object> templateParams() {
