@@ -31,34 +31,34 @@ class Columnizer {
             if (c > colCount) colCount = c;
         }
 
-        var noteses = new ArrayList<List<Note>>(colCount);
-        var lyricses = new ArrayList<List<Lyric>>(colCount);
-        var repeatses = new ArrayList<List<Repeat>>(colCount);
-        var songs = new ArrayList<Song>(colCount);
+        var columnNotes = new ArrayList<List<Note>>(colCount);
+        var columnLyrics = new ArrayList<List<Lyric>>(colCount);
+        var columnRepeats = new ArrayList<List<Repeat>>(colCount);
+        var columnSong = new ArrayList<Song>(colCount);
 
         for (var i = 0; i < colCount; i++) {
-            noteses.add(i, new ArrayList<Note>());
-            lyricses.add(i, new ArrayList<Lyric>());
-            repeatses.add(i, new ArrayList<Repeat>());
-            songs.add(i, null);
+            columnNotes.add(i, new ArrayList<Note>());
+            columnLyrics.add(i, new ArrayList<Lyric>());
+            columnRepeats.add(i, new ArrayList<Repeat>());
+            columnSong.add(i, null);
         }
 
         for (var n : music.getNotes())
-            noteses.get(columnNumber(n)).add(n);
+            columnNotes.get(columnNumber(n)).add(n);
         for (var l : music.getLyrics())
-            lyricses.get(columnNumber(l)).add(l);
+            columnLyrics.get(columnNumber(l)).add(l);
         for (var r : music.getRepeats())
-            repeatses.get(columnNumber(r)).add(r);
+            columnRepeats.get(columnNumber(r)).add(r);
         for (var song : music.getSongs())
-            songs.add(columnNumber(song), song);
+            columnSong.add(columnNumber(song), song);
 
         var columns = new ArrayList<Column>(colCount);
         for (var i = 0; i < colCount ; i++) {
             var column = new Column(
-                noteses.get(i),
-                lyricses.get(i),
-                repeatses.get(i),
-                songs.get(i)
+                columnNotes.get(i),
+                columnLyrics.get(i),
+                columnRepeats.get(i),
+                columnSong.get(i)
             );
             if (column.isMusic() || options.showTitles())
                 columns.add(column);
