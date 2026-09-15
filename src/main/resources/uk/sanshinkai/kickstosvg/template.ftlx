@@ -48,6 +48,9 @@ to use px in CSS where we want points. Confusing!
   <#assign lyricYOffset = lyricYOffset!(fsLyrics / -2)>
 </#if>
 
+<#-- Singing marks -->
+<#assign phraseXOffset = cellWidth * 15/16>
+
 <#-- Repeats -->
 <#assign repeatWidth = repeatWidth!21>
 <#assign repeatLength = repeatLength!cellHeight>
@@ -301,6 +304,25 @@ to use px in CSS where we want points. Confusing!
           <#list column.lyrics as lyric>
             <#assign y = lyric.pos * cellHeight + lyricYOffset>
             <text x="${x}" y="${y}">${lyric.text}</text>
+          </#list>
+        </g>
+      </#if>
+
+      <#if column.phrases??>
+        <g class="phrases">
+          <#list column.phrases as phrase>
+            <#assign x = colX + phraseXOffset>
+            <#assign y = phrase.pos * cellHeight>
+            <g transform="translate(${x} ${y})">
+              <#assign scale = noteScaleL>
+              <#if scale != 1>
+                <g transform="scale(${scale})">
+              </#if>
+                <use href="#${phrase.start?string("mark_vstart","mark_vend")}" />
+              <#if scale != 1>
+                </g>
+              </#if>
+            </g>
           </#list>
         </g>
       </#if>

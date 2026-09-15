@@ -10,6 +10,7 @@ import org.colston.kicks.document.Accidental;
 import org.colston.kicks.document.Locatable;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
+import org.colston.kicks.document.Phrase;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 import org.colston.kicks.document.Utou;
@@ -65,14 +66,22 @@ class Page {
             if (column.isTitle()) {
                 map.addAttribute("song", mapSong(column));
             } else {
-                map.addAttribute("notes", mapNotes(column))
-                    .addAttribute("lyrics", mapLyrics(column))
+                map.addAttribute("lyrics", mapLyrics(column))
+                    .addAttribute("notes", mapNotes(column))
+                    .addAttribute("phrases", mapPhrases(column))
                     .addAttribute("repeats", mapRepeats(column))
                     .addAttribute("chords", mapLines(column, Note::isChord))
                     .addAttribute("slurs", mapLines(column, Note::isSlur));
             }
             list.add(map);
         }
+        return list;
+    }
+
+    private List<Map<String, Object>> mapLyrics(Column column) {
+        var list = new ArrayList<Map<String, Object>>();
+        for (var lyric : column.lyrics())
+            list.add(mapLyric(lyric));
         return list;
     }
 
@@ -83,10 +92,10 @@ class Page {
         return list;
     }
 
-    private List<Map<String, Object>> mapLyrics(Column column) {
+    private List<Map<String, Object>> mapPhrases(Column column) {
         var list = new ArrayList<Map<String, Object>>();
-        for (var lyric : column.lyrics())
-            list.add(mapLyric(lyric));
+        for (var phrase : column.phrases())
+            list.add(mapPhrase(phrase));
         return list;
     }
 
@@ -134,12 +143,6 @@ class Page {
             .addAttribute("text", text);
     }
 
-    private Map<String, Object> mapRepeat(Repeat repeat) {
-        return new TemplateMap("pos", verticalPos(repeat))
-            .addAttribute("back", repeat.isBack())
-            .addAttribute("style", repeat.getStyle().name().toLowerCase(Locale.ROOT));
-    }
-
     private Map<String, Object> mapNote(Note note) {
         var map = new TemplateMap("pos", verticalPos(note))
             .addAttribute("name", Symbols.noteRef(note))
@@ -151,6 +154,17 @@ class Page {
         if (note.getFinger() != 0)
             map.addAttribute("finger", Symbols.fingerRef(note));
         return map;
+    }
+
+    private Map<String, Object> mapPhrase(Phrase phrase) {
+        return new TemplateMap("pos", verticalPos(phrase))
+            .addAttribute("start", phrase.isStart());
+    }
+
+    private Map<String, Object> mapRepeat(Repeat repeat) {
+        return new TemplateMap("pos", verticalPos(repeat))
+            .addAttribute("back", repeat.isBack())
+            .addAttribute("style", repeat.getStyle().name().toLowerCase(Locale.ROOT));
     }
 
     private Map<String, Object> mapSong(Column column) {

@@ -6,6 +6,7 @@ import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.Locatable;
 import org.colston.kicks.document.Lyric;
 import org.colston.kicks.document.Note;
+import org.colston.kicks.document.Phrase;
 import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 
@@ -31,32 +32,32 @@ class Columnizer {
             if (c > colCount) colCount = c;
         }
 
-        var colNotes = new ArrayList<List<Note>>(colCount);
         var colLyrics = new ArrayList<List<Lyric>>(colCount);
+        var colNotes = new ArrayList<List<Note>>(colCount);
+        var colPhrases = new ArrayList<List<Phrase>>(colCount);
         var colRepeats = new ArrayList<List<Repeat>>(colCount);
         var colSong = new ArrayList<Song>(colCount);
 
         for (var i = 0; i < colCount; i++) {
-            colNotes.add(i, new ArrayList<Note>());
             colLyrics.add(i, new ArrayList<Lyric>());
+            colNotes.add(i, new ArrayList<Note>());
+            colPhrases.add(i, new ArrayList<Phrase>());
             colRepeats.add(i, new ArrayList<Repeat>());
             colSong.add(i, null);
         }
 
-        for (var n : music.getNotes())
-            colNotes.get(colNumber(n)).add(n);
-        for (var l : music.getLyrics())
-            colLyrics.get(colNumber(l)).add(l);
-        for (var r : music.getRepeats())
-            colRepeats.get(colNumber(r)).add(r);
-        for (var song : music.getSongs())
-            colSong.add(colNumber(song), song);
+        for (var l : music.getLyrics()) colLyrics.get(colNumber(l)).add(l);
+        for (var n : music.getNotes()) colNotes.get(colNumber(n)).add(n);
+        for (var p : music.getPhrases()) colPhrases.get(colNumber(p)).add(p);
+        for (var r : music.getRepeats()) colRepeats.get(colNumber(r)).add(r);
+        for (var song : music.getSongs()) colSong.add(colNumber(song), song);
 
         var columns = new ArrayList<Column>(colCount);
         for (var i = 0; i < colCount ; i++) {
             var column = new Column(
-                colNotes.get(i),
                 colLyrics.get(i),
+                colNotes.get(i),
+                colPhrases.get(i),
                 colRepeats.get(i),
                 colSong.get(i)
             );
