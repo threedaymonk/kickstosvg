@@ -44,6 +44,7 @@ class Renderer implements Callable<Boolean> {
             var filename = generateFilename(pages.size() > 1 ? i + 1 : 0);
             var out = new PrintWriter(filename);
             try {
+                if (options.printFilenames()) System.out.println(filename);
                 System.err.printf("Writing page %d to %s%n", i + 1, filename);
                 out.print(xml);
             } finally {

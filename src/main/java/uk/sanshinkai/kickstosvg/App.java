@@ -39,7 +39,7 @@ public class App implements Callable<Integer> {
     @Option(
         names = { "-o", "--output-dir" },
         paramLabel = "PATH",
-        description = "Where to write output files"
+        description = "Where to write output files. Default is current working directory"
     )
     private String outputDir = ".";
 
@@ -50,6 +50,12 @@ public class App implements Callable<Integer> {
         description = "Set a parameter to be passed to the template"
     )
     private Map<String, Object> templateParams = new HashMap<String, Object>();
+
+    @Option(
+        names = { "--print-filenames" },
+        description = "Print filenames to standard out. Useful for feeding to another tool"
+    )
+    private boolean printFilenames = false;
 
     @Option(
         names = { "-r", "--romaji-lyrics" },
@@ -89,6 +95,7 @@ public class App implements Callable<Integer> {
 
     public int columnsPerPage() { return this.columnsPerPage; }
     public boolean cropToFit() { return this.cropToFit; }
+    public boolean printFilenames() { return this.printFilenames; }
     public boolean romajiLyrics() { return this.romajiLyrics; }
     public boolean showTitles() { return this.showTitles; }
 
