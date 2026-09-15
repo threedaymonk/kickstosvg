@@ -18,19 +18,14 @@ class Columnizer {
     }
 
     public List<Column> columnize(KicksDocument music) {
-        var colCount = 0;
-        for (var n : music.getNotes()) {
-            var c = colNumber(n) + 1;
-            if (c > colCount) colCount = c;
-        }
-        for (var l : music.getLyrics()) {
-            var c = colNumber(l) + 1;
-            if (c > colCount) colCount = c;
-        }
-        for (var r : music.getRepeats()) {
-            var c = colNumber(r) + 1;
-            if (c > colCount) colCount = c;
-        }
+        int colCount = 0;
+        int[] counts = {
+            largestColumn(music.getLyrics()),
+            largestColumn(music.getNotes()),
+            largestColumn(music.getPhrases()),
+            largestColumn(music.getRepeats())
+        };
+        for (var c : counts) colCount = Math.max(c, colCount);
 
         var colLyrics = new ArrayList<List<Lyric>>(colCount);
         var colNotes = new ArrayList<List<Note>>(colCount);
@@ -66,6 +61,15 @@ class Columnizer {
         }
 
         return columns;
+    }
+
+    private <T> int largestColumn(List<T> items) {
+        int largest = 0;
+        for (var item : items) {
+            int c = colNumber((Locatable) item) + 1;
+            if (c > largest) largest = c;
+        }
+        return largest;
     }
 
     private int colNumber(Locatable a) {

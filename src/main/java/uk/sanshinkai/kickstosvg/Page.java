@@ -17,6 +17,10 @@ import org.colston.kicks.document.Utou;
 import org.colston.utils.KanaConverter;
 
 class Page {
+    interface MusicMap<T> {
+        Map<String, Object> call(T item);
+    }
+
     private App options;
     private List<Column> columns;
     public static final int CELLS_PER_COL = 12;
@@ -66,52 +70,30 @@ class Page {
             if (column.isTitle()) {
                 map.addAttribute("song", mapSong(column));
             } else {
-                map.addAttribute("lyrics", mapLyrics(column))
-                    .addAttribute("notes", mapNotes(column))
-                    .addAttribute("phrases", mapPhrases(column))
-                    .addAttribute("repeats", mapRepeats(column))
-                    .addAttribute("chords", mapLines(column, Note::isChord))
-                    .addAttribute("slurs", mapLines(column, Note::isSlur));
+                map.addAttribute("lyrics", mapMusic(column.lyrics(), this::mapLyric))
+                    .addAttribute("notes", mapMusic(column.notes(), this::mapNote))
+                    .addAttribute("phrases", mapMusic(column.phrases(), this::mapPhrase))
+                    .addAttribute("repeats", mapMusic(column.repeats(), this::mapRepeat))
+                    .addAttribute("chords", mapLines(column.notes(), Note::isChord))
+                    .addAttribute("slurs", mapLines(column.notes(), Note::isSlur));
             }
             list.add(map);
         }
         return list;
     }
 
-    private List<Map<String, Object>> mapLyrics(Column column) {
+    private <T> List<Map<String, Object>> mapMusic(List<T> items, MusicMap<T> op) {
         var list = new ArrayList<Map<String, Object>>();
-        for (var lyric : column.lyrics())
-            list.add(mapLyric(lyric));
+        for (var item : items) list.add(op.call(item));
         return list;
     }
 
-    private List<Map<String, Object>> mapNotes(Column column) {
-        var list = new ArrayList<Map<String, Object>>();
-        for (var note : column.notes())
-            list.add(mapNote(note));
-        return list;
-    }
-
-    private List<Map<String, Object>> mapPhrases(Column column) {
-        var list = new ArrayList<Map<String, Object>>();
-        for (var phrase : column.phrases())
-            list.add(mapPhrase(phrase));
-        return list;
-    }
-
-    private List<Map<String, Object>> mapRepeats(Column column) {
-        var list = new ArrayList<Map<String, Object>>();
-        for (var repeat : column.repeats())
-            list.add(mapRepeat(repeat));
-        return list;
-    }
-
-    private List<Map<String, Object>> mapLines(Column column, Predicate<Note> predicate) {
+    private List<Map<String, Object>> mapLines(List<Note> notes, Predicate<Note> predicate) {
         var list = new ArrayList<Map<String, Object>>();
         Note start = null;
         Note end = null;
 
-        for (var note : column.notes()) {
+        for (var note : notes) {
             if ((start == null) == predicate.test(note)) {
                 if (predicate.test(note)) {
                     start = note;
