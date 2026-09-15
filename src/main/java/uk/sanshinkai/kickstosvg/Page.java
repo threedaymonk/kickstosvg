@@ -1,6 +1,5 @@
 package uk.sanshinkai.kickstosvg;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,8 +29,7 @@ class Page {
         this.columns = columns;
     }
 
-    public String render() throws Exception {
-        var template = FreeMarker.getTemplate("template.ftlx");
+    public Map<String, Object> build() throws Exception {
         var root = new TemplateMap()
             .addAttribute("cellsPerCol", CELLS_PER_COL)
             .addAttribute("columnsPerPage", options.columnsPerPage())
@@ -44,10 +42,7 @@ class Page {
         for (var entry : options.templateParams().entrySet())
             root.addAttribute(entry.getKey(), entry.getValue());
 
-        var out = new StringWriter();
-        template.process(root, out);
-
-        return SVGOptimizer.optimize(out.toString());
+        return root;
     }
 
     private String readDefinitions() throws Exception {

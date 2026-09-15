@@ -2,6 +2,7 @@ package uk.sanshinkai.kickstosvg;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -36,17 +37,21 @@ class Renderer implements Callable<Boolean> {
     public Boolean call() throws Exception {
         var music = loadDocument(new File(inputPath));
         var columns = new Columnizer(options).columnize(music);
-
         var pages = Lists.partition(columns, options.columnsPerPage());
+        var template = FreeMarker.getTemplate("template.ftlx");
 
         for (var i = 0; i < pages.size(); i++) {
-            var xml = new Page(options, pages.get(i)).render();
+            var map = new Page(options, pages.get(i)).build();
+            var sw = new StringWriter();
+            template.process(map, sw);
+            var svg = SVGOptimizer.optimize(sw.toString());
+
             var filename = generateFilename(pages.size() > 1 ? i + 1 : 0);
             var out = new PrintWriter(filename);
             try {
                 if (options.printFilenames()) System.out.println(filename);
                 System.err.printf("Writing page %d to %s%n", i + 1, filename);
-                out.print(xml);
+                out.print(svg);
             } finally {
                 out.close();
             }
