@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import com.google.common.collect.Lists;
+import freemarker.template.Template;
 import org.colston.kicks.document.KicksDocument;
 import org.colston.kicks.document.persistence.DocumentStoreFactory;
 
@@ -35,18 +37,12 @@ class Renderer implements Callable<Boolean> {
 
     @Override
     public Boolean call() throws Exception {
-        var music = loadDocument(new File(inputPath));
-        var columns = new Columnizer(options).columnize(music);
-        var pages = Lists.partition(columns, options.columnsPerPage());
         var template = FreeMarker.getTemplate("template.ftlx");
+        var pages = paginateMusic(loadDocument(new File(inputPath)));
 
         for (var i = 0; i < pages.size(); i++) {
-            var map = new Page(options, pages.get(i)).build();
-            var sw = new StringWriter();
-            template.process(map, sw);
-            var svg = SVGOptimizer.optimize(sw.toString());
-
-            var filename = generateFilename(pages.size() > 1 ? i + 1 : 0);
+            var svg = renderPage(template, pages.get(i));
+            var filename = generateFilename(i + 1, pages.size());
             var out = new PrintWriter(filename);
             try {
                 if (options.printFilenames()) System.out.println(filename);
@@ -60,9 +56,21 @@ class Renderer implements Callable<Boolean> {
         return true;
     }
 
-    private String generateFilename(int pageNo) throws Exception {
+    private List<List<Column>> paginateMusic(KicksDocument music) {
+        var columns = new Columnizer(options).columnize(music);
+        return Lists.partition(columns, options.columnsPerPage());
+    }
+
+    private String renderPage(Template template, List<Column> columns) throws Exception {
+        var root = new Page(options, columns).build();
+        var out = new StringWriter();
+        template.process(root, out);
+        return SVGOptimizer.optimize(out.toString());
+    }
+
+    private String generateFilename(int pageNo, int pageCount) throws Exception {
         var suffix = options.fileSuffix();
-        if (pageNo > 0)
+        if (pageCount > 1)
             suffix += String.format(Locale.ROOT, "-%02d", pageNo);
         suffix += ".svg";
 
