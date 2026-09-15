@@ -19,46 +19,46 @@ class Columnizer {
     public List<Column> columnize(KicksDocument music) {
         var colCount = 0;
         for (var n : music.getNotes()) {
-            var c = columnNumber(n) + 1;
+            var c = colNumber(n) + 1;
             if (c > colCount) colCount = c;
         }
         for (var l : music.getLyrics()) {
-            var c = columnNumber(l) + 1;
+            var c = colNumber(l) + 1;
             if (c > colCount) colCount = c;
         }
         for (var r : music.getRepeats()) {
-            var c = columnNumber(r) + 1;
+            var c = colNumber(r) + 1;
             if (c > colCount) colCount = c;
         }
 
-        var columnNotes = new ArrayList<List<Note>>(colCount);
-        var columnLyrics = new ArrayList<List<Lyric>>(colCount);
-        var columnRepeats = new ArrayList<List<Repeat>>(colCount);
-        var columnSong = new ArrayList<Song>(colCount);
+        var colNotes = new ArrayList<List<Note>>(colCount);
+        var colLyrics = new ArrayList<List<Lyric>>(colCount);
+        var colRepeats = new ArrayList<List<Repeat>>(colCount);
+        var colSong = new ArrayList<Song>(colCount);
 
         for (var i = 0; i < colCount; i++) {
-            columnNotes.add(i, new ArrayList<Note>());
-            columnLyrics.add(i, new ArrayList<Lyric>());
-            columnRepeats.add(i, new ArrayList<Repeat>());
-            columnSong.add(i, null);
+            colNotes.add(i, new ArrayList<Note>());
+            colLyrics.add(i, new ArrayList<Lyric>());
+            colRepeats.add(i, new ArrayList<Repeat>());
+            colSong.add(i, null);
         }
 
         for (var n : music.getNotes())
-            columnNotes.get(columnNumber(n)).add(n);
+            colNotes.get(colNumber(n)).add(n);
         for (var l : music.getLyrics())
-            columnLyrics.get(columnNumber(l)).add(l);
+            colLyrics.get(colNumber(l)).add(l);
         for (var r : music.getRepeats())
-            columnRepeats.get(columnNumber(r)).add(r);
+            colRepeats.get(colNumber(r)).add(r);
         for (var song : music.getSongs())
-            columnSong.add(columnNumber(song), song);
+            colSong.add(colNumber(song), song);
 
         var columns = new ArrayList<Column>(colCount);
         for (var i = 0; i < colCount ; i++) {
             var column = new Column(
-                columnNotes.get(i),
-                columnLyrics.get(i),
-                columnRepeats.get(i),
-                columnSong.get(i)
+                colNotes.get(i),
+                colLyrics.get(i),
+                colRepeats.get(i),
+                colSong.get(i)
             );
             if (column.isMusic() || options.showTitles())
                 columns.add(column);
@@ -67,7 +67,7 @@ class Columnizer {
         return columns;
     }
 
-    private int columnNumber(Locatable a) {
+    private int colNumber(Locatable a) {
         return a.getIndex() / Page.CELLS_PER_COL;
     }
 }
