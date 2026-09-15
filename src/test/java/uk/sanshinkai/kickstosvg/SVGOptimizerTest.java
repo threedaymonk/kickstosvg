@@ -1,14 +1,7 @@
 package uk.sanshinkai.kickstosvg;
 
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 class SVGOptimizerTest {
     @Test
@@ -22,9 +15,9 @@ class SVGOptimizerTest {
             </svg>
             """;
 
-        var doc = parse(SVGOptimizer.optimize(svg));
+        var doc = TestHelper.parseXMLString(SVGOptimizer.optimize(svg));
 
-        assertEquals(0, matchingNodes(doc, "//*[@id='alpha']").getLength());
+        assertEquals(0, TestHelper.matchingNodes(doc, "//*[@id='alpha']").getLength());
     }
 
     @Test
@@ -39,9 +32,9 @@ class SVGOptimizerTest {
             </svg>
             """;
 
-        var doc = parse(SVGOptimizer.optimize(svg));
+        var doc = TestHelper.parseXMLString(SVGOptimizer.optimize(svg));
 
-        assertEquals(1, matchingNodes(doc, "//*[@id='alpha']").getLength());
+        assertEquals(1, TestHelper.matchingNodes(doc, "//*[@id='alpha']").getLength());
     }
 
     @Test
@@ -56,9 +49,9 @@ class SVGOptimizerTest {
             </svg>
             """;
 
-        var doc = parse(SVGOptimizer.optimize(svg));
+        var doc = TestHelper.parseXMLString(SVGOptimizer.optimize(svg));
 
-        assertEquals(1, matchingNodes(doc, "//*[@id='alpha']").getLength());
+        assertEquals(1, TestHelper.matchingNodes(doc, "//*[@id='alpha']").getLength());
     }
 
     @Test
@@ -78,24 +71,14 @@ class SVGOptimizerTest {
             </svg>
             """;
 
-        var doc = parse(SVGOptimizer.optimize(svg));
+        var doc = TestHelper.parseXMLString(SVGOptimizer.optimize(svg));
 
-        assertEquals(0, matchingNodes(doc, "//*[@id='alpha']").getLength());
-        assertEquals(0, matchingNodes(doc, "//*[@id='bravo']").getLength());
-        assertEquals(0, matchingNodes(doc, "//*[@id='charlie']").getLength());
-        assertEquals(1, matchingNodes(doc, "//*[@id='delta']").getLength());
-        assertEquals(1, matchingNodes(doc, "//*[@id='echo']").getLength());
-        assertEquals(1, matchingNodes(doc, "//*[@id='foxtrot']").getLength());
-    }
-
-    private NodeList matchingNodes(Document doc, String xpath) throws Exception {
-        var expr = XPathFactory.newInstance().newXPath().compile(xpath);
-        return (NodeList) expr.evaluate(doc, XPathConstants.NODESET);
-    }
-
-    private Document parse(String svg) throws Exception {
-        var src = new InputSource(new StringReader(svg));
-        return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src);
+        assertEquals(0, TestHelper.matchingNodes(doc, "//*[@id='alpha']").getLength());
+        assertEquals(0, TestHelper.matchingNodes(doc, "//*[@id='bravo']").getLength());
+        assertEquals(0, TestHelper.matchingNodes(doc, "//*[@id='charlie']").getLength());
+        assertEquals(1, TestHelper.matchingNodes(doc, "//*[@id='delta']").getLength());
+        assertEquals(1, TestHelper.matchingNodes(doc, "//*[@id='echo']").getLength());
+        assertEquals(1, TestHelper.matchingNodes(doc, "//*[@id='foxtrot']").getLength());
     }
 }
 
