@@ -213,16 +213,24 @@ to use px in CSS where we want points. Confusing!
         <#assign fx = jx + fsTitleJapanese / 2.0 + fsTitleFurigana / 2.0>
         <#assign y = 0>
         <#list song.title as part>
-          <#assign len = part.surface?length * fsTitleJapanese>
+          <#assign sh = part.surface?length * fsTitleJapanese>
+          <#assign sindent = 0>
+          <#assign rindent = 0>
           <#if part.reading??>
-            <#assign rlen = part.reading?length * fsTitleFurigana>
-            <#assign len = [len, rlen]?max>
-            <text x="${fx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
+            <#assign rh = part.reading?length * fsTitleFurigana>
+            <#if sh gt rh>
+              <#assign rindent = (sh - rh) / (part.reading?length + 1)>
+              <#assign rh = sh - rindent * 2>
+            <#else>
+              <#assign sindent = (rh - sh) / (part.surface?length + 1)>
+              <#assign sh = sh - sindent * 2>
+            </#if>
+            <text x="${fx}" y="${y + rindent}" textLength="${rh}" lengthAdjust="spacing"
               class="furigana Japn">${part.reading}</text>
           </#if>
-          <text x="${jx}" y="${y}" textLength="${len}" lengthAdjust="spacing"
+          <text x="${jx}" y="${y + sindent}" textLength="${sh}" lengthAdjust="spacing"
             class="surface Japn">${part.surface}</text>
-          <#assign y = y + len>
+          <#assign y = y + [sh, (rh!0)]?max>
         </#list>
 
         <#assign tlen = song.tuning?length * fsTuning>
