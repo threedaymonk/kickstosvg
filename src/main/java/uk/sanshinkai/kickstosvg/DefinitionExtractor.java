@@ -15,7 +15,8 @@ public final class DefinitionExtractor {
     public static String extract(InputStream stream) throws Exception {
         var doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
         var writer = new StringWriter();
-        var xslt = new StreamSource(DefinitionExtractor.class.getResourceAsStream("definitions.xslt"));
+        var xslt = new StreamSource(
+            DefinitionExtractor.class.getResourceAsStream("definitions.xslt"));
         var transformer = TransformerFactory.newInstance().newTransformer(xslt);
 
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
