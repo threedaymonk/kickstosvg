@@ -223,7 +223,7 @@ to use px in CSS where we want points. Confusing!
               <#assign rh = sh - rindent * 2>
             <#else>
               <#assign sindent = (rh - sh) / (part.surface?length + 1)>
-              <#assign sh = sh - sindent * 2>
+              <#assign sh = rh - sindent * 2>
             </#if>
             <text x="${fx}" y="${y + rindent}" textLength="${rh}" lengthAdjust="spacing"
               class="furigana Japn">${part.reading}</text>
