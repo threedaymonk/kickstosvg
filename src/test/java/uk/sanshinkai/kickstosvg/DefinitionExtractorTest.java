@@ -10,6 +10,6 @@ class DefinitionExtractorTest {
         var fragment = DefinitionExtractor.extract(stream);
         var doc = TestHelper.parseXMLString("<x>" + fragment + "</x>");
 
-        assertEquals(1, TestHelper.matchingNodes(doc, "//*[@id='note_ai']").getLength());
+        assertEquals(1, TestHelper.matchingNodes(doc, "/x/*[@id='note_ai']").getLength());
     }
 }
