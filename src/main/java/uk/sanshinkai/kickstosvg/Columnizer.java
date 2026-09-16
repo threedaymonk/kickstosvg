@@ -11,9 +11,9 @@ import org.colston.kicks.document.Repeat;
 import org.colston.kicks.document.Song;
 
 class Columnizer {
-    private App options;
+    private Options options;
 
-    Columnizer(App options) {
+    Columnizer(Options options) {
         this.options = options;
     }
 
@@ -56,7 +56,7 @@ class Columnizer {
                 colRepeats.get(i),
                 colSong.get(i)
             );
-            if (column.isMusic() || options.showTitles())
+            if (column.isMusic() || options.getShowTitles())
                 columns.add(column);
         }
 

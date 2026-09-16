@@ -20,41 +20,33 @@ class Page {
         Map<String, Object> call(T item);
     }
 
-    private App options;
+    private Options options;
     private List<Column> columns;
+    private String definitions;
+    private String stylesheet;
     public static final int CELLS_PER_COL = 12;
 
-    Page(App options, List<Column> columns) {
+    Page(Options options, String definitions, String stylesheet, List<Column> columns) {
         this.options = options;
         this.columns = columns;
+        this.definitions = definitions;
+        this.stylesheet = stylesheet;
     }
 
     public Map<String, Object> build() throws Exception {
         var root = new TemplateMap()
             .addAttribute("cellsPerCol", CELLS_PER_COL)
-            .addAttribute("columnsPerPage", options.columnsPerPage())
-            .addAttribute("cropToFit", options.cropToFit())
-            .addAttribute("romajiLyrics", options.romajiLyrics())
-            .addAttribute("stylesheet", options.stylesheet())
-            .addAttribute("definitions", readDefinitions())
+            .addAttribute("columnsPerPage", options.getColumnsPerPage())
+            .addAttribute("cropToFit", options.getCropToFit())
+            .addAttribute("romajiLyrics", options.getRomajiLyrics())
+            .addAttribute("stylesheet", stylesheet)
+            .addAttribute("definitions", definitions)
             .addAttribute("columns", mapColumns());
 
-        for (var entry : options.templateParams().entrySet())
+        for (var entry : options.getTemplateParameters().entrySet())
             root.addAttribute(entry.getKey(), entry.getValue());
 
         return root;
-    }
-
-    private String readDefinitions() throws Exception {
-        var stream = Page.class.getResourceAsStream("kunkunshi-all.svg");
-        try {
-            if (stream == null)
-                throw new Exception("Couldn't open resource: kunkunshi-all.svg");
-
-            return DefinitionExtractor.extract(stream);
-        } finally {
-            if (stream != null) stream.close();
-        }
     }
 
     private List<Map<String, Object>> mapColumns() {
@@ -112,7 +104,7 @@ class Page {
     }
 
     private Map<String, Object> mapLyric(Lyric lyric) {
-        var text = options.romajiLyrics()
+        var text = options.getRomajiLyrics()
             ? KanaConverter.toRomaji(lyric.getValue())
             : lyric.getValue();
 
@@ -159,7 +151,7 @@ class Page {
 
     private List<Map<String, Object>> mapJapaneseTitle(Song song) {
         var jTitle = new FuriganaString(song.getTitle());
-        var parts = new ArrayList();
+        var parts = new ArrayList<Map<String, Object>>();
         for (var component : jTitle.components()) {
             var part = new TemplateMap("surface", component.surface());
             if (component.reading() != null)
