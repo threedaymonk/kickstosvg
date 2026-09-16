@@ -64,7 +64,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>${groupId}.${artifactId}.App</mainClass>
+              <mainClass>${project.groupId}.${project.artifactId}.App</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
@@ -214,4 +214,14 @@
       <version>${kicks-core.version}</version>
     </dependency>
   </dependencies>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>3.6.0</version>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
