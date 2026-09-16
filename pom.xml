@@ -127,13 +127,15 @@
         </dependencies>
         <configuration>
           <configLocation>.settings/checks.xml</configLocation>
+          <violationSeverity>warning</violationSeverity>
+          <failOnViolation>true</failOnViolation>
         </configuration>
         <executions>
           <execution>
             <id>checkstyle-integration</id>
             <phase>verify</phase>
             <goals>
-              <goal>checkstyle</goal>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
