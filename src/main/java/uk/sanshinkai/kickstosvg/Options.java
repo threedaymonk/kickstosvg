@@ -101,6 +101,14 @@ class Options {
     public boolean getShowTitles() { return this.showTitles; }
     public void setShowTitles(boolean b) { this.showTitles = b; }
 
+    @Option(
+        names = { "-v", "--version" },
+        description = "Display version and exit"
+    )
+    boolean showVersion = false;
+    public boolean getShowVersion() { return this.showVersion; }
+    public void setShowVersion(boolean b) { this.showVersion = b; }
+
     @Parameters(
         paramLabel = "FILE",
         description = "One or more files to be rendered"
