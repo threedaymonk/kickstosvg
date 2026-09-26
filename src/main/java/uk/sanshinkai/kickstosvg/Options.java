@@ -82,15 +82,6 @@ class Options {
     public void setFilenameSuffix(String s) { this.filenameSuffix = s; }
 
     @Option(
-        names = { "--stylesheet" },
-        paramLabel = "FILE",
-        description = "Stylesheet to insert into SVG"
-    )
-    private String stylesheet = "";
-    public String getStylesheet() { return this.stylesheet; }
-    public void setStylesheet(String s) { this.stylesheet = s; }
-
-    @Option(
         names = { "--show-titles" },
         negatable = true,
         defaultValue = "true",
@@ -100,6 +91,15 @@ class Options {
     private boolean showTitles = true;
     public boolean getShowTitles() { return this.showTitles; }
     public void setShowTitles(boolean b) { this.showTitles = b; }
+
+    @Option(
+        names = { "--stylesheet" },
+        paramLabel = "FILE",
+        description = "Stylesheet to insert into SVG"
+    )
+    private String stylesheet = "";
+    public String getStylesheet() { return this.stylesheet; }
+    public void setStylesheet(String s) { this.stylesheet = s; }
 
     @Option(
         names = { "-v", "--version" },
